@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-handle.el,v 3.27 1998/05/18 13:38:54 tri Exp $
+;;;  $Id: irchat-handle.el,v 3.28 1998/05/23 12:37:41 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -501,7 +501,9 @@
   (if (and (not irchat-ignore-changes)
 	   (or (not irchat-ignore-changes-from-ignored)
 	       (not (irchat-ignore-this-p prefix irchat-userathost))))
-      (let ((chnl " ") (str ""))
+      (let ((chnl " ")
+	    (str "")
+	    (server-change (if (string-match "..*\\...*" prefix) t nil)))
 	(if (or (and (string-match "\\([^ ]*\\) :*\\(.*\\)" rest)
 		     (setq chnl (matching-substring rest 1)
 			   str (matching-substring rest 2)
@@ -510,18 +512,34 @@
 		(and (string-match " :\\(.*\\)" rest) 
 		     (setq str (matching-substring rest 1))))
 	    (if irchat-compress-changes
-		(let* ((text (format "\n" rest))
-		       (match (format "^%sNew mode for %s set by %s: " 
-				      (regexp-quote irchat-change-prefix) 
-				      chnl 
-				      prefix))
-		       (default (format "%sNew mode for %s set by %s: %s\n" 
-					irchat-change-prefix chnl prefix str)))
-		  (irchat-w-replace (irchat-pick-buffer chnl)
-				    match default text (format ", %s\n" str)))
+		(if server-change
+		    (let* ((default (format "%sNew mode for %s set by %s: %s\n"
+					    irchat-change-prefix 
+					    chnl
+					    prefix
+					    str)))
+		      '())
+		  (let* ((text (format "\n" rest))
+			 (match (format "^%sNew mode for %s set by %s: " 
+					(regexp-quote irchat-change-prefix) 
+					chnl 
+					prefix))
+			 (default (format "%sNew mode for %s set by %s: %s\n" 
+					  irchat-change-prefix 
+					  chnl
+					  prefix
+					  str)))
+		    (irchat-w-replace (irchat-pick-buffer chnl)
+				      match 
+				      default
+				      text
+				      (format ", %s\n" str))))
 	      (irchat-w-insert (irchat-pick-buffer chnl)
 			       (format "%sNew mode for %s set by %s: %s\n" 
-				       irchat-change-prefix chnl prefix str)))
+				       irchat-change-prefix
+				       chnl 
+				       prefix
+				       str)))
 	  (message "IRCHAT: Strange MODE")))))
 
 
@@ -622,14 +640,7 @@
                                         prefix 
 					(if flags (format " [%s]" flags) "")
 					irchat-userathost 
-					rest)
-				; Server joins and mode changes come in
-				; "interlaced".  To avoid breaking change
-				; compression, we temporarily raise
-				; treshold.
-				(if (= irchat-compress-treshold 1)
-				    2 
-				  irchat-compress-treshold)))
+					rest)))
           (irchat-w-insert (irchat-pick-buffer rest) 
                            (format "%s%s%s (%s) has joined channel %s\n" 
                                    irchat-change-prefix
