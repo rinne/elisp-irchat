@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-main.el,v 3.28 1998/05/24 15:33:22 tri Exp $
+;;;  $Id: irchat-main.el,v 3.29 1998/06/29 11:47:33 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -675,8 +675,7 @@ One is for entering commands and text, the other displays the IRC dialogue."
 	   (t (signal (car errorcode) (cdr errorcode)))))))
 
 (defun irchat-maybe-poll ()
-  (irchat-send "PING %s" (system-name)))
-
+  (irchat-Command-ping))
 
 (defun irchat-w-replace (buffer 
 			 match
