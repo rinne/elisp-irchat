@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-filter.el,v 3.2 1997/03/16 14:14:10 tri Exp $
+;;;  $Id: irchat-filter.el,v 3.3 1997/03/18 10:05:29 jtp Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -176,7 +176,7 @@
 		 (pm (point-max)))
 	    (save-excursion
 	      (goto-char (point-max))
-	      (insert (format "%s%s\n" irchat-debugmsg output)))
+	      (insert (format "%s%s\n" (or irchat-debugmsg "") output)))
 	    (if (and wp (>= wp pm))
 		(irchat-scroll-if-visible dbgwin)))))
 
