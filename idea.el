@@ -4,7 +4,7 @@
 ;;;  IDEA encryption in elisp.  Cool, ha?
 ;;;  ----------------------------------------------------------------------
 ;;;  Created      : Thu Jun 29 08:11:25 1995 tri
-;;;  Last modified: Thu Jun 25 02:28:01 1998 tri
+;;;  Last modified: Thu Jun 25 02:29:12 1998 tri
 ;;;  ----------------------------------------------------------------------
 ;;;  Copyright © 1995-1998
 ;;;  Timo J. Rinne <tri@iki.fi>
@@ -18,7 +18,7 @@
 ;;;  irchat-copyright.el applies only if used with irchat IRC client.
 ;;;  Contact the author for additional copyright info.
 ;;;
-;;;  $Id: idea.el,v 3.17 1998/06/24 23:28:33 tri Exp $
+;;;  $Id: idea.el,v 3.18 1998/06/24 23:29:29 tri Exp $
 ;;;
 
 (eval-and-compile  
@@ -28,8 +28,8 @@
 (eval-and-compile  
   (provide 'idea))
 
-(defvar idea-default-key-expand-version 1
-  "Which version of key expand is used as default (1 or 2).")
+(defvar idea-default-key-expand-version 3
+  "Which version of key expand is used as default (1 or 2 or 3).")
 
 ;;;; 16bit basic arithmetic operations for IDEA.
 (defun idea-mask-16bit (x)
