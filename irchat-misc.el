@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-misc.el,v 3.18 1997/07/09 13:35:57 tri Exp $
+;;;  $Id: irchat-misc.el,v 3.19 1997/10/06 12:52:47 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -80,6 +80,67 @@
     (if flags
 	(format "%s (%s)" body flags)
       body)))
+
+
+(defun irchat-Dialogue-insert-message (buffer 
+				       absolute-prefix 
+				       format-string
+				       sender
+				       message 
+				       &optional channel
+				       force)
+  "Insert incoming message into dialog buffer(s)."
+  (if (and (> (length message) 0)
+	   (= (elt message 0) (string-to-char ""))
+	   (null force))
+      (if (> (length message) 1)
+	  (if (listp buffer)
+	      (let ((l buffer))
+		(while l
+		  (irchat-Dialogue-insert-message (car l)
+						  absolute-prefix 
+						  format-string
+						  sender
+						  message 
+						  channel
+						  force)
+		  (setq l (cdr l))))
+	    (let ((s (concat "^"
+			     absolute-prefix
+			     (regexp-quote (format format-string
+						   sender
+						   channel))
+			     " .*\\(\\)$")))
+	      (irchat-w-insert '("*kukkuu*") (concat ">>>" s "<<<\n"))
+	      (save-excursion
+		(if (and (set-buffer buffer)
+			 (or (goto-char (point-max)) t)
+			 (re-search-backward s
+					     (let ((p (point)))
+					       (if (< p 2000)
+						   (point-min)
+						 (- p 2000)))
+					     t))
+		    (progn 
+		      (goto-char (match-beginning 1))
+		      (let ((buffer-read-only nil))
+			(delete-char 1)
+			(insert (substring message 1 (length message)))))
+		  (irchat-w-insert buffer 
+				   (concat absolute-prefix
+					   (format format-string 
+						   sender 
+						   channel)
+					   " ... "
+					   (substring message 
+						      1
+						      (length message))
+					   "\n")))))))
+    (irchat-w-insert buffer (concat absolute-prefix
+				    (format format-string sender channel)
+				    " "
+				    message
+				    "\n"))))
 
 
 (defun irchat-Dialogue-buffer-p (buffer)
