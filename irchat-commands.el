@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-commands.el,v 3.35 1998/10/06 11:47:06 tri Exp $
+;;;  $Id: irchat-commands.el,v 3.36 1998/10/06 13:00:04 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -687,6 +687,26 @@ With - as argument, list all channels."
   "Send a MODE command"
   (interactive "sMode for this channel: ")
   (irchat-send "MODE %s %s" irchat-current-channel change))
+
+
+(defun irchat-Command-message-delayed (&rest args)
+  "Send an always delayed private message to another user."
+  (interactive (let (message-nick-var 
+		     crypt-type-var 
+		     (completion-ignore-case t))
+		 (setq message-nick-var 
+		       (irchat-completing-default-read 
+			"Private message to: "
+			(append irchat-nick-alist irchat-channel-alist)
+			'(lambda (s) t) nil irchat-privmsg-partner))
+		 (setq crypt-type-var nil)
+		 (list message-nick-var 
+		       (read-string 
+			(format "Private message to %s: " message-nick-var))
+		       crypt-type-var
+		       nil)))
+  (let ((irchat-use-delayed-privmsg t))
+    (eval (cons (function irchat-Command-message) args))))
 
 
 (defun irchat-Command-message (message-nick-var
