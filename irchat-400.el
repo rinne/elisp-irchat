@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-400.el,v 3.4 1997/03/19 15:58:34 tri Exp $
+;;;  $Id: irchat-400.el,v 3.5 1997/03/19 17:08:51 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -70,15 +70,16 @@
   (save-excursion
     (set-buffer irchat-Command-buffer)
     (beep)
-    (let ((nick (if (string-match "^\\([^ ]+\\) +\\([^ ]+\\) +:\\(.*\\)" 
-				  rest)
-		    (matching-substring rest 2)
-		  (if (string-match "^ *\\([^ ]+\\) :.*" rest)
-		      (matching-substring rest 1)
-		    "UNKNOWN (Could not figure out, contact developers)"))))
+    (let ((nick (cond ((string-match "^\\([^ ]+\\) +\\([^ ]+\\) +:\\(.*\\)" 
+				     rest)
+		       (matching-substring rest 2))
+		      ((string-match "^ *\\([^ ]+\\) :.*" rest)
+		       (matching-substring rest 1))
+		      (t
+		       "UNKNOWN (Could not figure out, contact developers)"))))
       (if (eq irchat-nick-accepted 'ok)
 	  (setq irchat-real-nickname irchat-old-nickname))
-      (message "IRCHAT: Nickname %s erronous.  Choose a new one with %s."
+      (message "IRCHAT: Erroneous nickname %s.  Choose a new one with %s."
 	       nick
 	       (substitute-command-keys "\\[irchat-Command-nickname]")))))
 	
@@ -95,12 +96,13 @@
       (set-buffer irchat-Command-buffer)
       (beep)
       (setq irchat-real-nickname irchat-old-nickname)
-      (let 
-	  ((nick (if (string-match "^\\([^ ]+\\) +\\([^ ]+\\) +:\\(.*\\)" rest)
-		     (matching-substring rest 2)
-		   (if (string-match "^ *\\([^ ]+\\) :.*" rest)
-		       (matching-substring rest 1)
-		     "UNKNOWN (Could not figure out, contact developers)"))))
+      (let ((nick (cond ((string-match "^\\([^ ]+\\) +\\([^ ]+\\) +:\\(.*\\)" 
+				       rest)
+			 (matching-substring rest 2))
+			((string-match "^ *\\([^ ]+\\) :.*" rest)
+			 (matching-substring rest 1))
+			(t
+			 "UNKNOWN (Could not figure out, contact developers)"))))
 	(message 
 	 "IRCHAT: Nickname %s already in use.  Choose a new one with %s."
 	 nick
