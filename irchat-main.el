@@ -1,21 +1,12 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-main.el,v 3.6 1997/02/26 12:40:22 jtp Exp $
+;;;  $Id: irchat-main.el,v 3.7 1997/02/26 13:28:28 kny Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
 (eval-when-compile (require 'irchat-inlines))
 (eval-and-compile  
   (require 'irchat-filter))
-
-(if irchat-want-traditional
-    (defvar irchat-command-window-on-top nil
-      "*If non-nil, the Command window will be put at the top of the screen.
-Else it is put at the bottom.")
-  (defvar irchat-command-window-on-top t
-    "*If non-nil, the Command window will be put at the top of the screen.
-Else it is put at the bottom."))
-
 
 ;; Define hooks for each IRC message the server might send us.
 ;; The newer IRC servers use numeric reply codes instead of words.

@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-vars.el,v 3.6 1997/02/26 12:57:30 kny Exp $
+;;;  $Id: irchat-vars.el,v 3.7 1997/02/26 13:28:28 kny Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -24,8 +24,11 @@
   "*If non-nil, IRCHAT will use whole emacs window. Annoying for GNUS-
 users, therefore added by nam.")
 
-(defvar irchat-want-traditional t
-  "*Do we want a nice-looking Irchat.")
+(defvar irchat-want-traditional nil
+  "*Do we want /commands.")
+
+(defvar irchat-command-window-on-top nil
+  "*If non-nil, the Command window will be put at the top of the screen.
 
 (defvar irchat-one-buffer-mode nil
   "*When non-nil, irchat will put up only a dialogue-buffer (on the
