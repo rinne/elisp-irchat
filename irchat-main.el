@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-main.el,v 3.40 2002/06/09 16:31:07 tri Exp $
+;;;  $Id: irchat-main.el,v 3.41 2002/06/09 16:43:51 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -941,7 +941,7 @@ One is for entering commands and text, the other displays the IRC dialogue."
 		  (message "Malformed ignore-list, no user function."))))
 	  (if (or msg str)
 	      (if (or
-		   (and msg (string-match msg (nth 3 irchat-current-function)))
+		   (and msg (string-match msg (nth 4 irchat-current-function)))
 		   (and str (string-match str string)))
 		  (let ((mywho who))
 		    (while mywho
