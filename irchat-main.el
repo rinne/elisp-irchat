@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-main.el,v 3.25 1997/10/20 06:06:39 tri Exp $
+;;;  $Id: irchat-main.el,v 3.26 1997/10/20 06:30:15 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -696,18 +696,17 @@ One is for entering commands and text, the other displays the IRC dialogue."
 	   (spoint nil))
       (set-buffer (get-buffer buffer))
       (goto-char (point-max))
-      (if buffer-read-only
-	  (setq buffer-read-only nil))
-      (previous-line treshold)
-      (if (re-search-forward match nil t)
-	  (progn
-	    (while (re-search-forward match nil t))
-	    (beginning-of-line)
-	    (if (re-search-forward oldstring nil t)
-		(replace-match newstring nil t)
-	      (irchat-w-insert buffer defstring)) ;; This should't happen (kny)
-	    (irchat-w-insert buffer ""))
-	(irchat-w-insert buffer defstring)))))
+      (let ((buffer-read-only nil))
+	(previous-line treshold)
+	(if (re-search-forward match nil t)
+	    (progn
+	      (while (re-search-forward match nil t))
+	      (beginning-of-line)
+	      (if (re-search-forward oldstring nil t)
+		  (replace-match newstring nil t)
+		(irchat-w-insert buffer defstring)) ;This should't happen (kny)
+	      (irchat-w-insert buffer ""))
+	  (irchat-w-insert buffer defstring))))))
 
 
 (defun irchat-w-insert (buffer string)
@@ -753,43 +752,41 @@ One is for entering commands and text, the other displays the IRC dialogue."
       ;;
       (setq spoint (point))
       (goto-char (point-max))
-      (if buffer-read-only
-	  (setq buffer-read-only nil))
-      (if (not (irchat-is-message-ignored string nbuf))
-	  (progn
-	    (if (and (or (eq irchat-beep-on-bells 'always)
-			 (and irchat-beep-on-bells
-			      (null
-			       (irchat-get-buffer-window (current-buffer)))))
-		     (string-match "\007" string)
-		     (irchat-Dialogue-buffer-p (current-buffer)))
-		(beep t))
-	    (insert string)
-	    (if (and irchat-use-smiley (fboundp 'smiley-region))
-		(smiley-region spoint (point-max)))))
-      (setq buffer-read-only t)
-      (goto-char spoint)
-      (let ((win-list (irchat-get-buffer-window-list (get-buffer buffer))))
-	(mapcar
-	 '(lambda (win)
-	    (if (and win (not frozen)
-		     (not (pos-visible-in-window-p (point-max) win)))
-		(progn
-		  (goto-char (point-max))
-		  (vertical-motion (- (or irchat-scroll-step
-					  (1+ (/ (irchat-window-height win) 2)))
-				      (irchat-window-height win))
-				   win)
-		  (set-window-start win (point))
-		  (goto-char (point-max)))))
-	 win-list))
-      (set-buffer obuf)
-      (if (and frozen (irchat-get-buffer-window obuf) (equal obuf nbuf))
-	  (progn
-	    (set-window-start (irchat-get-buffer-window obuf) oldwstart)
-	    (set-window-point (irchat-get-buffer-window obuf) oldwpoint)
-	    (goto-char oldwpoint)
-	    )))))
+      (let ((buffer-read-only nil))
+	(if (not (irchat-is-message-ignored string nbuf))
+	    (progn
+	      (if (and (or (eq irchat-beep-on-bells 'always)
+			   (and irchat-beep-on-bells
+				(null
+				 (irchat-get-buffer-window (current-buffer)))))
+		       (string-match "\007" string)
+		       (irchat-Dialogue-buffer-p (current-buffer)))
+		  (beep t))
+	      (insert string)
+	      (if (and irchat-use-smiley (fboundp 'smiley-region))
+		  (smiley-region spoint (point-max)))))
+	(goto-char spoint)
+	(let ((win-list (irchat-get-buffer-window-list (get-buffer buffer))))
+	  (mapcar
+	   '(lambda (win)
+	      (if (and win (not frozen)
+		       (not (pos-visible-in-window-p (point-max) win)))
+		  (progn
+		    (goto-char (point-max))
+		    (vertical-motion (- (or irchat-scroll-step
+					    (1+ (/ (irchat-window-height win) 2)))
+					(irchat-window-height win))
+				     win)
+		    (set-window-start win (point))
+		    (goto-char (point-max)))))
+	   win-list))
+	(set-buffer obuf)
+	(if (and frozen (irchat-get-buffer-window obuf) (equal obuf nbuf))
+	    (progn
+	      (set-window-start (irchat-get-buffer-window obuf) oldwstart)
+	      (set-window-point (irchat-get-buffer-window obuf) oldwpoint)
+	      (goto-char oldwpoint)
+	      ))))))
 
 
 (defun irchat-get-buffer-create (name)
