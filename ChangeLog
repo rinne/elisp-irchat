@@ -1,4 +1,8 @@
-Thu Jun 07 15:47:23 2001  Timo J. Rinne  <tri@iki.fi>
+Thu Jun 07 14:53:38  IRCHAT Distribution Generator <irchat@rinne.iki.fi>
+
+	* Generated release irchat-20010607.
+
+Thu Jun 07 12:47:23 2001  Timo J. Rinne  <tri@iki.fi>
 
 	* Added support for invitation (I) and ban exception (e)
 	  lists.
