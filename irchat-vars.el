@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-vars.el,v 1.6 1997/02/06 07:07:30 jtp Exp $
+;;;  $Id: irchat-vars.el,v 1.7 1997/02/06 11:57:24 tmo Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -15,7 +15,7 @@
 	      irchat-use-full-window
 	      irchat-command-window-on-top
 	      irchat-beep-on-bells))
-  "*Variables whose values are saved via command irchat-Command-update-variables-file")
+  "*Variables whose values are saved via command irchat-Command-save-vars")
 
 (defvar irchat-command-window-height 5
   "*How large should Command window be on startup.")
