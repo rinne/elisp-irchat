@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-300.el,v 3.3 1997/03/12 16:56:47 jtp Exp $
+;;;  $Id: irchat-300.el,v 3.4 1998/01/19 16:54:35 jtp Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -245,8 +245,8 @@ This is called if no specific handler exists"
 (defun irchat-handle-321-msg (prefix rest)
   "Handle the 321 LISTSTART. (first of names)"
   (irchat-w-insert irchat-300-buffer
-   (format "%-10s%6s  %s\n"
-	   "Channel" "Users" "Topic")))
+   (format "%s%-10s%6s        %s\n"
+	   irchat-info-prefix "Channel" "Users" "Topic")))
 
 
 (defun irchat-handle-322-msg (prefix rest)
@@ -267,7 +267,7 @@ This is called if no specific handler exists"
 				       (if (string= chnl "*") "Priv"
 					 chnl)
 				       users
-				       (if (> (string-to-int users) 1) "s" "")
+				       (if (> (string-to-int users) 1) "s" " ")
 				       (if (string= "" topic) "" ": ")
 				       topic)))))
     (message "IRCHAT: Strange 322 reply")))
