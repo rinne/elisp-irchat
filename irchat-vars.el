@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-vars.el,v 3.18 1997/04/03 13:41:23 jsl Exp $
+;;;  $Id: irchat-vars.el,v 3.19 1997/06/17 10:04:39 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -270,6 +270,11 @@ Default is what (system-name) returns.")
 (defvar irchat-timestamp-format "*** Time: %s"
   "*Format-string for timestamp.")
 
+;;;
+;;; External version identification.
+;;;
+(defvar irchat-external-version-string nil
+  "Version id given to VERSION queries. nil is default. 'none inhibits reply.")
 ;;;
 ;;;  Crypt
 ;;;
