@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-commands.el,v 3.10 1997/03/06 12:39:07 tri Exp $
+;;;  $Id: irchat-commands.el,v 3.11 1997/03/12 11:24:06 jsl Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -379,7 +379,7 @@ contents are updated future sessions."
 		     (completion-ignore-case t))
 		 (setq kill-nickname-var 
 		       (completing-read "Ignore nickname or regexp: " 
-			irchat-nick-alist
+			(append irchat-nick-alist irchat-kill-nickname)
 			'(lambda (s) t) nil nil))
 		 (if (and (not (string= "" kill-nickname-var))
 			  (not (assoc-ci-string kill-nickname-var irchat-kill-nickname)))
