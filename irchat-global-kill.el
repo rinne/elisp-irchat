@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-global-kill.el,v 1.2 1997/10/19 15:52:37 tri Exp $
+;;;  $Id: irchat-global-kill.el,v 1.3 1997/10/19 19:28:26 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 ;;;
@@ -84,7 +84,7 @@
 		  (if (not ign-list)
 		      (if (not (assoc-ci-string ign-name 
 						irchat-kill-nickname))
-			  (irchat-Command-kill 
+			  (irchat-Command-ignore
 			   (downcase ign-name)
 			   real-timeout 
 			   irchat-global-kill-use-silent-ignore))
@@ -92,7 +92,7 @@
 		      (while l
 			(if (not (assoc-ci-string (car l)
 						  irchat-kill-nickname))
-			    (irchat-Command-kill 
+			    (irchat-Command-ignore
 			     (downcase (car l))
 			     real-timeout
 			     irchat-global-kill-use-silent-ignore))
@@ -114,7 +114,7 @@
   t)
 
 
-(defun irchat-Command-global-kill (nickname timeout reason)
+(defun irchat-Command-global-ignore (nickname timeout reason)
   (interactive (let ((nickname-var nil)
 		     (timeout 0)
 		     (reason ""))
@@ -131,6 +131,7 @@
 				(read-from-minibuffer "Timeout [1-99]: "))))
 		       (setq reason (read-from-minibuffer "Reason: "))))
 		 (list nickname timeout reason)))
+
   (if (not (string= "" nickname))
       (let* ((k1 (format "%s-ignore" irchat-current-channel))
 	     (k2 (format "%s-kill" irchat-current-channel))
@@ -173,14 +174,14 @@
 	      (if (not ign-list)
 		  (progn
 		    (irchat-remove-from-ignore-list ign-name)
-		    (irchat-Command-kill (downcase ign-name)
-					 timeout
+		    (irchat-Command-ignore (downcase ign-name)
+					   timeout
 					 irchat-global-kill-use-silent-ignore))
 		(let ((l ign-list))
 		  (while l
 		    (irchat-remove-from-ignore-list (car l))
-		    (irchat-Command-kill (downcase (car l))
-					 timeout 
+		    (irchat-Command-ignore (downcase (car l))
+					   timeout 
 					 irchat-global-kill-use-silent-ignore)
 		    (setq l (cdr l)))))
 	      ; Send ctcp

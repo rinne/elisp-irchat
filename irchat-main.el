@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-main.el,v 3.23 1997/10/19 15:38:43 tri Exp $
+;;;  $Id: irchat-main.el,v 3.24 1997/10/19 19:28:46 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -147,9 +147,9 @@ carried out.")))))
     ("\C-ci" 	irchat-Command-invite)
     ("\C-cj" 	irchat-Command-join)
     ("\C-c\C-p" irchat-Command-part)
-    ("\C-ck" 	irchat-Command-kill)
-    ("\C-cK" 	irchat-Command-kill-by-regexp)
-    ("\C-c\M-k"	irchat-Command-global-kill)
+    ("\C-ck" 	irchat-Command-ignore)
+    ("\C-cK" 	irchat-Command-ignore-by-regexp)
+    ("\C-c\M-k"	irchat-Command-global-ignore)
     ("\C-c\C-k" irchat-Command-kick)
     ("\C-cl" 	irchat-Command-list)
     ("\C-cL" 	irchat-Command-load-vars)

@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-commands.el,v 3.26 1997/10/16 07:53:07 tri Exp $
+;;;  $Id: irchat-commands.el,v 3.27 1997/10/19 19:28:53 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -430,7 +430,7 @@ with specified user."
 	  (setq irchat-current-channel part-channel-var)) ; just refocusing
       (irchat-send "PART %s" part-channel-var))))
 
-(defun irchat-Command-kill (kill-nickname-var &optional timeout silent)
+(defun irchat-Command-ignore (kill-nickname-var &optional timeout silent)
   "Ignore messages from this user. Username can be given as case insensitive
 regular expression of form \".*@.*\.sub.domain\". 
 If already ignoring him/her, toggle.
@@ -504,7 +504,9 @@ contents are updated future sessions."
 				   (format ".\n"))))))))
     (setq irchat-save-vars-is-dirty t)))
 
-(defun irchat-Command-kill-by-regexp (kill-regexp-var &optional timeout silent)
+(defun irchat-Command-ignore-by-regexp (kill-regexp-var 
+					&optional timeout 
+					          silent)
   "Ignore messages matcing regexp.  If already ignoring regexp, toggle."
   (interactive (let ((kill-regexp-var nil)
 		     (timeout nil)
