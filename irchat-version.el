@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-version.el,v 3.79 1998/05/26 13:14:16 tri Exp $
+;;;  $Id: irchat-version.el,v 3.80 1998/05/26 14:05:31 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -23,13 +23,42 @@
 (defconst irchat-client-version-rcs-snap nil
   "*If a `current' release, what's the date?")
 
-(defconst irchat-client-version-release "$Date: 1998/05/26 13:14:16 $"
+(defconst irchat-client-version-release "$Date: 1998/05/26 14:05:31 $"
   "*Version release date")
 
 (defconst irchat-client-name "Irchat"
   "*Name of this program.")
 
-(defconst irchat-emacs-version
+(defconst irchat-emacs-version (let ((e-v-s (if (boundp 'emacs-version) 
+						emacs-version
+					      nil))
+				     (e-v-l (if (fboundp 'emacs-version) 
+						(emacs-version)
+					      nil)))
+				 (cond ((and (boundp 'emacs-major-version)
+					     (integerp emacs-major-version))
+					emacs-major-version)
+				       ((and (stringp e-v-l)
+					     (string-match 
+					      "\\([1-9][0-9]*\\)\.[0-9][0-9]*"
+					      e-v-l))
+					(string-to-int
+					 (substring e-v-l
+						    (match-beginning 1)
+						    (match-end 1))))
+				       ((and (stringp e-v-s)
+					     (string-match 
+					      "\\([1-9][0-9]*\\)\.[0-9][0-9]*"
+					      e-v-s))
+					(string-to-int
+					 (substring e-v-s
+						    (match-beginning 1)
+						    (match-end 1))))
+				       (t 0)))
+  "*Major number of emacs running this irchat.")
+
+
+(defconst irchat-emacs-version-name
   (let ((e-v (emacs-version))
 	(case-fold-search t)
 	irchat-emacs-subtype
