@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-commands.el,v 3.6 1997/02/27 10:19:14 jsl Exp $
+;;;  $Id: irchat-commands.el,v 3.7 1997/03/03 14:41:00 jsl Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -116,7 +116,7 @@
       (irchat-Dialogue-insert stamp)))
   (setq irchat-last-timestamp-time (current-time)))
 
-(defun irchat-Command-send-message (message &optional crypt-type)
+(defun irchat-Command-send-message (message &optional crypt-type user-defined-key)
   "Send MESSAGE to current chat partner of current channel."
   (if (not irchat-crypt-mode-active) (setq crypt-type 'cleartext))
   (if (> (length message) 0)
@@ -134,6 +134,10 @@
 		     (progn
 		       (setq msg-encrypted-p t)
 		       (irchat-encrypt-message message addr t)))
+		    ((equal crypt-type 'user-defined-key)
+		     (progn
+		       (setq msg-encrypted-p t)
+		       (irchat-encrypt-message message user-defined-key t)))
 		    (addr
 		     (let ((cipher (irchat-encrypt-message message addr nil)))
 		       (if (not (string= cipher message))
@@ -178,7 +182,7 @@
       nil)))
 
 
-(defun irchat-enter-message (crypt-type)
+(defun irchat-enter-message (crypt-type &optional key)
   "Enter the current line as an entry in the IRC dialogue on the
 current channel."
   (interactive)
@@ -187,7 +191,7 @@ current channel."
     (setq start (point))
     (end-of-line)
     (setq message (buffer-substring start (point)))
-    (if (irchat-Command-send-message message crypt-type)
+    (if (irchat-Command-send-message message crypt-type key)
 	(irchat-next-line 1))))
 
 
@@ -212,6 +216,17 @@ current channel."
   (let ((irchat-crypt-mode-active (not irchat-crypt-mode-active)))
     (irchat-enter-message nil)))
 
+(defun irchat-Command-enter-message-with-key (&optional encryption-key)
+  (interactive (let ((encryption-key nil)
+		     (completion-ignore-case t))
+		 (setq encryption-key
+		       (completing-read "Encrypt message with key [RET for none]: "
+					(cons (cons "" nil)
+					      irchat-default-idea-key-list)))
+		 (list encryption-key)))
+  (if (> (length encryption-key) 0)
+      (irchat-enter-message 'user-defined-key encryption-key)
+    (irchat-enter-message 'cleartext)))
 
 (defun irchat-Dialogue-enter-message ()
   "Ask for a line as an entry in the IRC dialogue on the current channel."
