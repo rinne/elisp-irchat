@@ -2,7 +2,7 @@
 #
 # Makefile for irchat
 #
-# $Id: Makefile,v 3.5 1997/02/28 10:53:25 jtp Exp $
+# $Id: Makefile,v 3.6 1997/03/04 22:24:10 tri Exp $
 #
 
 #
@@ -60,15 +60,6 @@ gnuemacs:
 xemacs:
 	$(MAKE) EMACS=xemacs irchat-build
 
-xemacs2:
-	$(MAKE) EMACS=xemacs irchat2.elc
-
-gnuemacs2:
-	$(MAKE) EMACS=emacs irchat2.elc
-
-#	cat $(SRCS) > irchat2.el
-#	xemacs -batch -q -l ./setpath.el -f batch-byte-compile $(DEFSUBST_SRC) irchat2.el
-
 .SUFFIXES: .el .elc
 
 .el.elc:
@@ -80,28 +71,35 @@ irchat.elc:	$(OBJS)
 
 
 ### Currently here as test entries..
+xemacs2:
+	$(MAKE) EMACS=xemacs irchat2.elc
+
+gnuemacs2:
+	$(MAKE) EMACS=emacs irchat2.elc
+
+xemacs3: xemacs2
+	-rm -f irchat2.el
+	-mv -f irchat2.elc irchat.elc
+
+gnuemacs3: gnuemacs2
+	-rm -f irchat2.el
+	-mv -f irchat2.elc irchat.elc
+
 irchat2.elc:	irchat2.el
 	$(EMACSCMD) -f batch-byte-compile $(DEFSUBST_SRC) irchat2.el
 
 irchat2.el: $(SRCS)
 	cat $(SRCS) > irchat2.el
 
-###
-
-#irchat.texinfo:
-#	cat i-irchat.texi i-etiq.texi i-overview.texi 	\
-#	    i-setup.texi i-command.texi i-custom.texi 	\
-#	    i-authors.texi 				> irchat.texinfo
-
 irchat.info:	irchat.texinfo
 	-$(EMACSCMD) -q irchat.texinfo -f texinfo-format-buffer -f save-buffer
 
 clean: 
-	-rm -f $(OBJS)
+	-rm -f $(OBJS) irchat2.el
 
 tidy:
 	$(MAKE) clean 
-	-rm -f irchat.elc irchat.info
+	-rm -f irchat.elc irchat2.elc irchat.info
 
 #EXTRAS = 	Makefile irchat-hooks.el			\
 #		defsubst.el setpath.el 				\
