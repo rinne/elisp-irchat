@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-misc.el,v 3.46 1998/11/04 10:54:33 tri Exp $
+;;;  $Id: irchat-misc.el,v 3.47 1998/11/12 11:25:56 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -735,6 +735,9 @@
   (cond ((null num) (if (and encrypted (boundp 'irchat-format-string-e))
 			irchat-format-string-e
 		      irchat-format-string))
+	((eq t num) (if (and encrypted (boundp 'irchat-myformat-string))
+			irchat-myformat-string
+		      irchat-myformat-string))
 	((= 0 num) (if (and encrypted (boundp 'irchat-format-string0-e))
 		       irchat-format-string0-e
 		     irchat-format-string0))
