@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-globals.el,v 3.4 1997/03/16 13:41:58 tri Exp $
+;;;  $Id: irchat-globals.el,v 3.5 1997/03/16 14:15:02 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -104,7 +104,7 @@ a greeting telling what version of IRCHAT this is.")
   "The user@host for the current line.")
 
 (defvar irchat-userathost-type nil
-  "The authentication of uerathost.  'verified 'not-verified or 'fake")
+  "The authentication of uerathost.  'ok 'not-verified 'fake or 'invalid")
 
 (defvar irchat-awaymsg ""
   "Current away message.")
