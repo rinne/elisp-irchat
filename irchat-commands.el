@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-commands.el,v 3.3 1997/02/26 07:56:15 jtp Exp $
+;;;  $Id: irchat-commands.el,v 3.4 1997/02/26 13:13:28 jsl Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -99,6 +99,8 @@
 					  (current-time))
 		  irchat-timestamp-interval)))
       (progn
+	(if irchat-save-vars-is-dirty
+	    (irchat-Command-save-vars))
 	(irchat-Command-timestamp)
 	(setq irchat-last-timestamp-no-cons-p no-cons))))
 
@@ -347,19 +349,26 @@ with specified user."
       (irchat-send "PART %s" part-channel-var))))
 
 
-(defun irchat-Command-kill (kill-nickname-var)
+(defun irchat-Command-kill (kill-nickname-var &optional timeout)
   "Ignore messages from this user. Username can be given as case insensitive
 regular expression of form \".*@.*\.sub.domain\". 
 If already ignoring him/her, toggle.
 If variable irchat-variables-file is defined and the file is writable, its
 contents are updated future sessions."
-  (interactive (let ((kill-nickname-var nil) 
+  (interactive (let ((kill-nickname-var nil)
+		     (timeout nil)
 		     (completion-ignore-case t))
 		 (setq kill-nickname-var 
 		       (completing-read "Ignore nickname or regexp: " 
 			irchat-nick-alist
 			'(lambda (s) t) nil nil))
-		 (list kill-nickname-var)))
+		 (if (and (not (string= "" kill-nickname-var))
+			  (not (assoc-ci-string kill-nickname-var irchat-kill-nickname)))
+		     (setq timeout
+			   (string-to-int
+			    (read-from-minibuffer "Timeout [RET for none]: "))))
+		 (list kill-nickname-var timeout)))
+
   ;; empty, just list them
   (if (string= "" kill-nickname-var)
       (let ((buf (current-buffer))
@@ -367,24 +376,36 @@ contents are updated future sessions."
 	(set-buffer irchat-Dialogue-buffer)
 	(goto-char (point-max))
 	(irchat-w-insert irchat-D-buffer "*** Currently ignoring:")
-	(let ((mylist irchat-kill-nickname))
+	(let ((mylist irchat-kill-nickname)
+	      (time (current-time)))
 	  (while mylist
-	    (irchat-w-insert irchat-D-buffer (format " %s" (car mylist)))
+	    (let* ((expiretime (if (cdr (car mylist))
+				   (/ (irchat-time-difference time (cdr (car mylist))) 60)
+				 nil))
+		   (expire (cond ((not expiretime) "")
+				 ((>= expiretime 0)
+				  (format " (%d min)" expiretime))
+				 ((< expiretime 0)
+				  (format " expired")))))
+	      (irchat-w-insert irchat-D-buffer
+			       (format " %s%s" (car (car mylist)) expire)))
 	    (setq mylist (cdr mylist))))
 	(irchat-w-insert irchat-D-buffer "\n")
 	(set-buffer buf))
     ;; else not empty, check if exists
-    (let ((done nil) (elem irchat-kill-nickname))
-      (while (and elem (not done))
-	(if (string-ci-equal (car elem) kill-nickname-var)
-	    (setq irchat-kill-nickname (delete (car elem) irchat-kill-nickname)
-		  done t)
-	  (setq elem (cdr elem))))
+    (let ((elem (assoc-ci-string kill-nickname-var irchat-kill-nickname)))
+      (if elem
+	  (setq irchat-kill-nickname (remassoc (car elem)
+					       irchat-kill-nickname))
       ;; did not find, add to ignored ones
-      (if (not done)
-	  (setq irchat-kill-nickname (cons kill-nickname-var
-					   irchat-kill-nickname)))
-      (irchat-Command-save-vars))))
+	(progn
+	  (setq irchat-kill-nickname
+		(cons (cons kill-nickname-var
+			    (if (> timeout 0)
+				(irchat-time-add (current-time)
+						 (* timeout 60))))
+		      irchat-kill-nickname)))))
+    (setq irchat-save-vars-is-dirty t)))
 
 
 (defun irchat-Command-send-action (&optional private)
@@ -746,6 +767,8 @@ be a string to send NICK upon entering."
 	(if irchat-use-full-window
 	    (delete-other-windows))
 	(irchat-close-server)
+	(if irchat-save-vars-is-dirty
+	    (irchat-Command-save-vars))
 	(run-hooks 'irchat-Exit-hook)
 	(setq irchat-polling 0
 	      irchat-current-channel nil
@@ -1081,7 +1104,8 @@ be sent to the server.  For a list of messages, see irchat-Command-generic."
     (set-marker output-marker nil)
     (save-excursion
       (set-buffer output-buffer)
-      (save-buffer))))
+      (save-buffer)))
+  (setq irchat-save-vars-is-dirty nil))
 
 (defun irchat-Command-reconfigure-windows ()
   (interactive)
