@@ -4,7 +4,7 @@
 ;;;  IDEA encryption in elisp.  Cool, ha?
 ;;;  ----------------------------------------------------------------------
 ;;;  Created      : Thu Jun 29 08:11:25 1995 tri
-;;;  Last modified: Tue Jun 23 17:27:21 1998 tri
+;;;  Last modified: Tue Jun 23 18:45:03 1998 tri
 ;;;  ----------------------------------------------------------------------
 ;;;  Copyright © 1995-1998
 ;;;  Timo J. Rinne <tri@iki.fi>
@@ -18,7 +18,7 @@
 ;;;  irchat-copyright.el applies only if used with irchat IRC client.
 ;;;  Contact the author for additional copyright info.
 ;;;
-;;;  $Id: idea.el,v 3.10 1998/06/23 14:28:06 tri Exp $
+;;;  $Id: idea.el,v 3.11 1998/06/24 09:17:33 tri Exp $
 ;;;
 
 (eval-and-compile  
@@ -268,7 +268,7 @@
   "Expand string to full 128bit key (list of 8 16bit ints) (version 3)"
   (if (= (length string) 0)
       '(0 0 0 0 0 0 0 0)
-    (let ((v (rc4-random-vector-complex string 16 128 8)))
+    (let ((v (rc4-random-vector-complex string 16 64 4)))
       (list (+ (elt v 0)  (* (elt v 1) 256))
 	    (+ (elt v 2)  (* (elt v 3) 256))
 	    (+ (elt v 4)  (* (elt v 5) 256))
@@ -738,6 +738,7 @@
   (if (null version) (setq version idea-default-key-expand-version))
   (cond ((= version 1) (idea-build-key-annotation-version-1 key type))
 	((= version 2) (idea-build-key-annotation-version-2 key type))
+	((= version 3) (idea-build-key-annotation-version-3 key type))
 	(t (error "Unknown key expansion version"))))
 
 (defun idea-build-key-annotation-version-1 (key type)
@@ -798,6 +799,50 @@
 	      ":"
 	      (substring (crc32-string r) 0 6)
 	      (substring (crc32-string s) 0 6)))))
+
+(defun idea-build-key-annotation-version-3 (key type)
+  "Build annotation table of KEY that is of TYPE \"e\" or \"\d\"."
+  (if (and (= 0 (nth 0 key))
+	   (= 0 (nth 1 key))
+	   (= 0 (nth 2 key))
+	   (= 0 (nth 3 key))
+	   (= 0 (nth 4 key))
+	   (= 0 (nth 5 key))
+	   (= 0 (nth 6 key))
+	   (= 0 (nth 7 key)))
+      (concat type ":0000000000"))
+  
+  (let* ((v (format "%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c"
+		    (% (nth 0 key) 256)
+		    (% (/ (nth 0 key) 256) 256)
+		    (% (nth 1 key) 256)
+		    (% (/ (nth 1 key) 256) 256)
+		    (% (nth 2 key) 256)
+		    (% (/ (nth 2 key) 256) 256)
+		    (% (nth 3 key) 256)
+		    (% (/ (nth 3 key) 256) 256)
+		    (% (nth 4 key) 256)
+		    (% (/ (nth 4 key) 256) 256)
+		    (% (nth 5 key) 256)
+		    (% (/ (nth 5 key) 256) 256)
+		    (% (nth 6 key) 256)
+		    (% (/ (nth 6 key) 256) 256)
+		    (% (nth 7 key) 256)
+		    (% (/ (nth 7 key) 256) 256)))
+	 (r (rc4-random-vector-complex v 10 64 4)))
+    (concat type 
+	    ":"
+	    (format "%c%c%c%c%c%c%c%c%c%c"	
+		    (+ ?a (% (elt r 0) 26))
+		    (+ ?a (% (elt r 1) 26))
+		    (+ ?a (% (elt r 2) 26))
+		    (+ ?a (% (elt r 3) 26))
+		    (+ ?a (% (elt r 4) 26))
+		    (+ ?a (% (elt r 5) 26))
+		    (+ ?a (% (elt r 6) 26))
+		    (+ ?a (% (elt r 7) 26))
+		    (+ ?a (% (elt r 8) 26))
+		    (+ ?a (% (elt r 9) 26))))))
 
 (defun idea-legal-subkey-p (subkey)
   "Is SUBKEY a legal subkey structure?"
@@ -897,6 +942,7 @@
 		   (let ((fingerprint (idea-key-fingerprint key)))
 		     (cond ((= (length fingerprint) 8) 1)
 			   ((= (length fingerprint) 12) 2)
+			   ((= (length fingerprint) 10) 2)
 			   (t nil))))
 		  ((or (equal 'key-string my-key-type)
 		       (equal 'key-intlist my-key-type))
@@ -948,15 +994,7 @@
 	    nil
 	  (let ((ty (elt annotation 0))
 		(de (elt annotation 1)))
-	    (if (and (= de ?:)
-		     (>= (idea-hex-char-to-int (elt annotation 2)) 0)
-		     (>= (idea-hex-char-to-int (elt annotation 3)) 0)
-		     (>= (idea-hex-char-to-int (elt annotation 4)) 0)
-		     (>= (idea-hex-char-to-int (elt annotation 5)) 0)
-		     (>= (idea-hex-char-to-int (elt annotation 6)) 0)
-		     (>= (idea-hex-char-to-int (elt annotation 7)) 0)
-		     (>= (idea-hex-char-to-int (elt annotation 8)) 0)
-		     (>= (idea-hex-char-to-int (elt annotation 9)) 0))
+	    (if (= de ?:)
 		(if (= ty ?e)
 		    'encryption
 		  (if (= ty ?d)

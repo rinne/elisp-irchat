@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-crypt.el,v 3.12 1997/10/07 14:50:48 tri Exp $
+;;;  $Id: irchat-crypt.el,v 3.13 1998/06/24 09:17:33 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -21,11 +21,13 @@
 
 (defconst irchat-idea-encrypt-msg-format-1 "|*E*|IDEA|1.0|%s|%s|")
 (defconst irchat-idea-encrypt-msg-format-2 "|*E*|IDEA|2.0|%s|%s|")
+(defconst irchat-idea-encrypt-msg-format-3 "|*E*|IDEA|3.0|%s|%s|")
 
 (defun irchat-idea-encrypt-msg-format (&optional version)
   (if (not (numberp version)) (setq version irchat-crypt-version-default))
   (cond ((= version 1) irchat-idea-encrypt-msg-format-1)
 	((= version 2) irchat-idea-encrypt-msg-format-2)
+	((= version 2) irchat-idea-encrypt-msg-format-3)
 	(t nil)))
 
 (defun irchat-encrypted-message-p (message)
@@ -76,8 +78,13 @@
 			   (equal 'key-intlist my-key-type))
 		       (idea-build-decryption-key key-var 2)
 		     nil))
+	 (my-key-3 (if (or (equal 'key-string my-key-type)
+			   (equal 'key-intlist my-key-type))
+		       (idea-build-decryption-key key-var 3)
+		     nil))
 	 (fingerprint (idea-key-fingerprint my-key))
-	 (fingerprint-2 (if my-key-2 (idea-key-fingerprint my-key-2) nil)))
+	 (fingerprint-2 (if my-key-2 (idea-key-fingerprint my-key-2) nil))
+	 (fingerprint-3 (if my-key-3 (idea-key-fingerprint my-key-3) nil)))
     (setq irchat-known-idea-key-list 
 	  (cons (cons fingerprint my-key)
 		(remassoc fingerprint
@@ -87,26 +94,38 @@
 	      (cons (cons fingerprint-2 my-key-2)
 		    (remassoc fingerprint-2
 			      irchat-known-idea-key-list))))
+    (if (and my-key-3 fingerprint-3)
+	(setq irchat-known-idea-key-list 
+	      (cons (cons fingerprint-3 my-key-3)
+		    (remassoc fingerprint-3
+			      irchat-known-idea-key-list))))
     (if interactive-p
-	(message (format "Added new decryption key (%s%s)."
+	(message (format "Added new decryption key (%s%s%s)."
 			 fingerprint
 			 (if fingerprint-2 
 			     (concat " & " fingerprint-2)
+			   "")
+			 (if fingerprint-3
+			     (concat " & " fingerprint-3)
 			   ""))))))
 
 (defun irchat-Command-delete-key (key-var &optional interactive-p)
   "Delete a KEY from known decryption keys list"
   (interactive (list (irchat-read-passphrase "Delete passphrase: ") t))
   (let ((fingerprint-1 (idea-key-fingerprint key-var 1))
-	(fingerprint-2 (idea-key-fingerprint key-var 2)))
+	(fingerprint-2 (idea-key-fingerprint key-var 2))
+	(fingerprint-3 (idea-key-fingerprint key-var 3)))
     (setq irchat-known-idea-key-list (remassoc fingerprint-1
 					       irchat-known-idea-key-list))
     (setq irchat-known-idea-key-list (remassoc fingerprint-2
 					       irchat-known-idea-key-list))
+    (setq irchat-known-idea-key-list (remassoc fingerprint-3
+					       irchat-known-idea-key-list))
     (if interactive-p
-	(message (format "Removed decryption keys (%s and %s)." 
+	(message (format "Removed decryption keys (%s and %s and %s)." 
 			 fingerprint-1 
-			 fingerprint-2)))))
+			 fingerprint-2
+			 fingerprint-3)))))
 
 (defun irchat-get-idea-decryption-key (fingerprint)
   "Find decryption key associated with FINGERPRINT"
@@ -122,6 +141,7 @@
     (if r
 	(cond ((= version 1) (nth 2 r))
 	      ((= version 2) (nth 4 r))
+	      ((= version 3) (nth 6 r))
 	      (t nil))
       nil)))
 
@@ -149,12 +169,15 @@
 	   (e-key-1 (idea-build-encryption-key pass-var 1))
 	   (fingerprint-1 (idea-key-fingerprint e-key-1))
 	   (e-key-2 (idea-build-encryption-key pass-var 2))
-	   (fingerprint-2 (idea-key-fingerprint e-key-2)))
+	   (fingerprint-2 (idea-key-fingerprint e-key-2))
+	   (e-key-3 (idea-build-encryption-key pass-var 3))
+	   (fingerprint-3 (idea-key-fingerprint e-key-3)))
       (irchat-Command-add-new-key pass-var)
       (setq irchat-default-idea-key-list 
 	    (cons (list addr-var
 			fingerprint-1 e-key-1
 			fingerprint-2 e-key-2
+			fingerprint-3 e-key-3
 			pass-var)
 		  (remassoc addr-var 
 			    irchat-default-idea-key-list)))
