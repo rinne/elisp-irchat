@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-cta.el,v 3.4 1997/03/12 16:19:43 jtp Exp $
+;;;  $Id: irchat-cta.el,v 3.5 1997/06/17 10:03:54 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -143,20 +143,35 @@
 
 (defun irchat-ctl-a-version-msg (from chnl rest)
   (let ((emacs-type (emacs-version))
-	(m1)
-	(emacs-subtype "GNU-emacs"))
+        (m1)
+        (emacs-subtype "GNU-emacs"))
     (if (string-match "\\(.*\\) of .*" emacs-type) 
-	(progn
-	  (setq m1 (format "%s" (matching-substring emacs-type 1)))
-	  (if (string-match "\\(.*\\) (.*)" m1)
-	      (setq emacs-subtype (format "%s" (matching-substring m1 1)))
-	    (setq emacs-subtype m1))))
-    (irchat-send 
-     (format "NOTICE %s :VERSION %s %s :%s for %s" 
-	     from irchat-version emacs-subtype irchat-version emacs-subtype))
+        (progn
+          (setq m1 (format "%s" (matching-substring emacs-type 1)))
+          (if (string-match "\\(.*\\) (.*)" m1)
+              (setq emacs-subtype (format "%s" (matching-substring m1 1)))
+            (setq emacs-subtype m1))))
+    (if (not (equal 'none irchat-external-version-string))
+	(irchat-send 
+	 (format "NOTICE %s :VERSION %s" 
+		 from 
+		 (if (not (stringp irchat-external-version-string))
+		     (format "%s %s :%s for %s"
+			     irchat-version 
+			     emacs-subtype
+			     irchat-version
+			     emacs-subtype)
+		   irchat-external-version-string))))
     (if (string-ci-equal chnl irchat-real-nickname)
-	(message (format "CLIENT VERSION query from %s." from))
-      (message (format "CLIENT VERSION query from %s (%s)." from chnl)))))
+        (message (format "CLIENT VERSION query from %s%s." 
+			 from
+			 (if (equal 'none irchat-external-version-string)
+			     ".  Ignored" "")))
+      (message (format "CLIENT VERSION query from %s (%s)%s." 
+		       from 
+		       chnl
+		       (if (equal 'none irchat-external-version-string)
+			   ".  Ignored" ""))))))
 
 
 (defun irchat-ctl-a-userinfo-msg (from chnl rest)
