@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-commands.el,v 3.14 1997/03/13 20:39:36 tri Exp $
+;;;  $Id: irchat-commands.el,v 3.15 1997/03/14 13:45:23 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -1303,6 +1303,83 @@ mode, the current channel and current chat partner are not altered)"
 					       irchat-current-channel))
 	(irchat-set-crypt-indicator)
 	(set-buffer-modified-p (buffer-modified-p))))))
+
+
+(defun irchat-Command-select-channel-1 ()
+  "Select current channel from channel list."
+  (interactive)
+  (irchat-switch-to-channel-no 0))
+
+
+(defun irchat-Command-select-channel-2 ()
+  "Select current channel from channel list"
+  (interactive)
+  (irchat-switch-to-channel-no 1))
+
+
+(defun irchat-Command-select-channel-3 ()
+  "Select current channel from channel list"
+  (interactive)
+  (irchat-switch-to-channel-no 2))
+
+
+(defun irchat-Command-select-channel-4 ()
+  "Select current channel from channel list"
+  (interactive)
+  (irchat-switch-to-channel-no 3))
+
+
+(defun irchat-Command-select-channel-5 ()
+  "Select current channel from channel list"
+  (interactive)
+  (irchat-switch-to-channel-no 4))
+
+
+(defun irchat-Command-select-channel-6 ()
+  "Select current channel from channel list"
+  (interactive)
+  (irchat-switch-to-channel-no 5))
+
+
+(defun irchat-Command-select-channel-7 ()
+  "Select current channel from channel list"
+  (interactive)
+  (irchat-switch-to-channel-no 6))
+
+
+(defun irchat-Command-select-channel-8 ()
+  "Select current channel from channel list"
+  (interactive)
+  (irchat-switch-to-channel-no 7))
+
+
+(defun irchat-Command-select-channel-9 ()
+  "Select current channel from channel list"
+  (interactive)
+  (irchat-switch-to-channel-no 8))
+
+
+(defun irchat-Command-select-channel-10 ()
+  "Select current channel from channel list"
+  (interactive)
+  (irchat-switch-to-channel-no 9))
+
+
+(defun irchat-switch-to-channel-no (num)
+  (if (and (integerp num)
+	   (stringp (nth num irchat-current-channels)))
+      (let ((chnl (nth num irchat-current-channels)))
+	(message (format "Switching to \"%s\"." chnl))
+	(setq irchat-current-channel chnl)
+        (setq irchat-channel-indicator (format "Channel %s" 
+                                               irchat-current-channel))
+        (irchat-set-crypt-indicator)
+        (set-buffer-modified-p (buffer-modified-p))
+	t)
+    (progn
+      (message "Invalid channel!")
+      nil)))
+
 
 (defun irchat-Command-ping ()
   (interactive)

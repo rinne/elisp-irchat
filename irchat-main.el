@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-main.el,v 3.11 1997/03/13 22:51:42 tri Exp $
+;;;  $Id: irchat-main.el,v 3.12 1997/03/14 13:45:23 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -92,6 +92,16 @@ carried out.")))))
     ("t" 	irchat-Command-find-timestamp)
     ("T" 	irchat-Command-timestamp)
     ("w" 	irchat-Command-who)
+    ("1"        irchat-Command-select-channel-1)
+    ("2"        irchat-Command-select-channel-2)
+    ("3"        irchat-Command-select-channel-3)
+    ("4"        irchat-Command-select-channel-4)
+    ("5"        irchat-Command-select-channel-5)
+    ("6"        irchat-Command-select-channel-6)
+    ("7"        irchat-Command-select-channel-7)
+    ("8"        irchat-Command-select-channel-8)
+    ("9"        irchat-Command-select-channel-9)
+    ("0"        irchat-Command-select-channel-10)
     ("\C-m" 	irchat-Command-message)
 ;    ("%t"	irchat-Command-toggle-crypt)
 ;    ("%d"	irchat-Command-set-default-key)
