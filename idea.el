@@ -4,9 +4,9 @@
 ;;;  IDEA encryption in elisp.  Cool, ha?
 ;;;  ----------------------------------------------------------------------
 ;;;  Created      : Thu Jun 29 08:11:25 1995 tri
-;;;  Last modified: Thu Jun 25 03:29:29 1998 tri
+;;;  Last modified: Tue Sep 14 20:09:11 1999 tri
 ;;;  ----------------------------------------------------------------------
-;;;  Copyright © 1995-1998
+;;;  Copyright © 1995-1999
 ;;;  Timo J. Rinne <tri@iki.fi>
 ;;; 
 ;;;  Address: Cirion oy, PO-BOX 250, 00121 Helsinki, Finland
@@ -18,7 +18,7 @@
 ;;;  irchat-copyright.el applies only if used with irchat IRC client.
 ;;;  Contact the author for additional copyright info.
 ;;;
-;;;  $Id: idea.el,v 3.22 1998/06/25 00:29:42 tri Exp $
+;;;  $Id: idea.el,v 3.23 1999/09/14 17:09:17 tri Exp $
 ;;;
 
 (eval-and-compile  
@@ -232,7 +232,7 @@
 		    ss)
 		string))
 	   (l (length s))
-	   (s (concat s l))
+	   (s (concat s (format "%d" l)))
 	   (l (length s))
 	   (x1 0)
 	   (x2 (/ l 4))
