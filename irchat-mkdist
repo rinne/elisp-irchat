@@ -1,6 +1,6 @@
 #! /bin/sh
 #
-# $Id: irchat-mkdist,v 1.4 1997/03/04 22:18:31 tri Exp $
+# $Id: irchat-mkdist,v 1.5 1997/10/06 14:01:15 tri Exp $
 #
 # This file is part of irchat.  Command irchat-mkdist creates 
 # a snapshot of irchat current.  This file itself does not go 
@@ -12,6 +12,8 @@
 #
 
 distfiles=""
+
+clogdir="`finger -l jsl | sed -n 's,^.*[Dd]irectory: \([^ ]*/jsl\)*.*$,\1/irchat,p' 2>/dev/null | head -1`/irchat" 
 
 if [ "x$1" != "x" ] ; then
     distname="irchat-""$1"
@@ -42,6 +44,11 @@ co -l irchat-version.el &&
      co irchat-version.el &&
      mkdir "$distname" &&
      cp $distfiles "$distname" &&
+     ( if [ -f "$clogdir/ChangeLog" -a -r "$clogdir/ChangeLog" ]
+       then
+           cp "$clogdir/ChangeLog" "$distname"
+       fi
+       true ) &&
      chmod 755 "$distname" &&
      (
           cd "$distname" &&
