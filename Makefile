@@ -2,7 +2,7 @@
 #
 # Makefile for irchat
 #
-# $Id: Makefile,v 3.10 1998/05/25 15:15:47 tri Exp $
+# $Id: Makefile,v 3.11 1998/05/25 15:22:36 tri Exp $
 #
 
 #
@@ -84,11 +84,11 @@ irchat.elc:	$(OBJS)
 
 
 ### Currently here as test entries..
-xemacs2:
-	$(MAKE) EMACS=xemacs irchat2.elc
+xemacs-c:
+	$(MAKE) EMACS=xemacs irchat-c.elc
 
-gnuemacs2:
-	$(MAKE) EMACS=emacs irchat2.elc
+gnuemacs-c:
+	$(MAKE) EMACS=emacs irchat-c.elc
 
 xemacs-s:
 	$(MAKE) EMACS=xemacs irchat-s.elc
@@ -96,13 +96,13 @@ xemacs-s:
 gnuemacs-s:
 	$(MAKE) EMACS=emacs irchat-s.elc
 
-xemacs3: xemacs2
-	-rm -f irchat2.el
-	-mv -f irchat2.elc irchat.elc
+xemacs-compact: xemacs-c
+	-rm -f irchat-c.el
+	-mv -f irchat-c.elc irchat.elc
 
-gnuemacs3: gnuemacs2
-	-rm -f irchat2.el
-	-mv -f irchat2.elc irchat.elc
+gnuemacs-compact: gnuemacs-c
+	-rm -f irchat-c.el
+	-mv -f irchat-c.elc irchat.elc
 
 xemacs-snap: xemacs-s
 	-rm -f irchat-s.el
@@ -112,11 +112,11 @@ gnuemacs-snap: gnuemacs-s
 	-rm -f irchat-s.el
 	-mv -f irchat-s.elc irchat.elc
 
-irchat2.elc:	irchat2.el
-	$(EMACSCMD) -f batch-byte-compile $(DEFSUBST_SRC) irchat2.el
+irchat-c.elc:	irchat-c.el
+	$(EMACSCMD) -f batch-byte-compile $(DEFSUBST_SRC) irchat-c.el
 
-irchat2.el: $(SRCS)
-	cat $(SRCS) > irchat2.el
+irchat-c.el: $(SRCS)
+	cat $(SRCS) > irchat-c.el
 
 irchat-s.elc:	irchat-s.el
 	$(EMACSCMD) -f batch-byte-compile $(DEFSUBST_SRC) irchat-s.el
@@ -133,11 +133,11 @@ irchat.info:	irchat.texinfo
 	-$(EMACSCMD) -q irchat.texinfo -f texinfo-format-buffer -f save-buffer
 
 clean: 
-	-rm -f $(OBJS) irchat2.el
+	-rm -f $(OBJS) irchat-c.el irchat-s.el
 
 tidy:
 	$(MAKE) clean 
-	-rm -f irchat.elc irchat2.elc irchat.info
+	-rm -f irchat.elc irchat-c.elc irchat-s.elc irchat.info
 
 #EXTRAS = 	Makefile irchat-hooks.el			\
 #		defsubst.el setpath.el 				\
