@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-handle.el,v 3.13 1997/03/20 09:22:51 tri Exp $
+;;;  $Id: irchat-handle.el,v 3.14 1997/03/23 22:29:44 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright in(eval-wfo
 
@@ -327,14 +327,26 @@
     (string-match "^\\([^ ]+\\) :\\(.*\\)" rest)
     (let ((chnl (matching-substring rest 1))
 	  (temp (matching-substring rest 2))
-	  (case-fold-search t))
+	  (case-fold-search t)
+	  (x-prefix (cond ((and (boundp 'msg-encrypted-p)
+				msg-encrypted-p
+				(boundp 'msg-suspicious-p)
+				msg-suspicious-p)
+			   irchat-suspicious-message-prefix)
+			  ((and (boundp 'msg-encrypted-p)
+				msg-encrypted-p
+				(boundp 'msg-garbled-p)
+				msg-garbled-p)
+			   irchat-defected-message-prefix)
+			  (t ""))))
       (if (string-match "\\(.*\\)" temp)
 	  (setq temp (irchat-ctl-a-msg prefix chnl temp)))
       (if (not (string= temp ""))
 	  (cond
 	   ((string-ci-equal chnl irchat-real-nickname)
 	    (irchat-w-insert irchat-D-buffer 
-			     (format "%s %s\n" 
+			     (format "%s%s %s\n" 
+				     x-prefix
 				     (format (if msg-encrypted-p
 						 irchat-format-string0-e
 					       irchat-format-string0)
@@ -343,14 +355,16 @@
 	   ((string-ci-equal chnl (or irchat-current-channel ""))
 	    (if (irchat-user-on-this-channel prefix chnl)
 		(irchat-w-insert (irchat-pick-buffer chnl) 
-				 (format "%s %s\n" 
+				 (format "%s%s %s\n" 
+					 x-prefix
 					 (format (if msg-encrypted-p
 						     irchat-format-string2-e
 						   irchat-format-string2)
 						 prefix) 
 					 temp))
 	      (irchat-w-insert (irchat-pick-buffer chnl) 
-			       (format "%s %s\n" 
+			       (format "%s%s %s\n" 
+				       x-prefix
 				       (format (if msg-encrypted-p
 						   irchat-format-string4-p
 						 irchat-format-string4)
@@ -360,14 +374,16 @@
 	   (t ;; channel we are joined (not current)
 	    (if (irchat-user-on-this-channel prefix chnl)
 		(irchat-w-insert (irchat-pick-buffer chnl) 
-				 (format "%s %s\n" 
+				 (format "%s%s %s\n" 
+					 x-prefix
 					 (format (if msg-encrypted-p
 						     irchat-format-string3-e
 						   irchat-format-string3)
 						 prefix chnl)
 					 temp))
 	      (irchat-w-insert (irchat-pick-buffer chnl) 
-			       (format "%s %s\n" 
+			       (format "%s%s %s\n" 
+				       x-prefix
 				       (format (if msg-encrypted-p
 						   irchat-format-string5-e
 						 irchat-format-string5)
