@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-version.el,v 3.20 1997/03/13 23:47:49 tri Exp $
+;;;  $Id: irchat-version.el,v 3.21 1997/03/16 14:25:27 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -20,7 +20,7 @@
 (defconst irchat-client-version-alpha-p t
   "Is this version an alpha version?")
 
-(defconst irchat-client-version-release "$Date: 1997/03/13 23:47:49 $"
+(defconst irchat-client-version-release "$Date: 1997/03/16 14:25:27 $"
   "version release date")
 
 (defconst irchat-client-name "Irchat"
