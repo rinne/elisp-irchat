@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-commands.el,v 3.7 1997/03/03 14:41:00 jsl Exp $
+;;;  $Id: irchat-commands.el,v 3.8 1997/03/04 22:13:46 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -516,8 +516,11 @@ With - as argument, list all channels."
 
 (defun irchat-Command-message (message-nick-var
 			       message
-			       &optional crypt-type-var)
-  "Send a private message to another user."
+			       &optional crypt-type-var
+			       &optional own-message-var)
+  "Send a private message to another user.  If you send a message that
+is already encrypted use 'cleartext flag and put message as a cleartext
+into own-message-var"
   (interactive (let (message-nick-var 
 		     crypt-type-var 
 		     (completion-ignore-case t))
@@ -530,38 +533,42 @@ With - as argument, list all channels."
 		 (list message-nick-var 
 		       (read-string 
 			(format "Private message to %s: " message-nick-var))
-		       crypt-type-var)))
+		       crypt-type-var
+		       nil)))
   (let* ((msg-encrypted-p nil)
-	 (msg
-	  (cond ((equal crypt-type-var 'cleartext)
-		 msg)
-		((and (equal crypt-type-var 'encrypted)
-		      message-nick-var)
-		 (progn
-		   (setq msg-encrypted-p t)
-		   (irchat-encrypt-message message message-nick-var t)))
-		(message-nick-var
-		 (let ((cipher (irchat-encrypt-message message 
-						       message-nick-var
-						       nil)))
-		   (if (not (string= cipher message))
-		       (progn
-			 (setq msg-encrypted-p t)
-			 cipher)
+	 (msg (cond ((equal crypt-type-var 'cleartext)
+		     message)
+		    ((and (equal crypt-type-var 'encrypted)
+			  message-nick-var)
+		     (progn
+		       (setq msg-encrypted-p t)
+		       (irchat-encrypt-message message message-nick-var t)))
+		    (message-nick-var
+		     (let ((cipher (irchat-encrypt-message message 
+							   message-nick-var
+							   nil)))
+		       (if (not (string= cipher message))
+			   (progn
+			     (setq msg-encrypted-p t)
+			     cipher)
+			 (progn
+			   (setq msg-encrypted-p nil)
+			   message))))
+		    (t 
 		     (progn
 		       (setq msg-encrypted-p nil)
-		       message))))
-		(t 
-		 (progn
-		   (setq msg-encrypted-p nil)
-		   message)))))
+		       message)))))
     (setq irchat-privmsg-partner message-nick-var)
     (irchat-send "PRIVMSG %s :%s" message-nick-var msg)
     (irchat-own-private-message 
-     (format (format "%s %%s" (if msg-encrypted-p
+     (format (format "%s %%s" (if (or msg-encrypted-p
+				      (not (string= own-message-var
+						    msg)))
 				  irchat-format-string-e
 				irchat-format-string))
-	     message-nick-var message))))
+	     message-nick-var (if own-message-var
+				  own-message-var
+				message)))))
 
 
 ;; Added at mta@tut.fi's request...
