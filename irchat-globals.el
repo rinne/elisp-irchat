@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-globals.el,v 3.7 1997/04/11 10:32:14 jtp Exp $
+;;;  $Id: irchat-globals.el,v 3.8 1998/05/26 13:31:26 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -13,9 +13,6 @@
 
 (defconst irchat-author-nickname "tml"
   "The nickname used by the author of IRCHAT.")
-
-(defvar irchat-emacs-version (string-to-int (substring emacs-version 0 2))
-  "*Emacs major version number.")
 
 (defvar irchat-server-process nil)
 
