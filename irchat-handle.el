@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-handle.el,v 3.19 1997/10/06 12:53:00 tri Exp $
+;;;  $Id: irchat-handle.el,v 3.20 1997/10/16 08:13:02 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright in(eval-wfo
 
@@ -179,8 +179,6 @@
 	   (irchat-ignore-this-p prefix irchat-userathost)
 	   (irchat-msg-from-ignored prefix rest))
       nil
-;    (if (and (string-match "\007" rest) irchat-beep-on-bells)
-;	(beep t))
     (string-match "^\\([^ ]+\\) :\\(.*\\)" rest)
     (let* ((msg-encrypted-p nil)
 	   (msg-suspicious-p nil)
@@ -260,67 +258,71 @@
 	      (if (string-match "\\(.*\\)" temp)
 		  (setq temp (irchat-ctl-a-msg prefix chnl temp)))
 	      (if (not (string= temp ""))
-		  (progn
-		    ;; only private messages to us get time-stamp
-		    (if (and (string-equal "A" irchat-away-indicator) 
-			     (string-ci-equal chnl irchat-real-nickname))
-			(setq temp (format "%s (%s)" temp 
-					   (if irchat-format-time-function
-					       (apply irchat-format-time-function
-						      (list (current-time-string)))
-					     (current-time-string)))))
-		    (cond
-		     ((string-ci-equal chnl irchat-real-nickname)
-		      (irchat-Dialogue-insert-message 
-		       irchat-P-buffer 
-		       x-prefix
-		       (if msg-encrypted-p
-			   irchat-format-string1-e
-			 irchat-format-string1)
-		       prefix
-		       temp))
-		     ((string-ci-equal chnl (or irchat-current-channel ""))
-		      (if (irchat-user-on-this-channel prefix chnl)
-			  (irchat-Dialogue-insert-message
-			   (irchat-pick-buffer chnl)
-			   x-prefix
-			   (if msg-encrypted-p
-			       irchat-format-string2-e
-			     irchat-format-string2)
-			   prefix
-			   temp)
+		  (if (and prefix
+			   (irchat-ignore-this-p prefix irchat-userathost temp)
+			   (irchat-msg-from-ignored prefix rest))
+		      (irchat-msg-from-ignored prefix rest)
+		    (progn
+		      ;; only private messages to us get time-stamp
+		      (if (and (string-equal "A" irchat-away-indicator) 
+			       (string-ci-equal chnl irchat-real-nickname))
+			  (setq temp (format "%s (%s)" temp 
+					     (if irchat-format-time-function
+						 (apply irchat-format-time-function
+							(list (current-time-string)))
+					       (current-time-string)))))
+		      (cond
+		       ((string-ci-equal chnl irchat-real-nickname)
 			(irchat-Dialogue-insert-message 
-			 (irchat-pick-buffer chnl)
+			 irchat-P-buffer 
 			 x-prefix
 			 (if msg-encrypted-p
-			     irchat-format-string4-e
-			   irchat-format-string4)
+			     irchat-format-string1-e
+			   irchat-format-string1)
 			 prefix
-			 temp)))
-
-		     (t;; channel we are joined (not current)
-		      (if (irchat-user-on-this-channel prefix chnl)
+			 temp))
+		       ((string-ci-equal chnl (or irchat-current-channel ""))
+			(if (irchat-user-on-this-channel prefix chnl)
+			    (irchat-Dialogue-insert-message
+			     (irchat-pick-buffer chnl)
+			     x-prefix
+			     (if msg-encrypted-p
+				 irchat-format-string2-e
+			       irchat-format-string2)
+			     prefix
+			     temp)
 			  (irchat-Dialogue-insert-message 
 			   (irchat-pick-buffer chnl)
 			   x-prefix
 			   (if msg-encrypted-p
-			       irchat-format-string3-e
-			     irchat-format-string3)
+			       irchat-format-string4-e
+			     irchat-format-string4)
+			   prefix
+			   temp)))
+
+		       (t;; channel we are joined (not current)
+			(if (irchat-user-on-this-channel prefix chnl)
+			    (irchat-Dialogue-insert-message 
+			     (irchat-pick-buffer chnl)
+			     x-prefix
+			     (if msg-encrypted-p
+				 irchat-format-string3-e
+			       irchat-format-string3)
+			     prefix
+			     temp
+			     chnl)
+			  (irchat-Dialogue-insert-message 
+			   (irchat-pick-buffer chnl)
+			   x-prefix
+			   (if msg-encrypted-p
+			       irchat-format-string5-e
+			     irchat-format-string5)
 			   prefix
 			   temp
-			   chnl)
-			(irchat-Dialogue-insert-message 
-			 (irchat-pick-buffer chnl)
-			 x-prefix
-			 (if msg-encrypted-p
-			     irchat-format-string5-e
-			   irchat-format-string5)
-			 prefix
-			 temp
-			 chnl))))
-		    (or (irchat-get-buffer-window (current-buffer))
-			(not (string-ci-equal chnl irchat-real-nickname))
-			(message "IRCHAT: A private message has arrived from %s" prefix)))))))))))
+			   chnl))))
+		      (or (irchat-get-buffer-window (current-buffer))
+			  (not (string-ci-equal chnl irchat-real-nickname))
+			  (message "IRCHAT: A private message has arrived from %s" prefix))))))))))))
 
 
 ;; NOTICE
@@ -347,53 +349,57 @@
       (if (string-match "\\(.*\\)" temp)
 	  (setq temp (irchat-ctl-a-msg prefix chnl temp)))
       (if (not (string= temp ""))
-	  (cond
-	   ((string-ci-equal chnl irchat-real-nickname)
-	    (irchat-w-insert irchat-D-buffer 
-			     (format "%s%s %s\n" 
-				     x-prefix
-				     (format (if msg-encrypted-p
-						 irchat-format-string0-e
-					       irchat-format-string0)
-					     prefix) 
-				     temp)))
-	   ((string-ci-equal chnl (or irchat-current-channel ""))
-	    (if (irchat-user-on-this-channel prefix chnl)
-		(irchat-w-insert (irchat-pick-buffer chnl) 
-				 (format "%s%s %s\n" 
-					 x-prefix
-					 (format (if msg-encrypted-p
-						     irchat-format-string2-e
-						   irchat-format-string2)
-						 prefix) 
-					 temp))
-	      (irchat-w-insert (irchat-pick-buffer chnl) 
+	  (if (and prefix
+		   (irchat-ignore-this-p prefix irchat-userathost temp)
+		   (irchat-msg-from-ignored prefix rest))
+	      (irchat-msg-from-ignored prefix rest)
+	    (cond
+	     ((string-ci-equal chnl irchat-real-nickname)
+	      (irchat-w-insert irchat-D-buffer 
 			       (format "%s%s %s\n" 
 				       x-prefix
 				       (format (if msg-encrypted-p
-						   irchat-format-string4-e
-						 irchat-format-string4)
+						   irchat-format-string0-e
+						 irchat-format-string0)
 					       prefix) 
-				       temp))))
-
-	   (t ;; channel we are joined (not current)
-	    (if (irchat-user-on-this-channel prefix chnl)
+				       temp)))
+	     ((string-ci-equal chnl (or irchat-current-channel ""))
+	      (if (irchat-user-on-this-channel prefix chnl)
+		  (irchat-w-insert (irchat-pick-buffer chnl) 
+				   (format "%s%s %s\n" 
+					   x-prefix
+					   (format (if msg-encrypted-p
+						       irchat-format-string2-e
+						     irchat-format-string2)
+						   prefix) 
+					   temp))
 		(irchat-w-insert (irchat-pick-buffer chnl) 
 				 (format "%s%s %s\n" 
 					 x-prefix
 					 (format (if msg-encrypted-p
-						     irchat-format-string3-e
-						   irchat-format-string3)
-						 prefix chnl)
-					 temp))
-	      (irchat-w-insert (irchat-pick-buffer chnl) 
-			       (format "%s%s %s\n" 
-				       x-prefix
-				       (format (if msg-encrypted-p
-						   irchat-format-string5-e
-						 irchat-format-string5)
-					       prefix chnl) 
-				       temp)))))))))
+						     irchat-format-string4-e
+						   irchat-format-string4)
+						 prefix) 
+					 temp))))
+
+	     (t;; channel we are joined (not current)
+	      (if (irchat-user-on-this-channel prefix chnl)
+		  (irchat-w-insert (irchat-pick-buffer chnl) 
+				   (format "%s%s %s\n" 
+					   x-prefix
+					   (format (if msg-encrypted-p
+						       irchat-format-string3-e
+						     irchat-format-string3)
+						   prefix chnl)
+					   temp))
+		(irchat-w-insert (irchat-pick-buffer chnl) 
+				 (format "%s%s %s\n" 
+					 x-prefix
+					 (format (if msg-encrypted-p
+						     irchat-format-string5-e
+						   irchat-format-string5)
+						 prefix chnl) 
+					 temp))))))))))
 
 
 (defun irchat-handle-wall-msg (prefix rest)
