@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-cta.el,v 3.1 1997/02/24 16:00:02 tri Exp $
+;;;  $Id: irchat-cta.el,v 3.2 1997/02/26 09:24:51 too Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -55,11 +55,13 @@
     string))
 
 
-(defun irchat-ctl-a-action-msg (from rest)
-  (irchat-w-insert irchat-D-buffer (format "*** Action: %s %s\n" from rest)))
+(defun irchat-ctl-a-action-msg (from chnl rest)
+  (if (string-ci-equal chnl irchat-current-channel)
+      (irchat-w-insert irchat-D-buffer (format "*** Action: %s %s\n" from rest))
+    (irchat-w-insert irchat-D-buffer (format "*** Action to %s: %s %s\n" chnl from rest))))
 
 
-(defun irchat-ctl-a-msg (from rest)
+(defun irchat-ctl-a-msg (from chnl rest)
   "It's ctl-a request, act on it."
   (let* (left now right message rest-of-line hook)
     (if (string-match "^\\([^]*\\)\\([^]*\\)\\(.*\\)" rest)
@@ -91,18 +93,19 @@
 	    (if (fboundp (setq fun (intern
 				    (concat "irchat-ctl-a-" message "-msg"))))
 		(progn
-		  (eval (list fun from rest-of-line)))
+		  (eval (list fun from chnl rest-of-line)))
 	      (progn
-		(irchat-send "NOTICE %s :ERRMSG %s :%s"
-			     from
-			     (upcase message)
-			     (format irchat-client-error-msg (upcase message)))
-		(message (format "CLIENT %s query from %s."
-				 (upcase message) from)))))))
+;		(irchat-send "NOTICE %s :ERRMSG %s :%s"
+;			     from
+;			     (upcase message)
+;			     (format irchat-client-error-msg (upcase message)))
+		(message (format "CLIENT %s query from %s (ignored)."
+				 (upcase message) from)))
+		))))
     rest))
 
 
-(defun irchat-ctl-a-client-msg (from rest)
+(defun irchat-ctl-a-client-msg (from chnl rest)
   (let* (message rest-of-line hook)
     (if rest
 	(progn
@@ -135,7 +138,7 @@
 			from (upcase message)))))))))	      
 
 
-(defun irchat-ctl-a-version-msg (from rest)
+(defun irchat-ctl-a-version-msg (from chnl rest)
   (let ((emacs-type (emacs-version))
 	(m1)
 	(emacs-subtype "GNU-emacs"))
@@ -148,22 +151,24 @@
     (irchat-send 
      (format "NOTICE %s :VERSION %s %s :%s for %s" 
 	     from irchat-version emacs-subtype irchat-version emacs-subtype))
-    (message (format "CLIENT VERSION query from %s." from))))
+    (if (string-ci-equal chnl irchat-nickname)
+	(message (format "CLIENT VERSION query from %s." from))
+      (message (format "CLIENT VERSION query from %s (%s)." from chnl)))))
 
 
-(defun irchat-ctl-a-userinfo-msg (from rest)
+(defun irchat-ctl-a-userinfo-msg (from chnl rest)
   (irchat-send "NOTICE %s :USERINFO %s"
 	       from irchat-client-userinfo)
   (message (format "CLIENT USERINFO query from %s." from)))
 
-(defun irchat-ctl-a-clientinfo-msg (from rest)
+(defun irchat-ctl-a-clientinfo-msg (from chnl rest)
   (irchat-send 
    (format 
     "NOTICE %s :CLIENTINFO :VERSION USERINFO CLIENTINFO X-FACE HELP ERRMSG" from))
   (message (format "CLIENT CLIENTINFO query from %s." from)))
 
 
-(defun irchat-ctl-a-help-msg (from rest)
+(defun irchat-ctl-a-help-msg (from chnl rest)
   (irchat-send 
    (format 
     "NOTICE %s :HELP :VERSION gives version of this client" 
@@ -191,22 +196,22 @@
   (message (format "CLIENT HELP query from %s." from)))
 
 
-(defun irchat-ctl-a-comment-msg (from rest)  
+(defun irchat-ctl-a-comment-msg (from chnl rest)  
   (message (format "CLIENT COMMENT query from %s." from)))
 
 
-(defun irchat-ctl-a-xyzzy-msg (from rest)
+(defun irchat-ctl-a-xyzzy-msg (from chnl rest)
   (irchat-send "NOTICE %s :Nothing happens.(xyzzy inactive)" from)
   (message (format "CLIENT XYZZY query from %s." from)))
 
 
-(defun irchat-ctl-a-ping-msg (from rest)
+(defun irchat-ctl-a-ping-msg (from chnl rest)
   (if (not rest)
       (setq rest ""))
   (irchat-send "NOTICE %s :PING %s" from rest)
   (message (format "CLIENT PING query from %s." from)))
 
-(defun irchat-ctl-a-x-face-msg (from rest)
+(defun irchat-ctl-a-x-face-msg (from chnl rest)
   (irchat-send "NOTICE %s :X-FACE %s"
 	       from irchat-client-x-face)
   (message (format "CLIENT X-FACE query from %s." from)))
