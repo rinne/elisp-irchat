@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-misc.el,v 3.10 1997/03/13 20:39:36 tri Exp $
+;;;  $Id: irchat-misc.el,v 3.11 1997/03/18 11:48:42 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -10,36 +10,39 @@
 
 (defun irchat-ignore-this-p (nick uah)
   (let ((mylist irchat-kill-nickname)
-	(time (current-time)))
+        (time (current-time)))
     (while mylist
       (let ((expiretime (if (cdr (car mylist))
-			    (irchat-time-difference time (cdr (car mylist)))
-			  1)))
-	(if (< expiretime 0)
-	    (progn
-	      (setq irchat-kill-nickname (remassoc (car (car mylist))
-						   irchat-kill-nickname)
-		    irchat-save-vars-is-dirty t)
-	      (if (= (car (cdr (cdr (cdr (car mylist))))) 0)
-		  (irchat-w-insert irchat-D-buffer
-				   (format "%sIgnore timeout for %s expired.\n"
-					   irchat-info-prefix
-					   (car (car mylist)))))))
-	(setq mylist (cdr mylist)))))
+                            (irchat-time-difference time (cdr (car mylist)))
+                          1)))
+        (if (< expiretime 0)
+            (progn
+              (setq irchat-kill-nickname (remassoc (car (car mylist))
+                                                   irchat-kill-nickname)
+                    irchat-save-vars-is-dirty t)
+              (if (= (car (cdr (cdr (cdr (car mylist))))) 0)
+                  (irchat-w-insert irchat-D-buffer
+                                   (format "%sIgnore timeout for %s expired.\n"
+                                           irchat-info-prefix
+                                           (car (car mylist)))))))
+        (setq mylist (cdr mylist)))))
   (if (and (fboundp 'irchat-custom-ignore-this-p)
-	   (irchat-custom-ignore-this-p nick uah))
+           (irchat-custom-ignore-this-p nick uah))
       t
     (let ((killit nil)
-	  (case-fold-search t))
+          (case-fold-search t))
       (mapcar (function 
-	       (lambda (kill)
-		 (if (or (string-ci-equal (car kill) nick)
-			 (and (string-match (car kill) uah)
-			      (= (match-beginning 0) 0)
-			      (= (match-end 0) (length uah))))
-		     (setq killit t))))
-	      irchat-kill-nickname)
+               (lambda (kill)
+                 (if (or (and (string-match (upcase (car kill)) (upcase nick))
+                              (= (match-beginning 0) 0)
+                              (= (match-end 0) (length nick)))
+                         (and (string-match (car kill) uah)
+                              (= (match-beginning 0) 0)
+                              (= (match-end 0) (length uah))))
+                     (setq killit t))))
+              irchat-kill-nickname)
       killit)))
+
 
 (defun irchat-own-message (message)
   (irchat-w-insert (irchat-pick-buffer irchat-current-channel)
