@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-commands.el,v 3.38 1998/11/12 11:30:53 tri Exp $
+;;;  $Id: irchat-commands.el,v 3.39 2001/11/04 12:30:51 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -124,6 +124,7 @@
   "Send MESSAGE to current chat partner of current channel."
   (if (not irchat-crypt-mode-active) (setq crypt-type 'cleartext))
   (if (and (not do-not-split)
+	   (not (eq irchat-command-buffer-mode 'chat))
 	   (stringp irchat-message-split-separator)
 	   (> (length message) irchat-message-length-limit)
 	   (> irchat-message-length-limit 
@@ -148,7 +149,12 @@
 		       irchat-current-channel))
 	       (msg-encrypted-p nil)
 	       (msg
-		(cond ((equal crypt-type 'cleartext)
+		(cond ((eq irchat-command-buffer-mode 'chat)
+		       (progn
+			 ;; Chat mode is encrypted later if needed.
+			 (setq msg-encrypted-p nil)
+			 message))
+		      ((equal crypt-type 'cleartext)
 		       (progn
 			 (setq msg-encrypted-p nil)
 			 message))
@@ -177,24 +183,11 @@
 			   message)))))
 	  (if (eq irchat-command-buffer-mode 'chat)
 	      (if irchat-current-chat-partner
-		  (progn
-		    (irchat-send-privmsg "PRIVMSG %s :%s" 
-					 irchat-current-chat-partner msg)
-		    (cond ((null own-message)
-			   (irchat-own-private-message 
-			    (format (format "%s %%s"
-					    (irchat-format-string 
-					     nil
-					     msg-encrypted-p))
-				    irchat-current-chat-partner message)))
-			  ((> (length own-message) 0)
-			   (irchat-own-private-message 
-			    (format (format "%s %%s"
-					    (irchat-format-string 
-					     t
-					     msg-encrypted-p))
-				    irchat-current-chat-partner own-message)))
-			  (t '())))
+		  (irchat-Command-message irchat-current-chat-partner 
+					  msg
+					  crypt-type
+					  own-message
+					  do-not-split)
 		(message (substitute-command-keys 
 			  "Type \\[irchat-Command-join] to start private conversation"))
 		nil)
