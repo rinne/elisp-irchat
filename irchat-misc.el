@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-misc.el,v 3.42 1998/06/24 09:15:13 tri Exp $
+;;;  $Id: irchat-misc.el,v 3.43 1998/08/07 18:38:41 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -659,6 +659,24 @@
 	(setq x (/ x 2))
 	(setq n (- n 1)))
       x))
+
+(defun irchat-split-protocol-args (str)
+  "Split irchat protocol argument STR to list of separate arguments."
+  (let ((r '())
+	(e nil))
+    (if (and (stringp str)
+	    (> (length str) 0))
+	(while (not e)
+	  (cond ((and (> (length str) 0) (= (elt str 0) ?:))
+		 (setq r (append r (list (substring str 1 (length str)))))
+		 (setq e t))
+		((string-match "^\\([^ ]*\\) \\(.*\\)" str)
+		 (setq r (append r (list (matching-substring str 1))))
+		 (setq str (matching-substring str 2)))
+		(t
+		 (setq r (append r (list str)))
+		 (setq e t)))))
+    r))
 
 (defun irchat-encode-coding-string (string &optional coding)
   "String encoding for MULE systems (emacs & xemacs 20 with mule option)."
