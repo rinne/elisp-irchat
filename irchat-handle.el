@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-handle.el,v 3.1 1997/02/24 16:00:02 tri Exp $
+;;;  $Id: irchat-handle.el,v 3.2 1997/02/25 13:21:13 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright in(eval-wfo
 
@@ -155,6 +155,13 @@
 					   " [Invalid sender \"%s\" != \"%s\"]"
 					   nick
 					   prefix)))))
+		     (if (not (equal 'success stat))
+			 (irchat-w-insert irchat-C-buffer
+					  (format "<%s -> %s> %s [%s]\n"
+						  prefix
+						  chnl
+						  temp
+						  msg)))
 		     (format "%s%s" msg warn)))))
       (if (irchat-run-message-hook-types 'irchat-privmsg-cleartext-hook
 					 prefix
