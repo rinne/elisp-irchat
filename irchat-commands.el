@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-commands.el,v 3.18 1997/03/21 13:06:26 too Exp $
+;;;  $Id: irchat-commands.el,v 3.19 1997/03/29 18:31:25 jtp Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -813,10 +813,12 @@ be a string to send NICK upon entering."
 		  (irchat-send "QUIT :%s" quit-string))
 	      (irchat-send "QUIT :%s" (or irchat-signoff-msg ""))))
 	(irchat-clear-system)
-;	(if irchat-timestamp-timer 
-;	    (irchat-cancel-timer irchat-timestamp-timer))
-	(if irchat-names-timer 
-	    (irchat-cancel-timer irchat-names-timer))
+	(setq irchat-timers
+	      (mapcar (function (lambda (timer)
+				  (if (nth 0 timer)
+				      (irchat-cancel-timer (nth 0 timer)))
+				  (list nil (nth 1 timer) (nth 2 timer))))
+		      irchat-timers))
 	(if irchat-use-full-window
 	    (delete-other-windows))
 	(irchat-close-server)
