@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-400.el,v 3.2 1997/02/27 10:19:14 jsl Exp $
+;;;  $Id: irchat-400.el,v 3.3 1997/03/18 15:58:18 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -17,14 +17,22 @@
 	    (msg (matching-substring rest 3)))
 	(cond ((string-equal target1 "")
 	       (irchat-w-insert irchat-400-buffer
-				(format "*** Error: %s\n" msg)))
+				(format "%s%s\n" 
+					irchat-error-prefix
+					msg)))
 	      ((string-equal target2 "")
 	       (irchat-w-insert irchat-400-buffer
-				(format "*** Error: %s (%s)\n" msg target1)))
+				(format "%s%s (%s)\n" 
+					irchat-error-prefix 
+					msg 
+					target1)))
 	      (t
 	       (irchat-w-insert irchat-400-buffer
-				(format "*** Error: %s %s (%s)\n"
-					target1 msg target2))))
+				(format "%s%s %s (%s)\n"
+					irchat-error-prefix 
+					target1
+					msg 
+					target2))))
 	)
     (message "IRCHAT: Strange %s reply" number)))
 
