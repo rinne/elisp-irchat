@@ -2,7 +2,7 @@
 #
 # Makefile for irchat
 #
-# $Id: Makefile,v 3.9 1998/05/25 15:02:32 tri Exp $
+# $Id: Makefile,v 3.10 1998/05/25 15:15:47 tri Exp $
 #
 
 #
@@ -127,7 +127,7 @@ irchat-s.el: $(SSRCS)
 
 irchat-snap-version.el: irchat-version.el
 	rm -f irchat-snap-version.el
-	sed 's,defconst *irchat-client-version-rcs-snap *nil,defconst irchat-client-version-rcs-snap "'"`date -u '+%Y/%m/%d %H:%M:%S'`"'",' < irchat-version.el > irchat-snap-version.el
+	sed 's,defconst *irchat-client-version-rcs-snap *nil,defconst irchat-client-version-rcs-snap "'"`date -u '+%Y/%m/%d %H:%M'`"'",' < irchat-version.el > irchat-snap-version.el
 
 irchat.info:	irchat.texinfo
 	-$(EMACSCMD) -q irchat.texinfo -f texinfo-format-buffer -f save-buffer
