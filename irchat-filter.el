@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-filter.el,v 3.6 1998/03/24 09:25:48 tri Exp $
+;;;  $Id: irchat-filter.el,v 3.7 1998/05/24 11:39:33 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -134,17 +134,7 @@
     ;;
     ;; C-c C-d creates debug buffer for incoming messages...
     ;;
-    (if (and irchat-debug-buffer (get-buffer irchat-debug-buffer))
-	(progn
-	  (set-buffer irchat-debug-buffer)
-	  (let* ((dbgwin (irchat-get-buffer-window irchat-debug-buffer))
-		 (wp (if dbgwin (window-point dbgwin) nil))
-		 (pm (point-max)))
-	    (save-excursion
-	      (goto-char (point-max))
-	      (insert (format "%s%s\n" (or irchat-debugmsg "") output)))
-	    (if (and wp (>= wp pm))
-		(irchat-scroll-if-visible dbgwin)))))
+    (irchat-insert-to-debug output "<- ")
 
     (set-buffer (process-buffer process))
     (goto-char (point-max))
