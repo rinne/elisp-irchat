@@ -2,7 +2,7 @@
 #
 # Makefile for irchat
 #
-# $Id: Makefile,v 3.11 1998/05/25 15:22:36 tri Exp $
+# $Id: Makefile,v 3.12 1998/05/26 14:55:35 tri Exp $
 #
 
 #
@@ -56,12 +56,15 @@ OBJS	= 			\
 
 SRCS	= $(OBJS:.elc=.el)
 
+### BEGIN NODIST
+
 SOBJS	= 			\
 	irchat-snap-version.elc	\
 	$(XOBJS)
 
 SSRCS	= $(SOBJS:.elc=.el)
 
+### END NODIST
 
 all:	irchat-build
 
@@ -90,12 +93,6 @@ xemacs-c:
 gnuemacs-c:
 	$(MAKE) EMACS=emacs irchat-c.elc
 
-xemacs-s:
-	$(MAKE) EMACS=xemacs irchat-s.elc
-
-gnuemacs-s:
-	$(MAKE) EMACS=emacs irchat-s.elc
-
 xemacs-compact: xemacs-c
 	-rm -f irchat-c.el
 	-mv -f irchat-c.elc irchat.elc
@@ -104,6 +101,20 @@ gnuemacs-compact: gnuemacs-c
 	-rm -f irchat-c.el
 	-mv -f irchat-c.elc irchat.elc
 
+irchat-c.elc:	irchat-c.el
+	$(EMACSCMD) -f batch-byte-compile $(DEFSUBST_SRC) irchat-c.el
+
+irchat-c.el: $(SRCS)
+	cat $(SRCS) > irchat-c.el
+
+### BEGIN NODIST
+
+xemacs-s:
+	$(MAKE) EMACS=xemacs irchat-s.elc
+
+gnuemacs-s:
+	$(MAKE) EMACS=emacs irchat-s.elc
+
 xemacs-snap: xemacs-s
 	-rm -f irchat-s.el
 	-mv -f irchat-s.elc irchat.elc
@@ -111,12 +122,6 @@ xemacs-snap: xemacs-s
 gnuemacs-snap: gnuemacs-s
 	-rm -f irchat-s.el
 	-mv -f irchat-s.elc irchat.elc
-
-irchat-c.elc:	irchat-c.el
-	$(EMACSCMD) -f batch-byte-compile $(DEFSUBST_SRC) irchat-c.el
-
-irchat-c.el: $(SRCS)
-	cat $(SRCS) > irchat-c.el
 
 irchat-s.elc:	irchat-s.el
 	$(EMACSCMD) -f batch-byte-compile $(DEFSUBST_SRC) irchat-s.el
@@ -129,6 +134,8 @@ irchat-snap-version.el: irchat-version.el
 	rm -f irchat-snap-version.el
 	sed 's,defconst *irchat-client-version-rcs-snap *nil,defconst irchat-client-version-rcs-snap "'"`date -u '+%Y/%m/%d %H:%M'`"'",' < irchat-version.el > irchat-snap-version.el
 
+### END NODIST
+
 irchat.info:	irchat.texinfo
 	-$(EMACSCMD) -q irchat.texinfo -f texinfo-format-buffer -f save-buffer
 
@@ -138,6 +145,8 @@ clean:
 tidy:
 	$(MAKE) clean 
 	-rm -f irchat.elc irchat-c.elc irchat-s.elc irchat.info
+
+### BEGIN NODIST
 
 #EXTRAS = 	Makefile irchat-hooks.el			\
 #		defsubst.el setpath.el 				\
@@ -170,3 +179,5 @@ tidy:
 #irchat-main.elc:	irchat-filter.elc
 #irchat-misc.elc:	irchat-globals.elc irchat-vars.elc irchat-inlines.el
 #irchat-misc.elc:	irchat-filter.elc
+
+### END NODIST
