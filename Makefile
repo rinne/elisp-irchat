@@ -2,7 +2,7 @@
 #
 # Makefile for irchat
 #
-# $Id: Makefile,v 3.17 1999/10/03 10:11:36 tri Exp $
+# $Id: Makefile,v 3.17.2.1 2002/04/25 17:26:22 tri Exp $
 #
 
 #
@@ -52,6 +52,7 @@ XOBJS 	=                       \
 	irchat-handle.elc	\
 	irchat-misc.elc		\
 	irchat-timer.elc	\
+	irchat-time.elc		\
 	irchat-main.elc		\
 	irchat-uah-cache.elc	\
 	irchat-global-kill.elc	\

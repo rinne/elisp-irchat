@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat.el,v 3.1 1997/02/24 16:00:02 tri Exp $
+;;;  $Id: irchat.el,v 3.1.2.1 2002/04/25 17:26:22 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -19,6 +19,7 @@
       (load-file "irchat-400.el")
       (load-file "irchat-500.el")
       (load-file "irchat-timer.el")
+      (load-file "irchat-time.el")
       (load-file "irchat-cta.el")
       (load-file "irchat-misc.el")
       (load-file "irchat-main.el")))
