@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-main.el,v 3.10 1997/03/06 12:39:07 tri Exp $
+;;;  $Id: irchat-main.el,v 3.11 1997/03/13 22:51:42 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -335,14 +335,10 @@ If the stream is opened, return T, otherwise return NIL."
 	irchat-server-process nil))
 
 
-(defvar irchat-timers
-  (list
-   ;(list nil (function irchat-Command-timestamp) irchat-timestamp-interval)
-   (list nil (function irchat-Command-pollnames) irchat-pollnames-interval)
-   (list nil (function irchat-Command-keepalive) irchat-keepalive-interval)
-   ;(list nil (function irchat-check-buffers) irchat-checkbuffer-interval)
-   )
+(defvar irchat-timers nil
   "Symbol name to store timer, timer-function and timer-interval.")
+(defvar irchat-timers-list-initialized-p nil
+  "Are irchat internal timers in place?")
 
 (defun irchat (&optional confirm)
   "Connect to the IRC server and start chatting.
@@ -387,6 +383,21 @@ If already connected, just pop up the windows."
 	(if (not (string-equal irchat-awaymsg ""))
 	    (irchat-Command-away irchat-awaymsg))
 	(run-hooks 'irchat-Startup-hook)
+	(if (not irchat-timers-list-initialized-p)
+	    (progn
+	      (setq irchat-timers   
+		    (append irchat-timers
+			    (list
+		            ;(list nil (function irchat-Command-timestamp) 
+		            ;      irchat-timestamp-interval)
+			     (list nil (function irchat-Command-pollnames) 
+				   irchat-pollnames-interval)
+			     (list nil (function irchat-Command-keepalive)
+				   irchat-keepalive-interval)
+		            ;(list nil (function irchat-check-buffers)
+		             ;     irchat-checkbuffer-interval)
+			     )))
+	      (setq irchat-timers-list-initialized-p t)))
 	(setq 
 	 irchat-obarray (make-vector irchat-obarray-size nil)
 	 irchat-timers
