@@ -1,10 +1,10 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-version.el,v 3.107.2.7 2002/06/04 20:33:02 tri Exp $
+;;;  $Id: irchat-version.el,v 3.107.2.8 2002/06/04 20:37:53 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
-;;; DO NOT TOUCH THIS LINE: ZZZXXX>>>1023222782<<<XXXZZZ
+;;; DO NOT TOUCH THIS LINE: ZZZXXX>>>1023223073<<<XXXZZZ
 
 ;;;
 ;;; Version number constants
@@ -16,16 +16,16 @@
 (defconst irchat-client-version-minor "06"
   "*Minor version number. Server Protocol changes and bug fixes change this number.")
 
-(defconst irchat-client-version-beta-p t
+(defconst irchat-client-version-beta-p nil
   "*Is this version a beta version?")
 
-(defconst irchat-client-version-alpha-p t
+(defconst irchat-client-version-alpha-p nil
   "*Is this version an alpha version?")
 
 (defconst irchat-client-version-rcs-snap nil
   "*If a `current' release, what's the date?")
 
-(defconst irchat-client-version-release "$Date: 2002/06/04 20:33:02 $"
+(defconst irchat-client-version-release "$Date: 2002/06/04 20:37:53 $"
   "*Version release date")
 
 (defconst irchat-client-name "Irchat"
