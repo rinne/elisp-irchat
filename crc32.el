@@ -4,7 +4,7 @@
 ;;;  CRC32 compatible crc in elisp.  Cool, ha?
 ;;;  ----------------------------------------------------------------------
 ;;;  Created      : Fri Dec 16 13:47:25 1995 tri
-;;;  Last modified: Mon Feb 24 15:41:13 1997 tri
+;;;  Last modified: Tue Oct  7 11:31:24 1997 tri
 ;;;  ----------------------------------------------------------------------
 ;;;  Copyright © 1995-1997
 ;;;  Timo J. Rinne <tri@iki.fi>
@@ -18,28 +18,28 @@
 ;;;  irchat-copyright.el applies only if used with irchat IRC client.
 ;;;  Contact the author for additional copyright info.
 ;;;
-;;;  $Id: crc32.el,v 3.1 1997/02/24 16:00:02 tri Exp $
+;;;  $Id: crc32.el,v 3.2 1997/10/07 09:57:41 tri Exp $
 ;;;
 
 (eval-and-compile  
   (provide 'crc32))
 
 ;;; Interactive functions
-(defun crc32-region ()
+(defun crc32-region (&optional raw)
   "Calculate crc32 of the current region"
   (interactive)
   (if mark-active
       (let* ((s (buffer-substring (mark) (point)))
-	     (crc (crc32-string s)))
+	     (crc (crc32-string s raw)))
 	(message "Length = %d, CRC32 = %s" (length s) crc)
 	crc)
     (error "Mark is not set")))
 
-(defun crc32-buffer ()
+(defun crc32-buffer (&optional raw)
   "Calculate crc32 of the current buffer"
   (interactive)
   (let* ((s (buffer-substring (point-min) (point-max)))
-	 (crc (crc32-string s)))
+	 (crc (crc32-string s raw)))
     (message "Length = %d, CRC32 = %s" (length s) crc)
     crc))
 
@@ -134,7 +134,7 @@
 	  (logior (* (% h 256) 256) (/ l 256)))))
 
 ;;; CRC32 function
-(defun crc32-string (str)
+(defun crc32-string (str &optional raw)
   "Calculate 32bit crc of STRING"
   (let ((r (cons 0 0))
 	(l (length str))
@@ -144,6 +144,28 @@
 	(setq r (crc32-^ (elt crc32-lookup-table i)
 			 (crc32-shr-8 r)))
 	(setq j (+ 1 j))))
-    (format "%04.4x%04.4x" (car r) (cdr r))))
+    (cond ((or (null raw) (equal raw 'hex-string))
+	   (format "%04.4x%04.4x" (car r) (cdr r)))
+	  ((equal raw 'raw-vector)
+	   (let ((v [0 0 0 0]))
+	     (aset v 0 (logand (/ (car r) 256) 255))
+	     (aset v 1 (logand (car r) 255))
+	     (aset v 2 (logand (/ (cdr r) 256) 255))
+	     (aset v 3 (logand (cdr r) 255))
+	     v))
+	  ((or (equal raw 'raw-string) (equal raw t))
+	   (let ((v "xxxx"))
+	     (aset v 0 (logand (/ (car r) 256) 255))
+	     (aset v 1 (logand (car r) 255))
+	     (aset v 2 (logand (/ (cdr r) 256) 255))
+	     (aset v 3 (logand (cdr r) 255))
+	     v))
+	  (t (error "Unknown return type in crc32-string")))))
 
 ;;; eof (crc32.el)
+
+
+
+
+
+
