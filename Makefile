@@ -2,7 +2,7 @@
 #
 # Makefile for irchat
 #
-# $Id: Makefile,v 3.14 1998/06/23 14:47:06 tri Exp $
+# $Id: Makefile,v 3.15 1998/06/30 08:38:10 tri Exp $
 #
 
 #
@@ -16,6 +16,7 @@
 # DEFSUBST_LOAD= -l ./$(DEFSUBST_BIN)
 
 EMACS    = emacs
+XEMACS   = xemacs
 EMACSCMD = $(EMACS) -batch -q -l ./setpath.el
 TAR	 = gtar
 
@@ -73,10 +74,10 @@ all:	irchat-build
 irchat-build: irchat.elc irchat.info
 
 gnuemacs:
-	$(MAKE) EMACS=emacs irchat-build
+	$(MAKE) EMACS=$(EMACS) irchat-build
 
 xemacs:
-	$(MAKE) EMACS=xemacs irchat-build
+	$(MAKE) EMACS=$(XEMACS) irchat-build
 
 .SUFFIXES: .el .elc
 
@@ -90,10 +91,10 @@ irchat.elc:	$(OBJS)
 
 ### Currently here as test entries..
 xemacs-c:
-	$(MAKE) EMACS=xemacs irchat-c.elc
+	$(MAKE) EMACS=$(XEMACS) irchat-c.elc
 
 gnuemacs-c:
-	$(MAKE) EMACS=emacs irchat-c.elc
+	$(MAKE) EMACS=$(EMACS) irchat-c.elc
 
 xemacs-compact: xemacs-c
 	-rm -f irchat-c.el
@@ -112,10 +113,10 @@ irchat-c.el: $(SRCS)
 ### BEGIN NODIST
 
 xemacs-s:
-	$(MAKE) EMACS=xemacs irchat-s.elc
+	$(MAKE) EMACS=$(XEMACS) irchat-s.elc
 
 gnuemacs-s:
-	$(MAKE) EMACS=emacs irchat-s.elc
+	$(MAKE) EMACS=$(EMACS) irchat-s.elc
 
 xemacs-snap: xemacs-s
 	-rm -f irchat-s.el
