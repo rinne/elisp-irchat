@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-misc.el,v 3.31 1997/12/11 06:00:57 tri Exp $
+;;;  $Id: irchat-misc.el,v 3.32 1998/03/24 09:25:17 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -229,7 +229,8 @@
 
 (defun irchat-send (&rest args)
   (irchat-reset-idle)
-  (let ((item (apply 'format args)) ditem)
+  (let ((item (irchat-encode-coding-string (apply 'format args)))
+	ditem)
     (let ((conv-list irchat-send-convert-list))
       (while conv-list
         (setq item (irchat-replace-in-string item (car (car conv-list))
@@ -540,6 +541,22 @@
 	(setq x (/ x 2))
 	(setq n (- n 1)))
       x))
+
+(defun irchat-encode-coding-string (string &optional coding)
+  "String encoding for MULE systems (emacs & xemacs 20 with mule option)."
+  (let ((coding (if coding coding irchat-send-coding-system)))
+    (if (and coding
+	     (fboundp 'encode-coding-string))
+	(encode-coding-string string coding)
+      string)))
+
+(defun irchat-decode-coding-string (string &optional coding)
+  "String decoding for MULE systems (emacs & xemacs 20 with mule option)."
+  (let ((coding (if coding coding irchat-receive-coding-system)))
+    (if (and coding
+	     (fboundp 'decode-coding-string))
+	(decode-coding-string string coding)
+      string)))
 
 (eval-and-compile (provide 'irchat-misc))
 ;;;
