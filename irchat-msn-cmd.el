@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn-cmd.el,v 3.4 2002/06/04 23:20:44 tri Exp $
+;;;  $Id: irchat-msn-cmd.el,v 3.5 2002/06/05 14:52:03 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -154,7 +154,8 @@
 						       (irchat-msn-conversation-names-alist)
 						       (irchat-msn-online-users-alist))
 						      '(lambda (s) t) nil irchat-msn-recipient-cache)))
-  (let ((p (irchat-msn-sub-server-search-with-name recipient)))
+  (let ((p (irchat-msn-sub-server-search-with-name recipient))
+	(cmsg ""))
     (if (null p)
 	(setq p (irchat-msn-sub-server-search-with-user recipient)))
     (if p
@@ -169,16 +170,22 @@
 					       (length tn)
 					       tn)))
 		(setq msg (read-string (format "Message to %s: " recipient)))))
+	  (setq cmsg msg)
+	  (if (fboundp 'irchat-encrypt-message)
+	      (let ((irchat-real-nickname irchat-msn-uid))
+		(setq msg (irchat-encrypt-message msg recipient))))
 	  (let ((m (irchat-msn-make-message msg)))
 	    (setq irchat-msn-recipient-cache recipient)
 	    (irchat-w-insert irchat-MSN-buffer
 			     (concat 
-			      (format irchat-msn-format-string-out
+			      (format (if (string-equal msg cmsg)
+					  irchat-msn-format-string-out
+					irchat-msn-format-string-out-e)
 				      (if (> (length (nth 6 p)) 1)
 					  (nth 1 p)
 					(nth 0 (nth 6 p))))
 			      " "
-			      msg
+			      cmsg
 			      "\n"))
 	    (irchat-msn-send-sub-raw (nth 0 p)
 				     "MSG %d A %d\r\n%s"
@@ -188,9 +195,13 @@
       (cond ((irchat-search-contact-list-with-name recipient irchat-msn-online-list)
 	     (if (null msg)
 		 (setq msg (read-string (format "Message to %s: " recipient))))
+	     (setq cmsg msg)
+	     (if (fboundp 'irchat-encrypt-message)
+		 (let ((irchat-real-nickname irchat-msn-uid))
+		   (setq msg (irchat-encrypt-message msg recipient))))
 	     (setq irchat-msn-recipient-cache recipient)
 	     (setq irchat-msn-messages-pending-sb (append irchat-msn-messages-pending-sb
-							  (list (list recipient msg))))
+							  (list (list recipient msg cmsg))))
 	     (irchat-msn-send "XFR %s SB" (irchat-msn-seqno)))
 	    ((irchat-search-contact-list-with-name recipient irchat-msn-forward-list)
 	     (message "User %s is not online." recipient))

@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn-sub.el,v 3.1 2002/06/04 15:47:27 tri Exp $
+;;;  $Id: irchat-msn-sub.el,v 3.2 2002/06/05 14:52:03 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -281,10 +281,17 @@
 							   irchat-msn-sub-servers))
 			(irchat-w-insert irchat-MSN-buffer
 					 (concat 
-					  (format irchat-msn-format-string-out 
-						  (nth 0 pending))
+					  (format 
+					   (if (or (null (nth 2 pending))
+						   (string-equal (nth 1 pending)
+								 (nth 2 pending)))
+					       irchat-msn-format-string-out
+					     irchat-msn-format-string-out-e)
+					   (nth 0 pending))
 					  " "
-					  (nth 1 pending)
+					  (if (null (nth 2 pending))
+					      (nth 1 pending)
+					    (nth 2 pending))
 					  "\n"))
 			(irchat-msn-send-sub-raw (nth 0 p)
 						 "MSG %d A %d\r\n%s"

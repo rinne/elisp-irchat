@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn-vars.el,v 3.6 2002/06/05 12:00:52 tri Exp $
+;;;  $Id: irchat-msn-vars.el,v 3.7 2002/06/05 14:52:03 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -32,10 +32,10 @@
 ;;; Fake version string to messenger server.  Don't change contents 
 ;;; of this string.  Anyway, you can set this to nil, in order not to
 ;;; send fake id to the server.  It seems to work OK without it, but
-;;; I dont know what may happen, if you do so.
+;;; I don't know what may happen, if you do so.
 ;;;
 (defvar irchat-msn-fake-client-version "0x0409 winnt 5.0 i386 MSMSGS 4.6.0042 MSMSGS"
-  "*Send this information as our client version.  Don't change!")
+  "*Send this information as our client version.  Don't change this!")
   
 ;;;
 ;;; Format strings
@@ -54,6 +54,17 @@
   "*Format string for incoming message with two parameters.")
 (defvar irchat-msn-format-string-out2 ">%s:%s<"
   "*Format string for outgoing message with two parameters.")
+;;;
+;;; Format strings for encrypted stuff.
+;;;
+(defvar irchat-msn-format-string-in-e "<<%s>>"
+  "*Format string for encrypted incoming message with one parameter.")
+(defvar irchat-msn-format-string-out-e ">>%s<<"
+  "*Format string for encrypted outgoing message with one parameter.")
+(defvar irchat-msn-format-string-in2-e "<<%s:%s>>"
+  "*Format string for encrypted incoming message with two parameters.")
+(defvar irchat-msn-format-string-out2-e ">>%s:%s<<"
+  "*Format string for encrypted outgoing message with two parameters.")
 
 (eval-and-compile (provide 'irchat-msn-vars))
 
