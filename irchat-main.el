@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-main.el,v 1.5 1997/02/05 19:39:23 tri Exp $
+;;;  $Id: irchat-main.el,v 1.6 1997/02/05 23:13:49 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -771,7 +771,8 @@ One is for entering commands and text, the other displays the IRC dialogue."
 		  (forward-line -1)
 		  (delete-region (point-min) (point))))
 	    (setq buflist (cdr buflist)))
-	  (set-buffer obuf)))))
+	  (set-buffer obuf))))
+  (setq irchat-last-checkbuffer-time (current-time)))
 
 
 (defun irchat-is-message-ignored (string buffer)
