@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-vars.el,v 3.8 1997/02/26 14:45:31 tri Exp $
+;;;  $Id: irchat-vars.el,v 3.9 1997/02/26 15:52:33 jsl Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -9,12 +9,7 @@
 ;;;
 
 (defvar irchat-saved-forms 
-  (purecopy '(irchat-kill-nickname
-	      irchat-compress-changes
-	      irchat-timestamp-interval
-	      irchat-use-full-window
-	      irchat-command-window-on-top
-	      irchat-beep-on-bells))
+  (purecopy '(irchat-kill-nickname))
   "*Variables whose values are saved via command irchat-Command-save-vars")
 
 (defvar irchat-command-window-height 4
