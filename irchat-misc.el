@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-misc.el,v 3.4 1997/02/27 07:54:04 jsl Exp $
+;;;  $Id: irchat-misc.el,v 3.5 1997/03/03 13:32:16 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -74,6 +74,10 @@
 	  hostname)
       (store-match-data data))))
 
+
+(defun irchat-current-nickname ()
+  "Our current nickname."
+  irchat-real-nickname)
 
 (defun irchat-replace-in-string (str regexp newtext)
   (if (string-match "XEmacs" emacs-version)
