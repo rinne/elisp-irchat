@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn.el,v 3.6 2002/06/06 11:04:55 tri Exp $
+;;;  $Id: irchat-msn.el,v 3.7 2002/06/06 14:27:29 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -67,7 +67,11 @@
 
 (defun irchat-msn ()
   (interactive)
-  (require 'md5)
+  (if (not (fboundp 'md5))
+      (progn
+	(require 'greed-md5)
+	(defun md5 (object)
+	  (greed-md5 object))))
   (setq irchat-msn-seqno 0)
   (irchat-msn-start-server))
 
