@@ -4,7 +4,7 @@
 ;;;  IDEA encryption in elisp.  Cool, ha?
 ;;;  ----------------------------------------------------------------------
 ;;;  Created      : Thu Jun 29 08:11:25 1995 tri
-;;;  Last modified: Tue Oct  7 14:19:49 1997 tri
+;;;  Last modified: Tue Oct  7 16:45:30 1997 tri
 ;;;  ----------------------------------------------------------------------
 ;;;  Copyright © 1995-1997
 ;;;  Timo J. Rinne <tri@iki.fi>
@@ -18,7 +18,7 @@
 ;;;  irchat-copyright.el applies only if used with irchat IRC client.
 ;;;  Contact the author for additional copyright info.
 ;;;
-;;;  $Id: idea.el,v 3.7 1997/10/07 11:20:11 tri Exp $
+;;;  $Id: idea.el,v 3.8 1997/10/07 14:49:23 tri Exp $
 ;;;
 
 (eval-and-compile  
@@ -865,6 +865,20 @@
 	   'key-complete-decryption))
 	(t nil)))
 
+(defun idea-key-version (key)
+  (let* ((my-key-type (idea-legal-key key))
+	 (r (cond ((or (equal 'key-complete-decryption my-key-type)
+		       (equal 'key-complete-encryption my-key-type))
+		   (let ((fingerprint (idea-key-fingerprint key)))
+		     (cond ((= (length fingerprint) 8) 1)
+			   ((= (length fingerprint) 12) 2)
+			   (t nil))))
+		  ((or (equal 'key-string my-key-type)
+		       (equal 'key-intlist my-key-type))
+		   'any)
+		  (t nil))))
+    r))
+
 (defun idea-key-fingerprint (key &optional version)
   "Get an IDEA-KEY fingerprint."
   (let* ((my-key-type (idea-legal-key key))
@@ -879,7 +893,8 @@
     (if my-key
 	(let ((annotation (nth 9 my-key)))
 	  (if (not (and (stringp annotation)
-			(= (length annotation) 10)))
+			(or (= (length annotation) 10)
+			    (= (length annotation) 14))))
 	      nil
 	    (let ((ty (elt annotation 0))
 		  (de (elt annotation 1)))
