@@ -1,3 +1,7 @@
+Thu Jun 06 12:06:33 2002  IRCHAT Distribution Generator <irchat@rinne.iki.fi>
+
+	* Generated release irchat-4.00-beta1.
+
 Wed Jun 05 15:51:32 2002  Timo J. Rinne <tri@iki.fi>
 
 	* Added encryption to MSN-messages too.  Decryption part is
