@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-misc.el,v 3.1 1997/02/24 16:00:02 tri Exp $
+;;;  $Id: irchat-misc.el,v 3.2 1997/02/26 13:13:28 jsl Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -9,15 +9,26 @@
   (require 'irchat-filter))
 
 (defun irchat-ignore-this-p (nick uah)
+  (let ((mylist irchat-kill-nickname)
+	(time (current-time)))
+    (while mylist
+      (let ((expiretime (if (cdr (car mylist))
+			    (irchat-time-difference time (cdr (car mylist)))
+			  1)))
+	(if (< expiretime 0)
+	    (setq irchat-kill-nickname (remassoc (car (car mylist))
+						 irchat-kill-nickname)
+		  irchat-save-is-vars-dirty t))
+	(setq mylist (cdr mylist)))))
   (let ((killit nil))
     (mapcar (function 
 	     (lambda (kill)
-	       (if (string-match kill nick)
+	       (if (string-match (car kill) nick)
 		   (setq killit t)))) irchat-kill-nickname)
     (if (not killit)
 	(mapcar (function 
 		 (lambda (kill)
-		   (if (string-match kill uah)
+		   (if (string-match (car kill) uah)
 		       (setq killit t)))) irchat-kill-nickname))
     killit))
 
@@ -171,6 +182,12 @@
 (defun irchat-time-difference (t0 t1)
   "Difference in seconds of two `three integer lists' returned by current-time function."
   (+ (* (- (car t1) (car t0)) 65536) (- (car (cdr t1)) (car (cdr t0)))))
+
+(defun irchat-time-add (t0 t1)
+  "Add t1 seconds to time t0. t0 is in `three integer lists'-format returned by current-time function."
+  (list (+ (car t0) (/ (+ (car (cdr t0)) t1) 65536))
+	(% (+ (car (cdr t0)) t1) 65536)
+	0))
 
 (defun irchat-generate-hex-timestamp (&optional time)
   "Generate timestamp string as hexadecimal"
