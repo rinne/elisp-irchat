@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-misc.el,v 3.41 1998/05/25 08:51:56 tri Exp $
+;;;  $Id: irchat-misc.el,v 3.42 1998/06/24 09:15:13 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -9,7 +9,7 @@
   (require 'irchat-filter))
 
 (defun irchat-ignore-this-p (nick uah &optional message)
-  (if (string-match "\." nick)
+  (if (string-match "\\." nick)
       nil ;;; Server messages can't be ignored by nick.
     (progn
       (let ((mylist irchat-ignore-nickname)
