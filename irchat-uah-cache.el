@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-uah-cache.el,v 1.1 1997/10/19 15:27:06 tri Exp $
+;;;  $Id: irchat-uah-cache.el,v 1.2 1997/10/19 16:03:53 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 ;;;
@@ -33,7 +33,10 @@
   "Append NICK UAH tuple into the vector"
   (if (null irchat-nick-to-uah-vector)
       (irchat-nick-to-uah-init))
-  (if (and (stringp nick) (stringp uah))
+  (if (and (stringp nick)
+	   (stringp uah)
+	   (> (length nick) 0)
+	   (> (length uah) 0))
       (progn
 	(aset irchat-nick-to-uah-vector irchat-nick-to-uah-pos (cons nick uah))
 	(setq irchat-nick-to-uah-pos (mod (+ irchat-nick-to-uah-pos 1)
