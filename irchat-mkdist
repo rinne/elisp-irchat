@@ -1,0 +1,48 @@
+#! /bin/sh
+#
+# $Id: irchat-mkdist,v 1.1 1997/02/13 09:03:13 tri Exp $
+#
+# This file is part of irchat.  Command irchat-mkdist creates 
+# a snapshot of irchat current.  This file itself does not go 
+# into the snapshot archive.
+#
+# Author: Timo J. Rinne <tri@iki.fi>
+#
+# This file is covered by copyright notice in irchat-copyright.el.
+#
+
+distfiles=""
+distname="irchat-`date '+%y%m%d'`"
+
+for i in RCS/*,v ; do
+    if [ -f $i ] ; then
+        file=`echo $i | sed 's+^RCS/\(.*\),v$+\1+'`
+        if [ "$file" != "irchat-mkdist" ] ; then
+            distfiles="$distfiles $file"
+        fi
+    fi
+done
+
+for i in $distfiles ; do
+    co $i
+    if [ $? -ne 0 ] ; then
+        exit 1
+    fi
+done
+
+co -l irchat-version.el &&
+     ci -u -f -m"Irchat mkdist." irchat-version.el &&
+     co irchat-version.el &&
+     mkdir "$distname" &&
+     cp $distfiles "$distname" &&
+     chmod 755 "$distname" &&
+     chmod 644 "$distname"/* &&
+     tar cvf "$distname"".tar" ./$distname &&
+     gzip -9 "$distname"".tar" &&
+     ls -l "$distname"".tar.gz" &&
+     rm -rf "$distname" &&
+     exit 0
+
+exit 2
+
+# eof (irchat-mkdist)
