@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-misc.el,v 3.20 1997/10/06 13:17:27 tri Exp $
+;;;  $Id: irchat-misc.el,v 3.21 1997/10/06 13:27:25 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -94,55 +94,29 @@
 	   (= (elt message 0) (string-to-char ""))
 	   (null force))
       (if (> (length message) 1)
-	  (if (listp buffer)
-	      (let ((l buffer))
-		(while l
-		  (irchat-Dialogue-insert-message (car l)
-						  absolute-prefix 
-						  format-string
-						  sender
-						  message 
-						  channel
-						  force)
-		  (setq l (cdr l))))
-	    (let ((s (concat "^"
-			     absolute-prefix
-			     (regexp-quote (format format-string
-						   sender
-						   channel))
-			     " .*\\(\\)$"))
-		  (buf (get-buffer buffer)))
-	      (save-excursion
-		(if (and buf
-			 (set-buffer buf)
-			 (or (goto-char (point-max)) t)
-			 (re-search-backward s
-					     (let ((p (point)))
-					       (if (< p 2000)
-						   (point-min)
-						 (- p 2000)))
-					     t))
-		    (progn 
-		      (goto-char (match-beginning 1))
-		      (let ((buffer-read-only nil))
-			(delete-char 1)
-			(insert (substring message 1 (length message)))))
-		  (irchat-w-insert buffer 
-				   (concat absolute-prefix
-					   (format format-string 
-						   sender 
-						   channel)
-					   " ... "
-					   (substring message 
-						      1
-						      (length message))
-					   "\n")))))))
+	  (let ((m (concat "^"
+			   absolute-prefix
+			   (regexp-quote (format format-string
+						 sender
+						 channel))
+			   " .*\\(\\)$"))
+		(d (concat absolute-prefix
+			   (format format-string 
+				   sender 
+				   channel)
+			   " ... "
+			   (substring message 
+				      1
+				      (length message))
+			   "\n"))
+		(o "$")
+		(n (substring message 1 (length message))))
+	    (irchat-w-replace buffer m d o n)))
     (irchat-w-insert buffer (concat absolute-prefix
 				    (format format-string sender channel)
 				    " "
 				    message
 				    "\n"))))
-
 
 (defun irchat-Dialogue-buffer-p (buffer)
   "Is BUFFER the irchat-Dialogue-buffer or it's name?" 
