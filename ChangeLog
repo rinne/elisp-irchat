@@ -1,16 +1,22 @@
-Sun Nov 04 16:10:01  IRCHAT Distribution Generator <irchat@rinne.iki.fi>
+Mon Apr 22 18:10:10 2001  Timo J. Rinne  <tri@rinne.iki.fi>
+
+	* Minor fixes
+
+	* Added support for newish 317 (IDLE) message format.
+
+Sun Nov 04 16:10:01 2001  IRCHAT Distribution Generator <irchat@rinne.iki.fi>
 
 	* Generated release irchat-20011104-2.
 
-Sun Nov 04 12:34:22  IRCHAT Distribution Generator <irchat@rinne.iki.fi>
+Sun Nov 04 12:34:22 2001  IRCHAT Distribution Generator <irchat@rinne.iki.fi>
 
 	* Generated release irchat-20011104.
 
-Sun Nov 04 14:30:00  IRCHAT Distribution Generator <irchat@rinne.iki.fi>
+Sun Nov 04 14:30:00 2001  IRCHAT Distribution Generator <irchat@rinne.iki.fi>
 
 	* Generated release irchat-20011104.
 
-Sun Nov 04 14:29:00  Timo J. Rinne  <tri@iki.fi>
+Sun Nov 04 14:29:00 2001  Timo J. Rinne  <tri@iki.fi>
 
 	* Simplified and fixed private conversation mode.
 
