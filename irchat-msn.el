@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn.el,v 3.2 2002/06/04 19:27:31 tri Exp $
+;;;  $Id: irchat-msn.el,v 3.3 2002/06/04 21:48:02 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -82,6 +82,7 @@
     (setq irchat-msn-sub-servers '())
     (setq irchat-msn-messages-pending-sb '())
     (setq irchat-msn-recipient-cache nil)
+    (setq irchat-msn-server-int nil)
     (if host
 	(setq irchat-msn-server-int host))
     (if (null irchat-msn-server-int)
