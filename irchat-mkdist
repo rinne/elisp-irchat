@@ -1,6 +1,6 @@
 #! /bin/sh
 #
-# $Id: irchat-mkdist,v 1.1 1997/02/13 09:03:13 tri Exp $
+# $Id: irchat-mkdist,v 1.2 1997/02/21 15:19:49 too Exp $
 #
 # This file is part of irchat.  Command irchat-mkdist creates 
 # a snapshot of irchat current.  This file itself does not go 
@@ -13,6 +13,8 @@
 
 distfiles=""
 distname="irchat-`date '+%y%m%d'`"
+
+[ -d $distname ] && { echo You have already made $distname today.; exit 1; }
 
 for i in RCS/*,v ; do
     if [ -f $i ] ; then
@@ -36,7 +38,7 @@ co -l irchat-version.el &&
      mkdir "$distname" &&
      cp $distfiles "$distname" &&
      chmod 755 "$distname" &&
-     chmod 644 "$distname"/* &&
+     chmod a-w,a+r,u+w "$distname"/* &&
      tar cvf "$distname"".tar" ./$distname &&
      gzip -9 "$distname"".tar" &&
      ls -l "$distname"".tar.gz" &&
