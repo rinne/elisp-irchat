@@ -1,11 +1,12 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-commands.el,v 1.7 1997/02/18 12:31:25 too Exp $
+;;;  $Id: irchat-commands.el,v 3.1 1997/02/24 16:00:02 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
 (eval-when-compile (require 'irchat-inlines))
 (eval-and-compile  
+;  (require 'irchat-crypt)
   (require 'irchat-dcc)
   (require 'irchat-caesar))
 
@@ -113,19 +114,45 @@
       (irchat-Dialogue-insert stamp)))
   (setq irchat-last-timestamp-time (current-time)))
 
-
-(defun irchat-Command-send-message (message)
+(defun irchat-Command-send-message (message &optional crypt-type)
   "Send MESSAGE to current chat partner of current channel."
   (if (> (length message) 0)
-      (progn
+      (let* ((addr (if (eq irchat-command-buffer-mode 'chat)
+		       irchat-current-chat-partner
+		     irchat-current-channel))
+	     (msg-encrypted-p nil)
+	     (msg
+	      (cond ((equal crypt-type 'cleartext)
+		     (progn
+			 (setq msg-encrypted-p nil)
+			 message))
+		    ((and (equal crypt-type 'encrypted)
+			  addr)
+		     (progn
+		       (setq msg-encrypted-p t)
+		       (irchat-encrypt-message message addr t)))
+		    (addr
+		     (let ((cipher (irchat-encrypt-message message addr nil)))
+		       (if (not (string= cipher message))
+			   (progn
+			     (setq msg-encrypted-p t)
+			     cipher)
+			 (progn
+			   (setq msg-encrypted-p nil)
+			   message))))
+		    (t (progn
+			 (setq msg-encrypted-p nil)
+			 message)))))
 	(if (eq irchat-command-buffer-mode 'chat)
 	    (if irchat-current-chat-partner
 		(progn
 		  (irchat-send "PRIVMSG %s :%s" 
-			       irchat-current-chat-partner message)
+			       irchat-current-chat-partner msg)
 		  (irchat-own-private-message 
 		   (format (format "%s %%s"
-				   irchat-format-string)
+				   (if msg-encrypted-p
+				       irchat-format-string-e
+				     irchat-format-string))
 			   irchat-current-chat-partner message)))
 	      (message 
 	       (substitute-command-keys 
@@ -136,9 +163,11 @@
 		(message 
 		 (substitute-command-keys 
 		  "Type \\[irchat-Command-join] to join a channel")))
-	    (irchat-send "PRIVMSG %s :%s" irchat-current-channel message)
+	    (irchat-send "PRIVMSG %s :%s" irchat-current-channel msg)
 	    (irchat-own-message
-	     (format (format (format "%s %%%%s" irchat-myformat-string) 
+	     (format (format (format "%s %%%%s" (if msg-encrypted-p
+						    irchat-myformat-string-e
+						  irchat-myformat-string))
 			     irchat-nickname) message))))
 	t)
     (progn
@@ -146,7 +175,7 @@
       nil)))
 
 
-(defun irchat-Command-enter-message ()
+(defun irchat-enter-message (crypt-type)
   "Enter the current line as an entry in the IRC dialogue on the
 current channel."
   (interactive)
@@ -155,9 +184,23 @@ current channel."
     (setq start (point))
     (end-of-line)
     (setq message (buffer-substring start (point)))
-    (if (irchat-Command-send-message message)
+    (if (irchat-Command-send-message message crypt-type)
 	(irchat-next-line 1))))
 
+
+(defun irchat-Command-enter-message ()
+  (interactive)
+  (irchat-enter-message nil))
+
+
+(defun irchat-Command-enter-message-encrypted ()
+  (interactive)
+  (irchat-enter-message 'encrypted))
+
+
+(defun irchat-Command-enter-message-cleartext ()
+  (interactive)
+  (irchat-enter-message 'cleartext))
 
 
 (defun irchat-Dialogue-enter-message ()
@@ -417,24 +460,58 @@ With - as argument, list all channels."
   (irchat-send "MODE %s %s" irchat-current-channel change))
 
 
-(defun irchat-Command-message (message-nick-var message)
+(defun irchat-Command-message (message-nick-var
+			       message
+			       &optional crypt-type-var)
   "Send a private message to another user."
-  (interactive (let (message-nick-var (completion-ignore-case t))
+  (interactive (let (message-nick-var 
+		     crypt-type-var 
+		     (completion-ignore-case t))
 		 (setq message-nick-var 
 		       (irchat-completing-default-read 
 			"Private message to: "
 			(append irchat-nick-alist irchat-channel-alist)
 			'(lambda (s) t) nil irchat-privmsg-partner))
+		 (setq crypt-type-var nil)
 		 (list message-nick-var 
 		       (read-string 
-			(format "Private message to %s: " message-nick-var)))))
-  (setq irchat-privmsg-partner message-nick-var)
-  (irchat-send "PRIVMSG %s :%s" message-nick-var message)
-  (irchat-own-private-message 
-   (format (format "%s %%s" irchat-format-string) message-nick-var message)))
+			(format "Private message to %s: " message-nick-var))
+		       crypt-type-var)))
+  (let* ((msg-encrypted-p nil)
+	 (msg
+	  (cond ((equal crypt-type-var 'cleartext)
+		 msg)
+		((and (equal crypt-type-var 'encrypted)
+		      message-nick-var)
+		 (progn
+		   (setq msg-encrypted-p t)
+		   (irchat-encrypt-message message message-nick-var t)))
+		(message-nick-var
+		 (let ((cipher (irchat-encrypt-message message 
+						       message-nick-var
+						       nil)))
+		   (if (not (string= cipher message))
+		       (progn
+			 (setq msg-encrypted-p t)
+			 cipher)
+		     (progn
+		       (setq msg-encrypted-p nil)
+		       message))))
+		(t 
+		 (progn
+		   (setq msg-encrypted-p nil)
+		   message)))))
+    (setq irchat-privmsg-partner message-nick-var)
+    (irchat-send "PRIVMSG %s :%s" message-nick-var msg)
+    (irchat-own-private-message 
+     (format (format "%s %%s" (if msg-encrypted-p
+				  irchat-format-string-e
+				irchat-format-string))
+	     message-nick-var message))))
 
 
 ;; Added at mta@tut.fi's request...
+;; Does not support encryption (yet!?)
 
 (defun irchat-Command-mta-private ()
   "Send a private message (current line) to another user."
@@ -453,11 +530,7 @@ With - as argument, list all channels."
     (setq message (buffer-substring start stop))
     (irchat-next-line 1)
     (if (> (length message) 0)
-	(progn
-	  (irchat-send "PRIVMSG %s :%s" irchat-privmsg-partner message)
-	  (irchat-own-private-message 
-	   (format (format "%s %%s" irchat-format-string) 
-		   irchat-privmsg-partner message)))
+	(irchat-Command-message irchat-privmsg-partner message)
       (message "IRCHAT: No text to send"))))
 
 
@@ -1230,6 +1303,8 @@ mode, the current channel and current chat partner are not altered)"
 	    (select-window sw)))))
   (irchat-w-insert irchat-D-buffer "")) ;; recenter if needed
 
+(eval-and-compile (provide 'irchat-commands))
+
 ;;;
-;;; eof
+;;;  eof
 ;;;
