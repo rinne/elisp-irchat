@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-handle.el,v 1.2 1997/01/31 13:01:48 too Exp $
+;;;  $Id: irchat-handle.el,v 1.3 1997/02/05 15:46:57 too Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright in(eval-wfo
 
@@ -294,17 +294,17 @@
 
 (defun irchat-handle-kick-msg (prefix rest)
   "Handle the KICK message."
-  (if (string-match "^\\([^ ]*\\) \\([^ ]*\\)" rest)
+  (if (string-match "^\\([^ ]*\\) \\([^ ]*\\) *:\\(.*$\\)" rest)
       (let ((match1 (matching-substring rest 1))
-	    (match2 (matching-substring rest 2)))
+	    (match2 (matching-substring rest 2))
+	    (match3 (matching-substring rest 3)))
 	(if (string= match2 irchat-nickname)
 	  (progn
 	    (irchat-w-insert (irchat-pick-buffer match1)
-			     (format "%sYou were kicked off channel %s by %s.\n" 
-				     irchat-change-prefix match1 prefix))
+			     (format "%sYou were kicked off channel %s by %s (%s).\n" irchat-change-prefix match1 prefix match3))
 	    (setq 
-	     irchat-current-channels (string-list-ci-delete irchat-current-channel 
-							    irchat-current-channels)
+	     irchat-current-channels 
+	           (string-list-ci-delete match1 irchat-current-channels)
 	     irchat-current-channel (car irchat-current-channels)
 	     irchat-channel-indicator (if irchat-current-channel 
 					  (format "Channel %s" 
