@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn-proc.el,v 3.2 2002/06/05 12:00:52 tri Exp $
+;;;  $Id: irchat-msn-proc.el,v 3.3 2002/06/06 14:36:23 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -49,7 +49,7 @@
 	  (set-buffer obuf)))))
 
 (defun irchat-msn-consume-message ()
-  (let ((s (buffer-substring (point-min) (point-max) (current-buffer))))
+  (let ((s (buffer-substring (point-min) (point-max))))
     (cond ((or (string-match "^\\(MSG \\([^ ][^ ]*\\) \\([^ ]*\\) \\([0-9][0-9]*\\)\r\n\\)"
 			     s)
 	       (string-match "\\(^MSG \\([^ ][^ ]*\\) \\([^ ]*\\) \\([0-9][0-9]*\\)\n\\)"

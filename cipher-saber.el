@@ -4,9 +4,9 @@
 ;;;  Cipher Saber encryption in elisp.  Cool, ha?
 ;;;  ----------------------------------------------------------------------
 ;;;  Created      : Tue Jul  7 18:55:02 1998 tri
-;;;  Last modified: Fri Jan 15 08:42:12 1999 tri
+;;;  Last modified: Thu Jun  6 17:35:00 2002 tri
 ;;;  ----------------------------------------------------------------------
-;;;  Copyright © 1998-1999
+;;;  Copyright © 1998-1999, 2002
 ;;;  Timo J. Rinne <tri@iki.fi>
 ;;; 
 ;;;  Address: Cirion oy, PO-BOX 250, 00121 Helsinki, Finland
@@ -18,7 +18,7 @@
 ;;;  irchat-copyright.el applies only if used with irchat IRC client.
 ;;;  Contact the author for additional copyright info.
 ;;;
-;;;  $Id: cipher-saber.el,v 1.8 1999/01/15 06:49:28 tri Exp $
+;;;  $Id: cipher-saber.el,v 1.9 2002/06/06 14:36:23 tri Exp $
 ;;;
 
 (eval-and-compile  
@@ -125,7 +125,7 @@
 (defun cipher-saber-encrypt-buffer (key)
   "Cipher Saber encrypt current buffer with KEY."
   (interactive (list (read-from-minibuffer "Key: ")))
-  (let* ((p (buffer-substring (point-min) (point-max) (current-buffer)))
+  (let* ((p (buffer-substring (point-min) (point-max)))
 	 (c (cipher-saber-encrypt-string p key)))
     (delete-region (point-min) (point-max) (current-buffer))
     (insert c)
