@@ -2,7 +2,7 @@
 #
 # Makefile for irchat
 #
-# $Id: Makefile,v 3.8 1997/10/20 06:12:31 tri Exp $
+# $Id: Makefile,v 3.9 1998/05/25 15:02:32 tri Exp $
 #
 
 #
@@ -23,8 +23,7 @@ TAR	 = gtar
 # if, for some strange reason, `irchat-inlines.elc' is needed, put
 # it after `irchat-vars.el'
 
-OBJS 	= \
-	irchat-version.elc	\
+XOBJS 	=                       \
 	irchat-globals.elc	\
 	irchat-vars.elc		\
 	irchat-inlines.elc	\
@@ -51,7 +50,18 @@ OBJS 	= \
 	irchat-crypt.elc	\
 	irchat-obsolete.elc
 
+OBJS	= 			\
+	irchat-version.elc	\
+	$(XOBJS)
+
 SRCS	= $(OBJS:.elc=.el)
+
+SOBJS	= 			\
+	irchat-snap-version.elc	\
+	$(XOBJS)
+
+SSRCS	= $(SOBJS:.elc=.el)
+
 
 all:	irchat-build
 
@@ -80,6 +90,12 @@ xemacs2:
 gnuemacs2:
 	$(MAKE) EMACS=emacs irchat2.elc
 
+xemacs-s:
+	$(MAKE) EMACS=xemacs irchat-s.elc
+
+gnuemacs-s:
+	$(MAKE) EMACS=emacs irchat-s.elc
+
 xemacs3: xemacs2
 	-rm -f irchat2.el
 	-mv -f irchat2.elc irchat.elc
@@ -88,11 +104,30 @@ gnuemacs3: gnuemacs2
 	-rm -f irchat2.el
 	-mv -f irchat2.elc irchat.elc
 
+xemacs-snap: xemacs-s
+	-rm -f irchat-s.el
+	-mv -f irchat-s.elc irchat.elc
+
+gnuemacs-snap: gnuemacs-s
+	-rm -f irchat-s.el
+	-mv -f irchat-s.elc irchat.elc
+
 irchat2.elc:	irchat2.el
 	$(EMACSCMD) -f batch-byte-compile $(DEFSUBST_SRC) irchat2.el
 
 irchat2.el: $(SRCS)
 	cat $(SRCS) > irchat2.el
+
+irchat-s.elc:	irchat-s.el
+	$(EMACSCMD) -f batch-byte-compile $(DEFSUBST_SRC) irchat-s.el
+
+irchat-s.el: $(SSRCS)
+	cat $(SSRCS) > irchat-s.el
+	rm -f irchat-snap-version.el
+
+irchat-snap-version.el: irchat-version.el
+	rm -f irchat-snap-version.el
+	sed 's,defconst *irchat-client-version-rcs-snap *nil,defconst irchat-client-version-rcs-snap "'"`date -u '+%Y/%m/%d %H:%M:%S'`"'",' < irchat-version.el > irchat-snap-version.el
 
 irchat.info:	irchat.texinfo
 	-$(EMACSCMD) -q irchat.texinfo -f texinfo-format-buffer -f save-buffer
