@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-filter.el,v 3.3 1997/03/18 10:05:29 jtp Exp $
+;;;  $Id: irchat-filter.el,v 3.4 1997/06/10 11:04:02 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -35,14 +35,14 @@
 	     (format "%s %s\n"
 		     (format irchat-format-string3 prefix (car oma))
 		     rest)))))
-    (if (and (string-match "\007" rest) irchat-beep-on-bells)
-	(progn
-	  (if (not (irchat-get-buffer-window irchat-Dialogue-buffer))
-	      (progn
-		(beep t)
-		(message "IRCHAT: %s is trying to get attention" prefix)))
-	  (if (eq irchat-beep-on-bells 'always)
-	      (beep t))))
+;    (if (and (string-match "\007" rest) irchat-beep-on-bells)
+;	(progn
+;	  (if (not (irchat-get-buffer-window irchat-Dialogue-buffer))
+;	      (progn
+;		(beep t)
+;		(message "IRCHAT: %s is trying to get attention" prefix)))
+;	  (if (eq irchat-beep-on-bells 'always)
+;	      (beep t))))
     ))
 
 (defun irchat-run-message-hook-types (hook prefix rest-of-line)

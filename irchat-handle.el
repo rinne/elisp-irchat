@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-handle.el,v 3.15 1997/05/05 12:49:49 tri Exp $
+;;;  $Id: irchat-handle.el,v 3.16 1997/06/10 11:05:04 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright in(eval-wfo
 
@@ -179,8 +179,8 @@
 	   (irchat-ignore-this-p prefix irchat-userathost)
 	   (irchat-msg-from-ignored prefix rest))
       nil
-    (if (and (string-match "\007" rest) irchat-beep-on-bells)
-	(beep t))
+;    (if (and (string-match "\007" rest) irchat-beep-on-bells)
+;	(beep t))
     (string-match "^\\([^ ]+\\) :\\(.*\\)" rest)
     (let* ((msg-encrypted-p nil)
 	   (msg-suspicious-p nil)
