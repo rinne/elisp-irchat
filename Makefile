@@ -2,7 +2,7 @@
 #
 # Makefile for irchat
 #
-# $Id: Makefile,v 3.12 1998/05/26 14:55:35 tri Exp $
+# $Id: Makefile,v 3.13 1998/06/23 14:28:28 tri Exp $
 #
 
 #
@@ -46,6 +46,7 @@ XOBJS 	=                       \
 	irchat-global-kill.elc	\
 	b64.elc			\
 	crc32.elc		\
+	rc4.elc			\
 	idea.elc		\
 	irchat-crypt.elc	\
 	irchat-obsolete.elc
