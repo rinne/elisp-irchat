@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-hooks.el,v 1.2 1997/02/18 12:31:25 too Exp $
+;;;  $Id: irchat-hooks.el,v 3.1 1997/02/24 16:00:02 tri Exp $
 ;;;
 ;;;  Example hooks to customize irchat. These are copy-pasted from 2.2beta
 ;;;  and modified a bit. The might or might not work. The general idea is 

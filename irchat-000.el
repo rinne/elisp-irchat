@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-000.el,v 1.2 1997/02/18 12:31:25 too Exp $
+;;;  $Id: irchat-000.el,v 3.1 1997/02/24 16:00:02 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 

@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-vars.el,v 1.9 1997/02/21 12:55:24 too Exp $
+;;;  $Id: irchat-vars.el,v 3.1 1997/02/24 16:00:02 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -136,6 +136,30 @@ killed again if automagic reconnect is too fast.")
 (defvar irchat-format-string5 "(%s:%s)"
   "*Format string for arriving messages to other channel from outside the channel.")
 
+(defvar irchat-myformat-string-e ">>"
+  "*Format for own messages. (encrypted)")
+
+(defvar irchat-format-string-e ">>%s<<"
+  "*Format string for private messages being sent. (encrypted)")
+
+(defvar irchat-format-string0-e "--%s--"
+  "*Format string for arriving NOTICE messages. (encrypted)")
+
+(defvar irchat-format-string1-e "==%s=="
+  "*Format string for arriving private messages. (encrypted)")
+
+(defvar irchat-format-string2-e "<<%s>>"
+  "*Format string for arriving messages to current channel. (encrypted)")
+
+(defvar irchat-format-string3-e "<<%s:%s>>"
+  "*Format string for arriving messages to current channel from outside the channel. (encrypted)")
+
+(defvar irchat-format-string4-e "((%s))"
+  "*Format string for arriving messages to other channel from outside the channel. (encrypted)")
+
+(defvar irchat-format-string5-e "((%s:%s))"
+  "*Format string for arriving messages to other channel from outside the channel. (encrypted)")
+
 (defvar irchat-change-prefix ""
   "*String to add before any change msg, used for customisation of
 IRCHAT to suit old users of the irc-loser-client.")
@@ -232,6 +256,18 @@ Default is what (system-name) returns.")
 
 (defvar irchat-timestamp-format "*** Time: %s"
   "*Format-string for timestamp.")
+
+;;;
+;;;  Crypt
+;;;
+(defvar irchat-crypt-known-keys '() 
+  "String list containing encryption keys.  e.g. '(\"foo\" \"bar\")")
+(defvar irchat-crypt-default-keys '() 
+  "List containing pairs of addresses and associated default keys.  e.g '((\"#42\" . \"foo\") (\"#xyz\" . \"zappa\"))")
+(defvar irchat-crypt-timestamp-tolerance 300
+  "Allow incoming messages to have N seconds old timestamp.")
+(defvar irchat-crypt-ignore-suspicious-messages nil
+  "If t, ignore messages with invalid nick or timestamp.")  ;; not yet!
 
 ;;;
 ;;;  Conversions: Not used.

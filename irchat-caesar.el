@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-caesar.el,v 1.2 1997/02/18 12:31:25 too Exp $
+;;;  $Id: irchat-caesar.el,v 3.1 1997/02/24 16:00:02 tri Exp $
 ;;;
 ;;; caesar-region written by phr@prep.ai.mit.edu  Nov 86
 ;;; Modified by tower@prep Nov 86

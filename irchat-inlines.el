@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-inlines.el,v 1.2 1997/02/18 12:31:25 too Exp $
+;;;  $Id: irchat-inlines.el,v 3.1 1997/02/24 16:00:02 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -120,6 +120,14 @@
 	    list (cdr list)
 	    item (car list)))
     result))
+
+
+(defsubst assoc-ci-string (key lst)
+  (assoc-if
+   (function
+    (lambda (x)
+      (string-ci-equal x key)))
+   lst))
 
 
 (defsubst matching-substring (string arg)
