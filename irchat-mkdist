@@ -1,6 +1,6 @@
 #! /bin/sh
 #
-# $Id: irchat-mkdist,v 1.8 1998/05/26 14:57:04 tri Exp $
+# $Id: irchat-mkdist,v 1.9 1999/10/03 10:13:29 tri Exp $
 #
 # This file is part of irchat.  Command irchat-mkdist creates 
 # a snapshot of irchat current.  This file itself does not go 
@@ -54,7 +54,7 @@ co -l irchat-version.el &&
        rm -f "$ttt"
        for i in ./*
        do
-         cat "$i" | awk 'BEGIN { s = 1; }
+         cat "$i" | gawk 'BEGIN { s = 1; }
                          { if      (match($0, "^... BEGIN NODIST")) { s = 0 }
                            else if (match($0, "^... END NODIST"))   { s = 1 }
                            else if (s == 1) { print $0 } }' > "$ttt"
