@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-400.el,v 3.9 1997/11/11 14:46:39 tri Exp $
+;;;  $Id: irchat-400.el,v 3.10 1997/11/11 14:49:29 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -127,7 +127,7 @@
 	      (setq onick (matching-substring rest 1))
 	      (setq wnick (matching-substring rest 2)))
 	  (if (string-match "^ *\\([^ ]+\\) :.*" rest)
-	      (setq (matching-substring rest 1))))
+	      (setq onick (matching-substring rest 1))))
 	(if (stringp onick)
 	    (setq irchat-real-nickname onick))
 	(message 
