@@ -4,9 +4,9 @@
 ;;;  IDEA encryption in elisp.  Cool, ha?
 ;;;  ----------------------------------------------------------------------
 ;;;  Created      : Thu Jun 29 08:11:25 1995 tri
-;;;  Last modified: Tue Sep 14 20:09:11 1999 tri
+;;;  Last modified: Sat Jun 28 17:24:37 2003 tri
 ;;;  ----------------------------------------------------------------------
-;;;  Copyright © 1995-1999
+;;;  Copyright © 1995-1999, 2003
 ;;;  Timo J. Rinne <tri@iki.fi>
 ;;; 
 ;;;  Address: Cirion oy, PO-BOX 250, 00121 Helsinki, Finland
@@ -18,7 +18,7 @@
 ;;;  irchat-copyright.el applies only if used with irchat IRC client.
 ;;;  Contact the author for additional copyright info.
 ;;;
-;;;  $Id: idea.el,v 3.23 1999/09/14 17:09:17 tri Exp $
+;;;  $Id: idea.el,v 3.24 2003/06/28 14:28:57 tri Exp $
 ;;;
 
 (eval-and-compile  
@@ -575,10 +575,10 @@
 
 (defun idea-fixed-string-to-block (str)
   "Convert 8 byte STRING to idea block"
-  (list (idea-| (idea-<< (elt str 0) 8) (elt str 1))
-	(idea-| (idea-<< (elt str 2) 8) (elt str 3))
-	(idea-| (idea-<< (elt str 4) 8)	(elt str 5))
-	(idea-| (idea-<< (elt str 6) 8)	(elt str 7))))
+  (list (idea-| (idea-<< (logand (elt str 0) 255) 8) (logand (elt str 1) 255))
+	(idea-| (idea-<< (logand (elt str 2) 255) 8) (logand (elt str 3) 255))
+	(idea-| (idea-<< (logand (elt str 4) 255) 8) (logand (elt str 5) 255))
+	(idea-| (idea-<< (logand (elt str 6) 255) 8) (logand (elt str 7) 255))))
 
 (defun idea-block-to-fixed-string (block)
   "Convert idea BLOCK to 8 byte string"
