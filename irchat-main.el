@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-main.el,v 3.12 1997/03/14 13:45:23 tri Exp $
+;;;  $Id: irchat-main.el,v 3.13 1997/03/14 14:22:57 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -393,21 +393,21 @@ If already connected, just pop up the windows."
 	(if (not (string-equal irchat-awaymsg ""))
 	    (irchat-Command-away irchat-awaymsg))
 	(run-hooks 'irchat-Startup-hook)
+
 	(if (not irchat-timers-list-initialized-p)
-	    (progn
-	      (setq irchat-timers   
-		    (append irchat-timers
-			    (list
-		            ;(list nil (function irchat-Command-timestamp) 
-		            ;      irchat-timestamp-interval)
-			     (list nil (function irchat-Command-pollnames) 
-				   irchat-pollnames-interval)
-			     (list nil (function irchat-Command-keepalive)
-				   irchat-keepalive-interval)
-		            ;(list nil (function irchat-check-buffers)
+	    (setq irchat-timers   
+		  (append irchat-timers
+			  (list
+		          ;(list nil (function irchat-Command-timestamp) 
+		          ;      irchat-timestamp-interval)
+			   (list nil (function irchat-Command-pollnames) 
+				 irchat-pollnames-interval)
+			   (list nil (function irchat-Command-keepalive)
+				 irchat-keepalive-interval)
+		          ;(list nil (function irchat-check-buffers)
 		             ;     irchat-checkbuffer-interval)
-			     )))
-	      (setq irchat-timers-list-initialized-p t)))
+			   ))
+		  irchat-timers-list-initialized-p t))
 	(setq 
 	 irchat-obarray (make-vector irchat-obarray-size nil)
 	 irchat-timers
@@ -416,7 +416,7 @@ If already connected, just pop up the windows."
 		(lambda (timer)
 		  (if (nth 0 timer)
 		      (irchat-cancel-timer (nth 0 timer)))
-		  (list (irchat-start-timer (nth 1 timer) (nth 2 timer)))))
+		  (irchat-start-timer (nth 1 timer) (nth 2 timer))))
 	       irchat-timers))
 
 	(irchat-maybe-poll)
