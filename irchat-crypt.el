@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-crypt.el,v 3.7 1997/03/05 13:41:39 tri Exp $
+;;;  $Id: irchat-crypt.el,v 3.8 1997/03/05 22:28:30 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -34,12 +34,12 @@
 	  (setq lst (cdr lst))))))
 
 (defun irchat-read-passphrase (&optional prompt)
-  "PROMPT for passphrase.  Use comint if possible."
+  "PROMPT for passphrase.  Use secure keyboard if possible."
   (if (null prompt)
       (setq prompt ""))
-  (if (and (fboundp 'comint-read-noecho)
-	   irchat-crypt-use-comint-on-passphrase)
-      (comint-read-noecho prompt)
+  (if (and (fboundp 'read-passwd)
+	   irchat-crypt-secure-passphrase-read)
+      (read-passwd prompt)
     (read-from-minibuffer prompt)))
 
 (defun irchat-Command-add-new-key (key-var &optional interactive-p)
