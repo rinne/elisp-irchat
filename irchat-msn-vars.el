@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn-vars.el,v 3.1 2002/06/04 15:47:27 tri Exp $
+;;;  $Id: irchat-msn-vars.el,v 3.2 2002/06/04 20:02:08 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -11,9 +11,8 @@
 ;;;
 ;;; Public variables.
 ;;;
-(defvar irchat-msn-server '("64.4.13.58"
-			    "64.4.12.47")
-  "*Primary MSN Messenger server(s).")
+(defvar irchat-msn-server '("64.4.13.58")
+  "*Primary MSN Messenger server(s).  List can contain many addresses.")
 (defvar irchat-msn-service 1863
   "MSN Messenger port")
 (defvar irchat-msn-uid nil
