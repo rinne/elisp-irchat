@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-vars.el,v 3.14 1997/03/13 15:25:18 kny Exp $
+;;;  $Id: irchat-vars.el,v 3.15 1997/03/18 10:06:02 jtp Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -369,7 +369,7 @@ The last ignores all messages that contain the word `fuck`.
   "*A list of buffers where 500 messages to me are sent.")
 
 (defvar irchat-debugmsg nil
-  "*Message to front of debug info.")
+  "*String to add in front of debug messages.")
 
 (defvar irchat-compress-changes t
   "*Set to t if we want instant compressed messages in the old format.")
