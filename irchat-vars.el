@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-vars.el,v 3.33 1998/01/27 16:37:04 tri Exp $
+;;;  $Id: irchat-vars.el,v 3.34 1998/03/24 09:25:35 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -104,6 +104,15 @@ killed again if automagic reconnect is too fast.")
 
 (defvar irchat-Exit-hook nil
   "*A hook executed when signing off IRC.")
+
+;;;
+;;;  MULE coding systems
+;;;
+(defvar irchat-send-coding-system 'iso-8859-1
+  "String coding system for sending.")
+
+(defvar irchat-receive-coding-system 'iso-8859-1
+   "String coding system for reading.")
 
 ;;;
 ;;;  DCC
