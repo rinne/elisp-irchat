@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-misc.el,v 3.36 1998/05/24 10:44:02 tri Exp $
+;;;  $Id: irchat-misc.el,v 3.37 1998/05/24 11:39:06 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -147,6 +147,36 @@
 	(format "%s (%s)" body flags)
       body)))
 
+
+(defun irchat-insert-to-debug (str prefix)
+  "Insert STR to debug buffer prefixed by PREFIX."
+  (if (and irchat-debug-buffer (get-buffer irchat-debug-buffer))
+      (let ((curbuf (current-buffer)))
+	(setq str (irchat-replace-in-string str "\r" "\\r"))
+	(setq str (irchat-replace-in-string str "\n\n\n\n\n\n\n" "\n"))
+	(setq str (irchat-replace-in-string str "\n\n\n\n\n\n" "\n"))
+	(setq str (irchat-replace-in-string str "\n\n\n\n\n" "\n"))
+	(setq str (irchat-replace-in-string str "\n\n\n\n" "\n"))
+	(setq str (irchat-replace-in-string str "\n\n\n" "\n"))
+	(setq str (irchat-replace-in-string str "\n\n" "\n"))
+	(setq str (irchat-replace-in-string str "\n$" ""))
+	(set-buffer irchat-debug-buffer)
+	(let* ((dbgwin (irchat-get-buffer-window irchat-debug-buffer))
+	       (wp (if dbgwin (window-point dbgwin) nil))
+	       (pm (point-max)))
+	  (save-excursion
+	    (goto-char (point-max))
+	    (insert (format "%s%s%s\n" 
+			    (if (stringp irchat-debugmsg) irchat-debugmsg "")
+			    (if (stringp prefix) prefix "")
+			    (if (stringp str) str ""))))
+	  (if (and wp (>= wp pm))
+	      (irchat-scroll-if-visible dbgwin)))
+	(set-buffer curbuf)
+	t)
+    nil))
+
+
 (defun irchat-Dialogue-insert-message (buffer 
 				       absolute-prefix 
 				       format-string
@@ -255,6 +285,7 @@
 			     (length sndstr)))
 	    (if irchat-beep-on-bells
 		(beep))))
+      (irchat-insert-to-debug sndstr "-> ")
       (process-send-string irchat-server-process sndstr))
     (setq ditem (downcase item))
     (if (string-match "^list" (downcase ditem))
