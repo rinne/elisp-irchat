@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-handle.el,v 3.28 1998/05/23 12:37:41 tri Exp $
+;;;  $Id: irchat-handle.el,v 3.29 1998/06/29 11:42:35 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -165,7 +165,11 @@
 
 
 (defun irchat-handle-ping-msg (prefix rest)
-  (irchat-send "PONG yourself")
+  (if (string-match "^\\([^ ][^ ]*\\)" rest)
+      (irchat-send "PONG %s: %s" 
+		   irchat-real-nickname)
+		   (matching-substring rest 1))
+    (irchat-send "PONG yourself"))
   (irchat-Command-timestamp-if-interval-expired t)
   (irchat-maybe-poll))
 
