@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-crypt.el,v 3.3 1997/02/26 12:38:33 tri Exp $
+;;;  $Id: irchat-crypt.el,v 3.4 1997/02/27 10:19:14 jsl Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -116,7 +116,7 @@
 	  ((null key)
 	   message)
 	  (t (irchat-make-encrypted-message 
-	      (concat irchat-nickname 
+	      (concat irchat-real-nickname 
 		      "" 
 		      (irchat-generate-hex-timestamp)
 		      ""

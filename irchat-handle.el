@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-handle.el,v 3.5 1997/02/26 16:43:17 too Exp $
+;;;  $Id: irchat-handle.el,v 3.6 1997/02/27 10:19:14 jsl Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright in(eval-wfo
 
@@ -22,7 +22,7 @@
 
 (defun irchat-handle-channel-msg (prefix rest)
   (let ((ispart (string= rest "0")))
-    (if (string= prefix irchat-nickname)
+    (if (string= prefix irchat-real-nickname)
 	(progn
 	  (setq irchat-current-channel rest)
 	  (setq irchat-channel-indicator
@@ -46,8 +46,8 @@
   (put (intern rest irchat-obarray) 'chnl 
        (get (intern prefix irchat-obarray) 'chnl))
   (put (intern prefix irchat-obarray) 'chnl nil)
-  (if (string= prefix irchat-nickname)
-      (setq irchat-nickname rest))
+  (if (string= prefix irchat-real-nickname)
+      (setq irchat-real-nickname rest))
   (irchat-w-insert irchat-D-buffer 
 		   (format "%s%s is now known as %s\n" 
 			   irchat-change-prefix prefix rest)))
@@ -187,14 +187,14 @@
 		  (progn
 		    ;; only private messages to us get time-stamp
 		    (if (and (string-equal "A" irchat-away-indicator) 
-			     (string-ci-equal chnl irchat-nickname))
+			     (string-ci-equal chnl irchat-real-nickname))
 			(setq temp (format "%s (%s)" temp 
 					   (if irchat-format-time-function
 					       (apply irchat-format-time-function
 						      (list (current-time-string)))
 					     (current-time-string)))))
 		    (cond
-		     ((string-ci-equal chnl irchat-nickname)
+		     ((string-ci-equal chnl irchat-real-nickname)
 		      (irchat-w-insert irchat-P-buffer 
 				       (format "%s %s\n" 
 					       (format (if msg-encrypted-p
@@ -233,7 +233,7 @@
 							 prefix chnl) temp)))))
 
 		    (or (irchat-get-buffer-window (current-buffer))
-			(not (string-ci-equal chnl irchat-nickname))
+			(not (string-ci-equal chnl irchat-real-nickname))
 			(message "IRCHAT: A private message has arrived from %s" prefix)))))))))))
 
 
@@ -251,7 +251,7 @@
 	  (setq temp (irchat-ctl-a-msg prefix chnl temp)))
       (if (not (string= temp ""))
 	  (cond
-	   ((string-ci-equal chnl irchat-nickname)
+	   ((string-ci-equal chnl irchat-real-nickname)
 	    (irchat-w-insert irchat-D-buffer 
 			     (format "%s %s\n" 
 				     (format irchat-format-string0 prefix) temp)))
@@ -368,7 +368,7 @@
       (let ((match1 (matching-substring rest 1))
 	    (match2 (matching-substring rest 2))
 	    (match3 (matching-substring rest 3)))
-	(if (string= match2 irchat-nickname)
+	(if (string= match2 irchat-real-nickname)
 	  (progn
 	    (irchat-w-insert (irchat-pick-buffer match1)
 			     (format "%sYou were kicked off channel %s by %s (%s).\n" irchat-change-prefix match1 prefix match3))
@@ -380,7 +380,7 @@
 					  (format "Channel %s" 
 						  irchat-current-channel) 
 					"No channel"))
-	    (irchat-remove-from-thischannel irchat-nickname match1))
+	    (irchat-remove-from-thischannel irchat-real-nickname match1))
 	  (irchat-w-insert irchat-D-buffer 
 			   (format "%s%s has kicked %s out%s\n" 
 				   irchat-change-prefix prefix match2
@@ -412,7 +412,7 @@
 (defun irchat-handle-join-msg (prefix rest) ; kmk, 14101990
   (if (string-match "\\([^ ]*\\)\ .*" rest)
       (setq rest (matching-substring rest 1))) ;; throw away the channel mode
-  (if (string= prefix irchat-nickname)
+  (if (string= prefix irchat-real-nickname)
       (progn
 	(setq irchat-current-channel rest)
 	(setq irchat-current-channels
@@ -440,7 +440,7 @@
 (defun irchat-handle-part-msg (prefix rest) ; kmk, 14101990
   (if (string-match "\\([^ ]*\\)\ .*" rest)
       (setq rest (matching-substring rest 1))) ;; throw away user given info.
-  (if (string= prefix irchat-nickname)
+  (if (string= prefix irchat-real-nickname)
       (setq irchat-current-channels
 	    (string-list-ci-delete rest irchat-current-channels)
 	    irchat-current-channel (car irchat-current-channels)

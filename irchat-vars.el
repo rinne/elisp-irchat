@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-vars.el,v 3.9 1997/02/26 15:52:33 jsl Exp $
+;;;  $Id: irchat-vars.el,v 3.10 1997/02/27 10:19:14 jsl Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -53,6 +53,9 @@ Value initialized from the IRCSERVER environment variable if one is set")
 (defvar irchat-nickname (or (getenv "IRCNICK") (user-real-login-name))
   "*The nickname you want to use in IRC.
 Default is the environment variable IRCNICK, or your login name.")
+
+(defvar irchat-real-nickname nil
+  "Internal IRCHAT nickname.")
 
 (defvar irchat-startup-channel nil
   "*The channel to join automatically at startup.

@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-hooks.el,v 3.1 1997/02/24 16:00:02 tri Exp $
+;;;  $Id: irchat-hooks.el,v 3.2 1997/02/27 10:19:14 jsl Exp $
 ;;;
 ;;;  Example hooks to customize irchat. These are copy-pasted from 2.2beta
 ;;;  and modified a bit. The might or might not work. The general idea is 
@@ -123,9 +123,9 @@ LIST"
 		    message)
        (if private
 	   (irchat-own-message (format "*** Action to %s: %s %s"
-				       irchat-privmsg-partner irchat-nickname
+				       irchat-privmsg-partner irchat-real-nickname
 				       message))
-	 (irchat-own-message (format "*** Action: %s %s" irchat-nickname
+	 (irchat-own-message (format "*** Action: %s %s" irchat-real-nickname
 				     message))))))
 
 (setq irchat-Startup-hook '(lambda ()
@@ -154,7 +154,7 @@ LIST"
 
 (defun irchat-ownjoin-hook (prefix rest)
   (if (and (string-match "#eu-opers" rest)
-	   (string-match irchat-nickname prefix))
+	   (string-match irchat-real-nickname prefix))
       (irchat-Command-message "eu-oper" "op"))
   (if (string-match "kuolepois" prefix)
       (setq irchat-arska-mode nil)
@@ -165,7 +165,7 @@ LIST"
 	   (= (match-end 0) (match-end 1)))
       (irchat-send (format "mode %s +o %s" rest prefix)))
   (if (and (string-match "#report" rest)
-	   (not (string-match prefix irchat-nickname)))
+	   (not (string-match prefix irchat-real-nickname)))
       (message "%s (%s) has joined this channel%s"
 	       prefix irchat-userathost
 	       (if (string= (or irchat-current-channel "") rest) ""
@@ -174,7 +174,7 @@ LIST"
 
 (defun irchat-ownpart-hook (prefix rest)
   (if (and (string-match "#report" rest)
-	   (not (string-match prefix irchat-nickname)))
+	   (not (string-match prefix irchat-real-nickname)))
       (message "%s has left this channel%s"
 	       prefix
 	       (if (string= (or irchat-current-channel "") rest) ""
@@ -183,7 +183,7 @@ LIST"
 
 (defun irchat-ownquit-hook (prefix rest)
   (if (and (string-match "#report" rest)
-	   (not (string-match prefix irchat-nickname)))
+	   (not (string-match prefix irchat-real-nickname)))
       (message "%s has left IRC%s"
 	       prefix
 	       (if (= 0 (length rest)) "" (format " (%s)" rest)))

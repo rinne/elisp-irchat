@@ -1,9 +1,9 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-copyright.el,v 3.1 1997/02/24 16:00:02 tri Exp $
+;;;  $Id: irchat-copyright.el,v 3.2 1997/02/27 10:19:14 jsl Exp $
 ;;;
 (defvar irchat-copyright "
-    $Id: irchat-copyright.el,v 3.1 1997/02/24 16:00:02 tri Exp $
+    $Id: irchat-copyright.el,v 3.2 1997/02/27 10:19:14 jsl Exp $
     Internet Relay CHAT interface for GNU Emacs
     Copyright (C) 1989 Tor Lillqvist
  
@@ -49,8 +49,12 @@
 
 ;;;
 ;;;  $Log: irchat-copyright.el,v $
-;;;  Revision 3.1  1997/02/24 16:00:02  tri
-;;;  Promoted revision to 3.1.
+;;;  Revision 3.2  1997/02/27 10:19:14  jsl
+;;;  changed irchat-nickname to irchat-real-nickname
+;;;  users should only change irchat-nickname
+;;;
+;;;Revision 3.1  1997/02/24  16:00:02  tri
+;;;Promoted revision to 3.1.
 ;;;
 ;;;  Revision 1.2  1997/02/13 09:10:47  tri
 ;;;  Added Domo to "current" team.

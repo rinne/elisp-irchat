@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-400.el,v 3.1 1997/02/24 16:00:02 tri Exp $
+;;;  $Id: irchat-400.el,v 3.2 1997/02/27 10:19:14 jsl Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -61,14 +61,14 @@
   "Handle the 433 reply (nickname already in use)"
   (if (not (eq irchat-nick-accepted 'ok))
       (progn
-	(setq irchat-nickname (irchat-iterate-nick irchat-nickname))
-	(setq old-irchat-nickname irchat-nickname)
-	(irchat-send "NICK %s" irchat-nickname)
+	(setq irchat-real-nickname (irchat-iterate-nick irchat-real-nickname))
+	(setq old-irchat-nickname irchat-real-nickname)
+	(irchat-send "NICK %s" irchat-real-nickname)
 	(setq irchat-nick-accepted 'sent))
     (save-excursion
       (set-buffer irchat-Command-buffer)
       (beep)
-      (setq irchat-nickname irchat-old-nickname)
+      (setq irchat-real-nickname irchat-old-nickname)
       (let 
 	  ((nick (if (string-match "^\\([^ ]+\\) +\\([^ ]+\\) +:\\(.*\\)" rest)
 		     (matching-substring rest 2)

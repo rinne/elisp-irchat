@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-commands.el,v 3.5 1997/02/27 07:54:04 jsl Exp $
+;;;  $Id: irchat-commands.el,v 3.6 1997/02/27 10:19:14 jsl Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -171,7 +171,7 @@
 	     (format (format (format "%s %%%%s" (if msg-encrypted-p
 						    irchat-myformat-string-e
 						  irchat-myformat-string))
-			     irchat-nickname) message))))
+			     irchat-real-nickname) message))))
 	t)
     (progn
       (message "IRCHAT: NO text to send")
@@ -447,9 +447,9 @@ contents are updated future sessions."
 		 message)
     (if private
 	(irchat-own-private-message (format "*** Action to %s: %s %s"
-				    irchat-privmsg-partner irchat-nickname
+				    irchat-privmsg-partner irchat-real-nickname
 				    message))
-      (irchat-own-message (format "*** Action: %s %s" irchat-nickname
+      (irchat-own-message (format "*** Action: %s %s" irchat-real-nickname
 				  message)))))
 
 
@@ -601,8 +601,8 @@ With - as argument, list all channels."
   (let ((nickname (irchat-read-nickname nick)))
     (if (not (= (length nickname) 0))
 	(progn 
-	  (setq irchat-old-nickname irchat-nickname)
-	  (setq irchat-nickname nickname)
+	  (setq irchat-old-nickname irchat-real-nickname)
+	  (setq irchat-real-nickname nickname)
 	  (irchat-send "NICK %s" nick))
       (message "IRCHAT: illegal nickname \"%s\"; not changed" nickname))))
 
@@ -1062,9 +1062,9 @@ be sent to the server.  For a list of messages, see irchat-Command-generic."
   (interactive)
   (let ((file (expand-file-name irchat-variables-file)))
     (if (file-exists-p file)
-	(let ((nick irchat-nickname))
+	(let ((nick irchat-real-nickname))
 	  (load-file file)
-	  (setq irchat-nickname nick)
+	  (setq irchat-real-nickname nick)
 	  (irchat-Command-reconfigure-windows)))))
 
 (defun irchat-Command-save-vars ()

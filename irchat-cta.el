@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-cta.el,v 3.2 1997/02/26 09:24:51 too Exp $
+;;;  $Id: irchat-cta.el,v 3.3 1997/02/27 10:19:14 jsl Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -151,7 +151,7 @@
     (irchat-send 
      (format "NOTICE %s :VERSION %s %s :%s for %s" 
 	     from irchat-version emacs-subtype irchat-version emacs-subtype))
-    (if (string-ci-equal chnl irchat-nickname)
+    (if (string-ci-equal chnl irchat-real-nickname)
 	(message (format "CLIENT VERSION query from %s." from))
       (message (format "CLIENT VERSION query from %s (%s)." from chnl)))))
 
