@@ -2,6 +2,10 @@ Sat Jun 28 14:30:20 2003  IRCHAT Distribution Generator <irchat@rinne.iki.fi>
 
 	* Generated release irchat-20030628.
 
+	* Mask characters to 8 bits in crc calculation and encryption.
+          In GNU Emacs 21.1 ?ö is 2294 of which least significant 8
+          bits gives 246 which is correct ISO-8859-1 code.
+
 Sun Dec 15 22:18:43 2002  IRCHAT Distribution Generator <irchat@rinne.iki.fi>
 
 	* Generated release irchat-4.00.
