@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-misc.el,v 1.2 1997/01/31 13:01:48 too Exp $
+;;;  $Id: irchat-misc.el,v 1.3 1997/02/05 14:57:56 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -169,6 +169,10 @@
   (if (fboundp 'window-displayed-height)
       (window-displayed-height win)
     (window-height win)))
+
+(defun irchat-time-difference (t0 t1)
+  "Difference in seconds of two `three integer lists' returned by current-time function."
+  (+ (* (- (car t1) (car t0)) 65536) (- (car (cdr t1)) (car (cdr t0)))))
 
 ;;;
 ;;; eof
