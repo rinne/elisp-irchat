@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn-msg.el,v 3.6 2002/06/09 17:35:56 tri Exp $
+;;;  $Id: irchat-msn-msg.el,v 3.7 2002/06/10 11:05:56 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -58,7 +58,7 @@
     (while (> (length m) 0)
       (let ((l irchat-msn-iso8859-1-to-utf8-table)
 	    (d nil))
-	(if (irchat-msn-possible-utf8-combined-char (elt m 0))
+	(if (not (irchat-msn-possible-utf8-combined-char (elt m 0)))
 	    (setq l '()))
 	(while l
 	  (if (and (not (< (length m) 

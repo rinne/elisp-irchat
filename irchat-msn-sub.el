@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn-sub.el,v 3.9 2002/06/09 17:35:56 tri Exp $
+;;;  $Id: irchat-msn-sub.el,v 3.10 2002/06/10 11:05:56 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -249,7 +249,7 @@
 		      (> (length (cdr m)) 0)
 		      (irchat-msn-message-header-val "Content-type" m)
 		      (string-match "TEXT/IRCHAT-ENCRYPTED" (upcase (irchat-msn-message-header-val "Content-type" m))))
-		 (progn
+		 (let ((c (irchat-decrypt-message (cdr m))))
 		   (irchat-w-insert irchat-MSN-MSG-buffer
 				    (format "%sUnsupported encrypted message from %s <%s>\n"
 					    irchat-msn-error-prefix
@@ -325,7 +325,7 @@
 	   (let ((num (string-to-int (nth 2 parsed)))
 		 (tot (string-to-int (nth 3 parsed)))
 		 (pp-uid (nth 4 parsed))
-		 (pp-name (nth 5 parsed)))
+		 (pp-name (irchat-msn-decode-name (nth 5 parsed))))
 	     (irchat-msn-name-cache-add pp-uid pp-name)
 	     (irchat-w-insert irchat-MSN-buffer 
 			      (format "%s%s <%s> joined %s.\n"
