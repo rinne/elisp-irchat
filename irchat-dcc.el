@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-dcc.el,v 3.1 1997/02/24 16:00:02 tri Exp $
+;;;  $Id: irchat-dcc.el,v 3.2 1997/02/26 16:05:59 too Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 ;;;
@@ -13,7 +13,7 @@
 (defvar irchat-dcc-receive-list nil)
 (defvar irchat-dcc-receive-direct t)
 
-(defun irchat-ctl-a-dcc-msg (from rest)
+(defun irchat-ctl-a-dcc-msg (from chnl rest)
   (irchat-w-insert irchat-D-buffer (format "*** DCC from %s: %s\n" from rest))
   ;; old versions of ircii 2.2.1, do not send file length on DCC request.
   ;; so irchat can not do DCC with them. Sorry. ircii 2.2.9 does it on 
