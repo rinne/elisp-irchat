@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-misc.el,v 3.51 2002/06/20 10:00:09 tri Exp $
+;;;  $Id: irchat-misc.el,v 3.52 2002/11/09 19:40:47 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -285,7 +285,7 @@
     (let ((conv-list irchat-send-convert-list))
       (while conv-list
         (setq item (irchat-replace-in-string item (car (car conv-list))
-                                      (car (cdr (car conv-list)))))
+					     (car (cdr (car conv-list)))))
         (setq conv-list (cdr conv-list))))
     (let* ((sndstr (concat item "\r"))
 	   (len (length sndstr)))
@@ -407,7 +407,8 @@
 
 
 (defun irchat-replace-in-string (str regexp newtext)
-  (if (string-match "XEmacs" emacs-version)
+  (if (and (string-match "XEmacs" emacs-version)
+	   (fboundp 'replace-in-string))
       (replace-in-string str regexp newtext t)
     (save-excursion
       (let ((buf (get-buffer-create "*replace-in-string*")) res)
@@ -419,8 +420,7 @@
           (replace-match newtext t t))
         (setq res (buffer-substring-no-properties (point-min) (point-max)))
         (kill-buffer buf)
-        res)
-      )))
+        res))))
 
 (defun irchat-scroll-if-visible (window)
   (if window (set-window-point window (point-max))))

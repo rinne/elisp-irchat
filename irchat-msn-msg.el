@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn-msg.el,v 3.8 2002/06/10 11:16:05 tri Exp $
+;;;  $Id: irchat-msn-msg.el,v 3.9 2002/11/09 19:40:47 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -83,11 +83,11 @@
 		     "TypingUser: " irchat-msn-uid "\n"
 		     "\n"
 		     "\n")))
-    (setq msg (replace-in-string msg "\n" "\r\n"))
+    (setq msg (irchat-replace-in-string msg "\n" "\r\n"))
     msg))
 
 (defun irchat-msn-make-message (msg &optional encrypted)
-  (setq msg (replace-in-string msg "\r\n" "\n"))
+  (setq msg (irchat-replace-in-string msg "\r\n" "\n"))
   (setq msg (irchat-msn-iso8859-1-to-utf8 msg))
   (let ((cnt (if encrypted "irchat-encrypted" "plain"))
 	(len (length msg)))
@@ -98,11 +98,11 @@
 		      "X-MMS-IM-Format: FN=Microsoft%20Sans%20Serif; EF=; CO=000000; CS=0; PF=22\n"
 		      "\n"
 		      msg))
-    (setq msg (replace-in-string msg "\n" "\r\n"))
+    (setq msg (irchat-replace-in-string msg "\n" "\r\n"))
     msg))
 
 (defun irchat-msn-parse-message (msg)
-  (let ((m (replace-in-string msg "\r" "")))
+  (let ((m (irchat-replace-in-string msg "\r" "")))
     (let ((z (string-match "\n\n" m)))
       (if z
 	  (let ((head (substring m 0 z))
@@ -115,7 +115,7 @@
 			(string-equal (substring body 0 1) "\n"))
 	      (setq body (substring body 1 (length body))))
 	    (if (string-match "\n" body)
-		(setq body (replace-in-string (concat "\n" body) "\n" "\n    ")))
+		(setq body (irchat-replace-in-string (concat "\n" body) "\n" "\n    ")))
 	    (while (or (string-match "^\\(\\([^ \t]*\\):[ \t]*\\([^\n]*\\)\n\\)" head)
 		       (string-match "^\\(\\([^ \t]*\\):[ \t]*\\([^\n]*\\)\\)" head))
 	      (let ((n (matching-substring head 2))

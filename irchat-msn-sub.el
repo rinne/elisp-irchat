@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn-sub.el,v 3.12 2002/11/09 19:01:57 tri Exp $
+;;;  $Id: irchat-msn-sub.el,v 3.13 2002/11/09 19:40:47 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -81,7 +81,7 @@
 	      (conv-process nil)
 	      (conv-buffer nil))
 	  (setq conv-buffer (get-buffer-create (concat "*"
-						       (replace-in-string conv-name "\\$" "")
+						       (irchat-replace-in-string conv-name "\\$" "")
 						       "*")))
 	  (set-buffer conv-buffer)
 	  (kill-all-local-variables)
@@ -258,7 +258,7 @@
 				       "\n"))
 		     (if partner
 			 (let ((cmsg (irchat-msn-iso8859-1-to-utf8
-				      (replace-in-string (cdr m) "\n" " ") t)))
+				      (irchat-replace-in-string (cdr m) "\n" " ") t)))
 			   (if (string-equal (substring cmsg 0 1) "/")
 			       (progn
 				 (setq cmsg (substring cmsg 1 (length cmsg)))
