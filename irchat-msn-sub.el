@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn-sub.el,v 3.5 2002/06/06 14:36:23 tri Exp $
+;;;  $Id: irchat-msn-sub.el,v 3.6 2002/06/08 11:57:19 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -237,7 +237,7 @@
 		  (progn
 		    (setq irchat-msn-recipient-cache (if (> (length (nth 6 p)) 1) (nth 1 p) pp-uid))
 		    (irchat-msn-name-cache-add pp-uid pp-name)
-		    (irchat-w-insert irchat-MSN-buffer
+		    (irchat-w-insert irchat-MSN-MSG-buffer
 				     (concat 
 				      (if (> (length (nth 6 p)) 1)
 					  (format irchat-msn-format-string-in2 pp-uid (nth 1 p))
@@ -287,7 +287,7 @@
 			(irchat-msn-sub-server-remove-with-process (nth 0 p))
 			(setq irchat-msn-sub-servers (cons (irchat-set-nth 7 p nil)
 							   irchat-msn-sub-servers))
-			(irchat-w-insert irchat-MSN-buffer
+			(irchat-w-insert irchat-MSN-MSG-buffer
 					 (concat 
 					  (format 
 					   (if (or (null (nth 2 pending))

@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn.el,v 3.10 2002/06/08 11:37:10 tri Exp $
+;;;  $Id: irchat-msn.el,v 3.11 2002/06/08 11:57:19 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -49,7 +49,9 @@
 (defvar irchat-msn-block-list '()
   "*BL Block List - Users who are not allowed to see your status.  (BL)")
 (defvar irchat-MSN-buffer (list irchat-Dialogue-buffer)
-  "*A list of buffers where MSN messages to me are sent.")
+  "*A list of buffers where MSN messages and status info are sent.")
+(defvar irchat-MSN-MSG-buffer (list irchat-Dialogue-buffer irchat-Private-buffer)
+  "*A list of buffers where MSN messages are sent.")
 
 ;;;
 ;;; Constants
