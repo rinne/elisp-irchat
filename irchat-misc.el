@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-misc.el,v 3.35 1998/05/23 18:16:58 tri Exp $
+;;;  $Id: irchat-misc.el,v 3.36 1998/05/24 10:44:02 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -238,6 +238,7 @@
   (irchat-w-insert irchat-P-buffer (format "%s\n" message)))
 
 (defun irchat-send (&rest args)
+  "Send the protocol string to the irc server."
   (irchat-reset-idle)
   (let ((item (irchat-encode-coding-string (apply 'format args)))
 	ditem)
@@ -275,12 +276,19 @@
 (defvar irchat-send-delayed-timer nil)
 
 (defun irchat-send-delayed-start-timer ()
+  "Start delayed send timer.  This is done automagically in delayed send."
   (if irchat-send-delayed-timer
       nil
     (setq irchat-send-delayed-timer
 	  (irchat-start-timer 'irchat-commit-delayed-send 1))))
 
+(defun irchat-send-delayed-reset ()
+  "Wipe delayed sends.  This is done automagically in quit."
+  (setq irchat-send-delayed-queue '())
+  (irchat-send-delayed-cancel-timer))
+
 (defun irchat-send-delayed-cancel-timer ()
+  "Cancel delayed send timer.  This is done automagically when all gets sent."
   (if irchat-send-delayed-timer
       (progn
 	(irchat-cancel-timer irchat-send-delayed-timer)
@@ -289,6 +297,7 @@
     nil))
 
 (defun irchat-commit-delayed-send ()
+  "Send one delayed send line.  This is called by timer."
   (let ((l (length irchat-send-delayed-queue)))
     (if (> l 0)
 	(let ((r (nth (- l 1) irchat-send-delayed-queue))
@@ -302,6 +311,7 @@
 	(irchat-send-delayed-cancel-timer))))
 
 (defun irchat-send-delayed (format &rest args)
+  "Same as irchat-send but queues send."
   (irchat-reset-idle)
   (let ((item (apply 'format format args)))
     (setq irchat-send-delayed-queue (cons item irchat-send-delayed-queue))
