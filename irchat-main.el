@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-main.el,v 3.24 1997/10/19 19:28:46 tri Exp $
+;;;  $Id: irchat-main.el,v 3.25 1997/10/20 06:06:39 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -359,7 +359,9 @@ If optional argument CONFIRM is non-nil, ask which IRC server to connect.
 If already connected, just pop up the windows."
   (interactive "P")
   (if (file-exists-p (expand-file-name irchat-variables-file))
-      (load (expand-file-name irchat-variables-file)))
+      (progn
+	(load (expand-file-name irchat-variables-file))
+	(irchat-append-obsolete-vars)))
   (if (irchat-server-opened)
       (irchat-configure-windows)
     (unwind-protect
