@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-misc.el,v 3.14 1997/03/23 22:28:56 tri Exp $
+;;;  $Id: irchat-misc.el,v 3.15 1997/06/10 10:44:36 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -46,6 +46,21 @@
                      (setq killit t))))
               irchat-kill-nickname)
       killit)))
+
+
+(defun irchat-Dialogue-buffer-p (buffer)
+  "Is BUFFER the irchat-Dialogue-buffer or it's name?" 
+  (cond ((and (stringp buffer)
+	      (stringp irchat-Dialogue-buffer)
+	      (string= buffer irchat-Dialogue-buffer))
+	 t)
+	((and (bufferp buffer)
+	      (stringp irchat-Dialogue-buffer))
+	 (equal buffer (get-buffer irchat-Dialogue-buffer)))
+	((and (stringp buffer)
+	      (bufferp irchat-Dialogue-buffer))
+	 (equal (get-buffer buffer) irchat-Dialogue-buffer))
+	(t nil)))
 
 
 (defun irchat-own-message (message)
