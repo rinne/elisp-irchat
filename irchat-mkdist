@@ -1,6 +1,6 @@
 #! /bin/sh
 #
-# $Id: irchat-mkdist,v 1.6 1997/10/06 14:03:14 tri Exp $
+# $Id: irchat-mkdist,v 1.7 1998/05/26 09:46:08 tri Exp $
 #
 # This file is part of irchat.  Command irchat-mkdist creates 
 # a snapshot of irchat current.  This file itself does not go 
@@ -52,12 +52,10 @@ co -l irchat-version.el &&
      chmod 755 "$distname" &&
      (
           cd "$distname" &&
-          gmake xemacs2 &&
-          rm -f irchat2.el &&
-          mv irchat2.elc irchat-xemacs-elc &&
-          gmake gnuemacs2 &&
-          rm -f irchat2.el &&
-          mv irchat2.elc irchat-gnuemacs-elc &&
+          gmake xemacs-compact &&
+          mv irchat.elc irchat-xemacs-elc &&
+          gmake gnuemacs-compact &&
+          mv irchat.elc irchat-gnuemacs-elc &&
           mv irchat-xemacs-elc irchat-xemacs.elc &&
           mv irchat-gnuemacs-elc irchat-gnuemacs.elc
      )
