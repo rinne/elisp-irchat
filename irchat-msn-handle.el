@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn-handle.el,v 3.1 2002/06/04 15:47:27 tri Exp $
+;;;  $Id: irchat-msn-handle.el,v 3.2 2002/06/04 20:21:39 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -252,7 +252,8 @@
 	   (if (eq num tot)
 	       (progn
 		 (setq irchat-msn-lists-in-sync t)
-		 (irchat-Command-msn-list-lists)))
+		 (if irchat-msn-show-lists-in-startup
+		     (irchat-Command-msn-list-lists))))
 	   t))
 	((string-match
 	  "^LST [0-9][0-9]* RL \\([0-9][0-9]*\\) 0 0"

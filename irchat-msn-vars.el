@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn-vars.el,v 3.2 2002/06/04 20:02:08 tri Exp $
+;;;  $Id: irchat-msn-vars.el,v 3.3 2002/06/04 20:21:39 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -14,14 +14,16 @@
 (defvar irchat-msn-server '("64.4.13.58")
   "*Primary MSN Messenger server(s).  List can contain many addresses.")
 (defvar irchat-msn-service 1863
-  "MSN Messenger port")
+  "*MSN Messenger port")
 (defvar irchat-msn-uid nil
-  "MSN Messenger user id.  Usually a hotmail address.")
+  "*MSN Messenger user id.  Usually a hotmail address.")
 (defvar irchat-msn-uid-password nil
-  "MSN Messenger password of the account.  User will be prompted if nil.")
+  "*MSN Messenger password of the account.  User will be prompted if nil.")
 (defvar irchat-msn-auto-add-reverse-contacts t
-  "Add new reverse contact automatically (if not blocked).")
-
+  "*Add new reverse contact automatically (if not blocked).")
+(defvar irchat-msn-show-lists-in-startup nil
+  "*If non-nil, various MSN lists are dumped to screen on startup.")
+  
 ;;;
 ;;; Format strings
 ;;;
