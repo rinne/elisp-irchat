@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-uah-cache.el,v 1.3 1997/10/19 16:19:16 tri Exp $
+;;;  $Id: irchat-uah-cache.el,v 1.4 1997/10/20 06:48:25 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 ;;;
@@ -25,20 +25,23 @@
 
 (defun irchat-nick-to-uah-init ()
   (setq irchat-nick-to-uah-vector
-	(make-vector irchat-nick-to-uah-vector-length (cons "" "")))
+	(make-vector irchat-nick-to-uah-vector-length (list "" "" 'unknown)))
   (setq irchat-nick-to-uah-pos 0))
 
 
-(defun irchat-nick-to-uah-append (nick uah)
+(defun irchat-nick-to-uah-append (nick uah &optional type)
   "Append NICK UAH tuple into the vector"
   (if (null irchat-nick-to-uah-vector)
       (irchat-nick-to-uah-init))
+  (if (null type)
+      (setq type 'unknown))
   (if (and (stringp nick)
 	   (stringp uah)
 	   (> (length nick) 0)
 	   (> (length uah) 0))
       (progn
-	(aset irchat-nick-to-uah-vector irchat-nick-to-uah-pos (cons nick uah))
+	(aset irchat-nick-to-uah-vector irchat-nick-to-uah-pos 
+	      (list nick uah type))
 	(setq irchat-nick-to-uah-pos (mod (+ irchat-nick-to-uah-pos 1)
 					  irchat-nick-to-uah-vector-length)))))
 
@@ -56,11 +59,14 @@
       (setq pos (if (= pos 0) 
 		    (- irchat-nick-to-uah-vector-length 1)
 		  (- pos 1))))
-    (if (and (string-ci-equal nick (car (elt irchat-nick-to-uah-vector pos)))
-	     (stringp (cdr (elt irchat-nick-to-uah-vector pos)))
-	     (> (length (cdr (elt irchat-nick-to-uah-vector pos))) 0))
-	(cdr (elt irchat-nick-to-uah-vector pos))
-      nil)))
+    (let ((n (nth 0 (elt irchat-nick-to-uah-vector pos)))
+	  (u (nth 1 (elt irchat-nick-to-uah-vector pos)))
+	  (m (nth 2 (elt irchat-nick-to-uah-vector pos))))
+    (if (and (string-ci-equal nick n)
+	     (stringp u)
+	     (> (length u) 0))
+	u
+      nil))))
 
 
 (defun irchat-convert-uah-to-ignore-list (uah)
