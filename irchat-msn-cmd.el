@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn-cmd.el,v 3.3 2002/06/04 20:13:55 tri Exp $
+;;;  $Id: irchat-msn-cmd.el,v 3.4 2002/06/04 23:20:44 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -160,7 +160,15 @@
     (if p
 	(progn
 	  (if (null msg)
-	      (setq msg (read-string (format "Message to %s: " recipient))))
+	      (progn
+		(if irchat-msn-send-typing-notifications
+		    (let ((tn (irchat-msn-make-typing-notification)))
+		      (irchat-msn-send-sub-raw (nth 0 p)
+					       "MSG %d U %d\r\n%s"
+					       (irchat-msn-sub-server-seqno (nth 0 p))
+					       (length tn)
+					       tn)))
+		(setq msg (read-string (format "Message to %s: " recipient)))))
 	  (let ((m (irchat-msn-make-message msg)))
 	    (setq irchat-msn-recipient-cache recipient)
 	    (irchat-w-insert irchat-MSN-buffer
@@ -179,7 +187,7 @@
 				     m)))
       (cond ((irchat-search-contact-list-with-name recipient irchat-msn-online-list)
 	     (if (null msg)
-		 (setq msg (read-string "Message: ")))
+		 (setq msg (read-string (format "Message to %s: " recipient))))
 	     (setq irchat-msn-recipient-cache recipient)
 	     (setq irchat-msn-messages-pending-sb (append irchat-msn-messages-pending-sb
 							  (list (list recipient msg))))

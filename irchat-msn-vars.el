@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn-vars.el,v 3.3 2002/06/04 20:21:39 tri Exp $
+;;;  $Id: irchat-msn-vars.el,v 3.4 2002/06/04 23:20:44 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -23,6 +23,8 @@
   "*Add new reverse contact automatically (if not blocked).")
 (defvar irchat-msn-show-lists-in-startup nil
   "*If non-nil, various MSN lists are dumped to screen on startup.")
+(defvar irchat-msn-send-typing-notifications nil
+  "*If non-nil, send typing notification, while writing a message.")
   
 ;;;
 ;;; Format strings

@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn-msg.el,v 3.2 2002/06/04 19:27:31 tri Exp $
+;;;  $Id: irchat-msn-msg.el,v 3.3 2002/06/04 23:20:44 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -67,7 +67,16 @@
 		  m (substring m 1 (length m))))))
     r))
 
-(defun irchat-msn-make-message (msg)
+(defun irchat-msn-make-typing-notification ()
+  (let ((msg (concat "MIME-Version: 1.0\n"
+		     "Content-Type: text/x-msmsgscontrol\n"
+		     "TypingUser: " irchat-msn-uid "\n"
+		     "\n"
+		     "\n")))
+    (setq msg (replace-in-string msg "\n" "\r\n"))
+    msg))
+
+(defun irchat-msn-make-message (msg &optional headers)
   (setq msg (replace-in-string msg "\r\n" "\n"))
   (setq msg (irchat-msn-iso8859-1-to-utf8 msg))
   (let ((len (length msg)))
