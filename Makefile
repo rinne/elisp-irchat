@@ -2,7 +2,7 @@
 #
 # Makefile for irchat
 #
-# $Id: Makefile,v 1.2 1997/02/05 16:32:57 tri Exp $
+# $Id: Makefile,v 1.3 1997/02/06 13:34:20 tri Exp $
 #
 
 #
@@ -24,6 +24,7 @@ TAR	= gtar
 OBJS 	= \
 	irchat-inlines.elc	\
 	irchat-globals.elc	\
+	irchat-version.elc	\
 	irchat-vars.elc		\
 	irchat-filter.elc	\
 	irchat-dcc.elc		\
