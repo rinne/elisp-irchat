@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-main.el,v 3.31 1998/11/04 10:54:33 tri Exp $
+;;;  $Id: irchat-main.el,v 3.32 1999/11/05 19:40:12 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -779,12 +779,27 @@ One is for entering commands and text, the other displays the IRC dialogue."
 		       (not (pos-visible-in-window-p (point-max) win)))
 		  (progn
 		    (goto-char (point-max))
-		    (vertical-motion (- (or irchat-scroll-step
-					    (1+ (/ (irchat-window-height win) 2)))
-					(irchat-window-height win))
-				     win)
-		    (set-window-start win (point))
-		    (goto-char (point-max)))))
+		    (if (and (string-match "Xemacs" emacs-version)
+			     (string-match "21.1" emacs-version))
+			(progn
+			  (set-window-point win (point-max))
+			  (vertical-motion (/ (- (or irchat-scroll-step
+						     (1+ (/ (irchat-window-height win) 2)))
+						 (irchat-window-height win)) 2)
+					   win)
+			  (set-window-start win (point) t)
+			  (goto-char (point-max))
+			  )
+		      (progn
+			(vertical-motion (- (or irchat-scroll-step
+						(1+ (/ (irchat-window-height win) 2)))
+					    (irchat-window-height win))
+					 win)
+			(set-window-start win (point))
+			(goto-char (point-max))
+			)
+		      )))
+	      )
 	   win-list))
 	(set-buffer obuf)
 	(if (and frozen (irchat-get-buffer-window obuf) (equal obuf nbuf))
