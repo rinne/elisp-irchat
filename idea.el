@@ -4,9 +4,9 @@
 ;;;  IDEA encryption in elisp.  Cool, ha?
 ;;;  ----------------------------------------------------------------------
 ;;;  Created      : Thu Jun 29 08:11:25 1995 tri
-;;;  Last modified: Sun Oct 12 17:45:08 1997 tri
+;;;  Last modified: Tue Jun 23 17:27:21 1998 tri
 ;;;  ----------------------------------------------------------------------
-;;;  Copyright © 1995-1997
+;;;  Copyright © 1995-1998
 ;;;  Timo J. Rinne <tri@iki.fi>
 ;;; 
 ;;;  Address: Cirion oy, PO-BOX 250, 00121 Helsinki, Finland
@@ -18,11 +18,12 @@
 ;;;  irchat-copyright.el applies only if used with irchat IRC client.
 ;;;  Contact the author for additional copyright info.
 ;;;
-;;;  $Id: idea.el,v 3.9 1997/10/16 08:14:24 tri Exp $
+;;;  $Id: idea.el,v 3.10 1998/06/23 14:28:06 tri Exp $
 ;;;
 
 (eval-and-compile  
   (require 'b64)
+  (require 'rc4)
   (require 'crc32))
 
 (eval-and-compile  
@@ -184,6 +185,7 @@
   (if (null version) (setq version idea-default-key-expand-version))
   (cond ((= version 1) (idea-expand-string-to-key-version-1 string))
 	((= version 2) (idea-expand-string-to-key-version-2 string))
+	((= version 3) (idea-expand-string-to-key-version-3 string))
 	(t (error "Unknown key expansion version"))))
 
 (defun idea-expand-string-to-key-version-1 (string)
@@ -261,6 +263,20 @@
 	   (k7 (idea-4hex-to-int (substring v4 0 4)))
 	   (k8 (idea-4hex-to-int (substring v4 4 8))))
       (list k1 k2 k3 k4 k5 k6 k7 k8))))
+
+(defun idea-expand-string-to-key-version-3 (string)
+  "Expand string to full 128bit key (list of 8 16bit ints) (version 3)"
+  (if (= (length string) 0)
+      '(0 0 0 0 0 0 0 0)
+    (let ((v (rc4-random-vector-complex string 16 128 8)))
+      (list (+ (elt v 0)  (* (elt v 1) 256))
+	    (+ (elt v 2)  (* (elt v 3) 256))
+	    (+ (elt v 4)  (* (elt v 5) 256))
+	    (+ (elt v 6)  (* (elt v 7) 256))
+	    (+ (elt v 8)  (* (elt v 9) 256))
+	    (+ (elt v 10) (* (elt v 11) 256))
+	    (+ (elt v 12) (* (elt v 13) 256))
+	    (+ (elt v 14) (* (elt v 15) 256))))))
 
 (defun idea-expand-substring (string)
   (if (= (length string) 0)
