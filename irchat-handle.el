@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-handle.el,v 3.31 1998/06/29 11:56:32 tri Exp $
+;;;  $Id: irchat-handle.el,v 3.32 1998/11/04 10:54:33 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -197,12 +197,12 @@
 	      (irchat-w-insert 
 	       irchat-D-buffer 
 	       (format "%s %s\n"
-		       (format irchat-format-string2 prefix)
+		       (format (irchat-format-string 2 nil) prefix)
 		       rest))
 	    (irchat-w-insert 
 	     irchat-D-buffer
 	     (format "%s %s\n"
-		     (format irchat-format-string3 prefix (car oma))
+		     (format (irchat-format-string 3 nil) prefix (car oma))
 		     rest)))))))
 
 (defun irchat-handle-privmsg-msg (prefix rest)
@@ -308,9 +308,7 @@
 			(irchat-Dialogue-insert-message 
 			 irchat-P-buffer 
 			 x-prefix
-			 (if msg-encrypted-p
-			     irchat-format-string1-e
-			   irchat-format-string1)
+			 (irchat-format-string 1 msg-encrypted-p)
 			 prefix
 			 temp))
 		       ((string-ci-equal chnl (or irchat-current-channel ""))
@@ -318,17 +316,13 @@
 			    (irchat-Dialogue-insert-message
 			     (irchat-pick-buffer chnl)
 			     x-prefix
-			     (if msg-encrypted-p
-				 irchat-format-string2-e
-			       irchat-format-string2)
+			     (irchat-format-string 2 msg-encrypted-p)
 			     prefix
 			     temp)
 			  (irchat-Dialogue-insert-message 
 			   (irchat-pick-buffer chnl)
 			   x-prefix
-			   (if msg-encrypted-p
-			       irchat-format-string4-e
-			     irchat-format-string4)
+			   (irchat-format-string 4 msg-encrypted-p)
 			   prefix
 			   temp)))
 
@@ -337,18 +331,14 @@
 			    (irchat-Dialogue-insert-message 
 			     (irchat-pick-buffer chnl)
 			     x-prefix
-			     (if msg-encrypted-p
-				 irchat-format-string3-e
-			       irchat-format-string3)
+			     (irchat-format-string 3 msg-encrypted-p)
 			     prefix
 			     temp
 			     chnl)
 			  (irchat-Dialogue-insert-message 
 			   (irchat-pick-buffer chnl)
 			   x-prefix
-			   (if msg-encrypted-p
-			       irchat-format-string5-e
-			     irchat-format-string5)
+			   (irchat-format-string 5 msg-encrypted-p)
 			   prefix
 			   temp
 			   chnl))))
@@ -391,28 +381,31 @@
 	      (irchat-w-insert irchat-D-buffer 
 			       (format "%s%s %s\n" 
 				       x-prefix
-				       (format (if msg-encrypted-p
-						   irchat-format-string0-e
-						 irchat-format-string0)
-					       prefix) 
+				       (format 
+					(irchat-format-string 
+					 0 
+					 msg-encrypted-p)
+					prefix) 
 				       temp)))
 	     ((string-ci-equal chnl (or irchat-current-channel ""))
 	      (if (irchat-user-on-this-channel prefix chnl)
 		  (irchat-w-insert (irchat-pick-buffer chnl) 
 				   (format "%s%s %s\n" 
 					   x-prefix
-					   (format (if msg-encrypted-p
-						       irchat-format-string2-e
-						     irchat-format-string2)
-						   prefix) 
+					   (format 
+					    (irchat-format-string 
+					     2
+					     msg-encrypted-p)
+					    prefix) 
 					   temp))
 		(irchat-w-insert (irchat-pick-buffer chnl) 
 				 (format "%s%s %s\n" 
 					 x-prefix
-					 (format (if msg-encrypted-p
-						     irchat-format-string4-e
-						   irchat-format-string4)
-						 prefix) 
+					 (format 
+					  (irchat-format-string 
+					   4
+					   msg-encrypted-p)
+					  prefix) 
 					 temp))))
 
 	     (t;; channel we are joined (not current)
@@ -420,20 +413,21 @@
 		  (irchat-w-insert (irchat-pick-buffer chnl) 
 				   (format "%s%s %s\n" 
 					   x-prefix
-					   (format (if msg-encrypted-p
-						       irchat-format-string3-e
-						     irchat-format-string3)
-						   prefix chnl)
+					   (format 
+					    (irchat-format-string 
+					     3
+					     msg-encrypted-p)
+					    prefix chnl)
 					   temp))
 		(irchat-w-insert (irchat-pick-buffer chnl) 
 				 (format "%s%s %s\n" 
 					 x-prefix
-					 (format (if msg-encrypted-p
-						     irchat-format-string5-e
-						   irchat-format-string5)
-						 prefix chnl) 
+					 (format
+					  (irchat-format-string 
+					   5
+					   msg-encrypted-p)
+					  prefix chnl) 
 					 temp))))))))))
-
 
 (defun irchat-handle-wall-msg (prefix rest)
   "Handle the WALL message."

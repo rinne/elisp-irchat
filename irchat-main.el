@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-main.el,v 3.30 1998/07/11 17:11:16 jtp Exp $
+;;;  $Id: irchat-main.el,v 3.31 1998/11/04 10:54:33 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -364,9 +364,11 @@ If already connected, just pop up the windows."
 	(irchat-append-obsolete-vars)))
   (if (irchat-server-opened)
       (irchat-configure-windows)
-    (message "Initializing crypt keys...")
-    (irchat-init-crypt)
-    (message "Initializing crypt keys...done")
+    (if (irchat-crypt-support-p)
+	(progn
+	  (message "Initializing crypt keys...")
+	  (irchat-init-crypt)
+	  (message "Initializing crypt keys...done")))
     (unwind-protect
 	(progn
 	  (switch-to-buffer (irchat-get-buffer-create irchat-Command-buffer))
@@ -390,7 +392,8 @@ If already connected, just pop up the windows."
 	(irchat-KILLS-setup-buffer)
 	(irchat-IGNORED-setup-buffer)
 	(irchat-WALLOPS-setup-buffer)
-	(irchat-CRYPT-setup-buffer)
+	(if (irchat-crypt-support-p)
+	    (irchat-CRYPT-setup-buffer))
 	(irchat-configure-windows)
 	(setq irchat-current-channels nil)
 	(irchat-send-delayed-reset)
@@ -554,14 +557,15 @@ One is for entering commands and text, the other displays the IRC dialogue."
 
 (defun irchat-set-crypt-indicator ()
   "Set crypt mode indicator"
-  (setq irchat-crypt-indicator
-	(cond ((and irchat-crypt-mode-active
-		    (not (null irchat-current-channel))
-		    (irchat-crypt-address-has-default-key-p 
-		     irchat-current-channel))
-	       "C")
-	      (irchat-crypt-mode-active "c")
-	      (t "-"))))
+  (if (irchat-crypt-support-p)
+      (setq irchat-crypt-indicator
+	    (cond ((and irchat-crypt-mode-active
+			(not (null irchat-current-channel))
+			(irchat-crypt-address-has-default-key-p 
+			 irchat-current-channel))
+		   "C")
+		  (irchat-crypt-mode-active "c")
+		  (t "-")))))
 
 
 (defun irchat-Dialogue-setup-buffer ()

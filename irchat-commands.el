@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-commands.el,v 3.36 1998/10/06 13:00:04 tri Exp $
+;;;  $Id: irchat-commands.el,v 3.37 1998/11/04 10:54:33 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -183,16 +183,16 @@
 		    (cond ((null own-message)
 			   (irchat-own-private-message 
 			    (format (format "%s %%s"
-					    (if msg-encrypted-p
-						irchat-format-string-e
-					      irchat-format-string))
+					    (irchat-format-string 
+					     nil
+					     msg-encrypted-p))
 				    irchat-current-chat-partner message)))
 			  ((> (length own-message) 0)
 			   (irchat-own-private-message 
 			    (format (format "%s %%s"
-					    (if msg-encrypted-p
-						irchat-format-string-e
-					      irchat-format-string))
+					    (irchat-format-string 
+					     nil
+					     msg-encrypted-p))
 				    irchat-current-chat-partner own-message)))
 			  (t '())))
 		(message (substitute-command-keys 
@@ -212,16 +212,16 @@
 		(cond ((null own-message)
 		       (irchat-own-message
 			(format (format (format "%s %%%%s" 
-						(if msg-encrypted-p
-						    irchat-myformat-string-e
-						  irchat-myformat-string))
+					    (irchat-format-string 
+					     nil
+					     msg-encrypted-p))
 					irchat-real-nickname) message)))
 		      ((> (length own-message) 0)
 		       (irchat-own-message
 			(format (format (format "%s %%%%s" 
-						(if msg-encrypted-p
-						    irchat-myformat-string-e
-						  irchat-myformat-string))
+					    (irchat-format-string 
+					     nil
+					     msg-encrypted-p))
 					irchat-real-nickname) own-message)))
 		      (t '())))))
 	  t)
@@ -782,12 +782,12 @@ into own-message-var"
       (if (or (null own-message-var)
 	      (> (length own-message-var) 0))
 	  (irchat-own-private-message 
-	   (format (format "%s %%s" (if (or msg-encrypted-p
-					    (and (not (null own-message-var))
-						 (string-match "^|\\*E\\*|" 
-							       msg)))
-					irchat-format-string-e
-				      irchat-format-string))
+	   (format (format "%s %%s" 
+			   (irchat-format-string 
+			    nil
+			    (or msg-encrypted-p
+				(and (not (null own-message-var))
+				     (string-match "^|\\*E\\*|" msg)))))
 		   message-nick-var (if own-message-var
 					own-message-var
 				      message)))))))
@@ -966,11 +966,14 @@ be a string to send NICK upon entering."
 
 (defun irchat-Command-toggle-crypt ()
   (interactive)
-  (if irchat-crypt-mode-active
-      (setq irchat-crypt-mode-active nil)
-    (setq irchat-crypt-mode-active t))
-  (irchat-set-crypt-indicator)
-  (switch-to-buffer (current-buffer)))
+  (if (irchat-crypt-support-p)
+      (progn
+	(if irchat-crypt-mode-active
+	    (setq irchat-crypt-mode-active nil)
+	  (setq irchat-crypt-mode-active t))
+	(irchat-set-crypt-indicator)
+	(switch-to-buffer (current-buffer)))
+    (error "Crypto not supported in this version of Irchat.")))
 
 
 (defun irchat-Command-freeze ()

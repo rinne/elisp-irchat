@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-hooks.el,v 3.3 1998/10/06 11:47:06 tri Exp $
+;;;  $Id: irchat-hooks.el,v 3.4 1998/11/04 10:54:33 tri Exp $
 ;;;
 ;;;  Example hooks to customize irchat. These are copy-pasted from 2.2beta
 ;;;  and modified a bit. The might or might not work. The general idea is 
@@ -58,7 +58,9 @@ LIST"
 	  (setq prefix (concat "<" prefix "> ")))
 	(if (and (string= prefix "")
 		 (string-match (format "^%s.*" 
-				       (format irchat-format-string1)) rest))
+				       (format (irchat-format-string 1 
+								     nil))) 
+			       rest))
 	    nil
 	  (progn 
 	    (string-match "[^ ]* :\\(.*\\)" rest)
@@ -78,7 +80,9 @@ LIST"
 	  (setq prefix (concat "<" prefix "> ")))
 	(if (and (string= prefix "")
 		 (string-match (format "^%s.*" 
-				       (format irchat-format-string1)) rest))
+				       (format (irchat-format-string 1
+								     nil)))
+			       rest))
 	    nil
 	  (progn 
 	    (string-match "[^ ]* :\\(.*\\)" rest)

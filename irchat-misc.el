@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-misc.el,v 3.45 1998/10/06 11:47:06 tri Exp $
+;;;  $Id: irchat-misc.el,v 3.46 1998/11/04 10:54:33 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -725,6 +725,35 @@
 	    (concat (substring str 0 (- limit 2)) "..")
 	  (concat (substring str 0 (- limit 3)) "...")))
     str))
+
+(defun irchat-crypt-support-p ()
+  "Is crypto support included?"
+  (and (boundp irchat-crypt-support)
+       irchat-crypt-support))
+
+(defun irchat-format-string (num &optional encrypted)
+  (cond ((null num) (if (and encrypted (boundp 'irchat-format-string-e))
+			irchat-format-string-e
+		      irchat-format-string))
+	((= 0 num) (if (and encrypted (boundp 'irchat-format-string0-e))
+		       irchat-format-string0-e
+		     irchat-format-string0))
+	((= 1 num) (if (and encrypted (boundp 'irchat-format-string1-e))
+		       irchat-format-string1-e
+		     irchat-format-string1))
+	((= 2 num) (if (and encrypted (boundp 'irchat-format-string2-e))
+		       irchat-format-string2-e
+		     irchat-format-string2))
+	((= 3 num) (if (and encrypted (boundp 'irchat-format-string3-e))
+		       irchat-format-string3-e
+		     irchat-format-string3))
+	((= 4 num) (if (and encrypted (boundp 'irchat-format-string4-e))
+		       irchat-format-string4-e
+		     irchat-format-string4))
+	((= 5 num) (if (and encrypted (boundp 'irchat-format-string5-e))
+		       irchat-format-string5-e
+		     irchat-format-string5))
+	(t "")))
 
 (eval-and-compile (provide 'irchat-misc))
 ;;;

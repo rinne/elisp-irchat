@@ -2,7 +2,7 @@
 #
 # Makefile for irchat
 #
-# $Id: Makefile,v 3.15 1998/06/30 08:38:10 tri Exp $
+# $Id: Makefile,v 3.16 1998/11/04 10:54:33 tri Exp $
 #
 
 #
@@ -21,12 +21,23 @@ EMACSCMD = $(EMACS) -batch -q -l ./setpath.el
 TAR	 = gtar
 
 # object order is important so compilation may take in order.
-# if, for some strange reason, `irchat-inlines.elc' is needed, put
-# it after `irchat-vars.el'
+
+CRYPTO_OBJS =			\
+	irchat-crypt-vars.elc	\
+	b64.elc			\
+	crc32.elc		\
+	rc4.elc			\
+	idea.elc		\
+	irchat-crypt.elc	\
+	irchat-random.elc
+
+NO_CRYPTO_OBJS =		\
+	irchat-no-crypt.elc
 
 XOBJS 	=                       \
 	irchat-globals.elc	\
 	irchat-vars.elc		\
+	$(CRYPTO_OBJS)		\
 	irchat-inlines.elc	\
 	irchat-filter.elc	\
 	irchat-dcc.elc		\
@@ -45,12 +56,6 @@ XOBJS 	=                       \
 	irchat-main.elc		\
 	irchat-uah-cache.elc	\
 	irchat-global-kill.elc	\
-	b64.elc			\
-	crc32.elc		\
-	rc4.elc			\
-	idea.elc		\
-	irchat-crypt.elc	\
-	irchat-random.elc	\
 	irchat-obsolete.elc
 
 OBJS	= 			\

@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-vars.el,v 3.38 1998/10/06 11:47:06 tri Exp $
+;;;  $Id: irchat-vars.el,v 3.39 1998/11/04 10:54:33 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -166,36 +166,6 @@ killed again if automagic reconnect is too fast.")
 (defvar irchat-format-string5 ">%s:%s<"
   "*Format string for arriving messages to other channel from outside the channel.")
 
-(defvar irchat-myformat-string-e ">>"
-  "*Format for own messages. (encrypted)")
-
-(defvar irchat-format-string-e "-> **%s**"
-  "*Format string for private messages being sent. (encrypted)")
-
-(defvar irchat-format-string0-e "--%s--"
-  "*Format string for arriving NOTICE messages. (encrypted)")
-
-(defvar irchat-format-string1-e "**%s**"
-  "*Format string for arriving private messages. (encrypted)")
-
-(defvar irchat-format-string2-e "<<%s>>"
-  "*Format string for arriving messages to current channel. (encrypted)")
-
-(defvar irchat-format-string3-e "<<%s:%s>>"
-  "*Format string for arriving messages to current channel from outside the channel. (encrypted)")
-
-(defvar irchat-format-string4-e "((%s))"
-  "*Format string for arriving messages to other channel from outside the channel. (encrypted)")
-
-(defvar irchat-format-string5-e ">>%s:%s<<"
-  "*Format string for arriving messages to other channel from outside the channel. (encrypted)")
-
-(defvar irchat-defected-message-prefix ""
-  "Prefix to attach before the defected crypt message.")
-
-(defvar irchat-suspicious-message-prefix ""
-  "Prefix to attach before the suspicious crypt message.")
-
 (defvar irchat-change-prefix "*** Change: "
   "*String to add before any change msg, used for customisation of
 IRCHAT to suit old users of the irc-loser-client.")
@@ -228,7 +198,6 @@ IRCHAT to suit old users of the irc-loser-client.")
 (defvar irchat-KILLS-buffer "*IRC KILLS*")
 (defvar irchat-IGNORED-buffer "*IRC IGNORED*")
 (defvar irchat-WALLOPS-buffer "*IRC WALLOPS*")
-(defvar irchat-CRYPT-buffer "*IRC CRYPT*")
 
 ;;;
 ;;;  Misc
@@ -344,24 +313,6 @@ Default is what (system-name) returns.")
   "Version id given to VERSION queries. nil is default. 'none inhibits reply.")
 
 ;;;
-;;;  Crypt
-;;;
-(defvar irchat-crypt-known-keys '() 
-  "String list containing encryption keys.  e.g. '(\"foo\" \"bar\")")
-(defvar irchat-crypt-default-keys '() 
-  "List containing pairs (or lists) of addresses and associated default keys (and possibly key expand version).  e.g '((\"#42\" . \"asd\") (\"#xyz\" . \"zappa\") (\"friend\" \"moebius\" 1))")
-(defvar irchat-crypt-timestamp-tolerance 300
-  "Allow incoming messages to have N seconds old timestamp.")
-(defvar irchat-crypt-ignore-suspicious nil
-  "If t, ignore messages with invalid nick or timestamp.")
-(defvar irchat-crypt-mode-active t
-  "If t, irchat encrypts all messages it has a default key for.")
-(defvar irchat-crypt-ignore-defected nil
-  "If t, ignore encrypted messages that cannot be opened.")
-(defvar irchat-crypt-secure-passphrase-read nil
-  "If t, read passphrases with secured keyboard (if possible).")
-
-;;;
 ;;;  Conversions: Not used.
 ;;;
 (defvar irchat-send-convert-list nil 
@@ -444,8 +395,6 @@ The last ignores all messages that contain the word `fuck`.
   "*A list of buffers where WALLOPS messages to me are sent.")
 (defvar irchat-K-buffer (list irchat-KILLS-buffer)
   "*A list of buffers where KILL messages to me are sent.")
-(defvar irchat-C-buffer (list irchat-CRYPT-buffer)
-  "*A list of buffers where messages that were not decrypted are sent.")
 (defvar irchat-000-buffer (list irchat-Dialogue-buffer)
   "*A list of buffers where 000 messages to me are sent.")
 (defvar irchat-200-buffer (list irchat-Dialogue-buffer)
