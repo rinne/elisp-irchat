@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-vars.el,v 3.24 1997/10/06 12:54:20 tri Exp $
+;;;  $Id: irchat-vars.el,v 3.25 1997/10/16 07:45:29 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -9,7 +9,7 @@
 ;;;
 
 (defvar irchat-saved-forms 
-  (purecopy '(irchat-kill-nickname))
+  (purecopy '(irchat-kill-nickname irchat-kill-message-regexp))
   "*Variables whose values are saved via command irchat-Command-save-vars")
 
 (defvar irchat-command-window-height 4
@@ -320,6 +320,10 @@ Default is what (system-name) returns.")
 ;;;
 (defvar irchat-kill-nickname nil
   "*A list of nicknames, as symbols, to ignore.  Messages from these people
+won't be displayed.")
+
+(defvar irchat-kill-message-regexp nil
+  "*A list of regexps to ignore.  Messages matching to them 
 won't be displayed.")
 
 (defvar irchat-kill-realname nil
