@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-cta.el,v 3.5 1997/06/17 10:03:54 tri Exp $
+;;;  $Id: irchat-cta.el,v 3.6 1998/05/23 18:15:40 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -152,7 +152,7 @@
               (setq emacs-subtype (format "%s" (matching-substring m1 1)))
             (setq emacs-subtype m1))))
     (if (not (equal 'none irchat-external-version-string))
-	(irchat-send 
+	(irchat-delayed-send 
 	 (format "NOTICE %s :VERSION %s" 
 		 from 
 		 (if (not (stringp irchat-external-version-string))
@@ -175,39 +175,39 @@
 
 
 (defun irchat-ctl-a-userinfo-msg (from chnl rest)
-  (irchat-send "NOTICE %s :USERINFO %s"
-	       from irchat-client-userinfo)
+  (irchat-delayed-send "NOTICE %s :USERINFO %s"
+		       from irchat-client-userinfo)
   (message (format "CLIENT USERINFO query from %s." from)))
 
 (defun irchat-ctl-a-clientinfo-msg (from chnl rest)
-  (irchat-send 
+  (irchat-delayed-send 
    (format 
     "NOTICE %s :CLIENTINFO :VERSION USERINFO CLIENTINFO X-FACE HELP ERRMSG" from))
   (message (format "CLIENT CLIENTINFO query from %s." from)))
 
 
 (defun irchat-ctl-a-help-msg (from chnl rest)
-  (irchat-send 
+  (irchat-delayed-send 
    (format 
     "NOTICE %s :HELP :VERSION gives version of this client" 
     from))
-  (irchat-send
+  (irchat-delayed-send
    (format 
     "NOTICE %s :HELP :USERINFO gives user supplied info (if any)" 
     from))
-  (irchat-send 
+  (irchat-delayed-send 
    (format 
     "NOTICE %s :HELP :CLIENTINFO gives commands this client knows" 
     from))
-  (irchat-send 
+  (irchat-delayed-send 
    (format 
     "NOTICE %s :HELP :X-FACE gives you user supplied X-Face (if exists)" 
     from))
-  (irchat-send 
+  (irchat-delayed-send 
    (format 
     "NOTICE %s :HELP :HELP gives this help message" 
     from))
-  (irchat-send 
+  (irchat-delayed-send 
    (format 
     "NOTICE %s :HELP :ERRMSG tells you your command was not valid" 
     from))
@@ -219,19 +219,19 @@
 
 
 (defun irchat-ctl-a-xyzzy-msg (from chnl rest)
-  (irchat-send "NOTICE %s :Nothing happens.(xyzzy inactive)" from)
+  (irchat-delayed-send "NOTICE %s :Nothing happens.(xyzzy inactive)" from)
   (message (format "CLIENT XYZZY query from %s." from)))
 
 
 (defun irchat-ctl-a-ping-msg (from chnl rest)
   (if (not rest)
       (setq rest ""))
-  (irchat-send "NOTICE %s :PING %s" from rest)
+  (irchat-delayed-send "NOTICE %s :PING %s" from rest)
   (message (format "CLIENT PING query from %s." from)))
 
 (defun irchat-ctl-a-x-face-msg (from chnl rest)
-  (irchat-send "NOTICE %s :X-FACE %s"
-	       from irchat-client-x-face)
+  (irchat-delayed-send "NOTICE %s :X-FACE %s"
+		       from irchat-client-x-face)
   (message (format "CLIENT X-FACE query from %s." from)))
 
 ;;;
