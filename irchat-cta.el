@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-cta.el,v 3.8 1998/05/25 15:10:51 tri Exp $
+;;;  $Id: irchat-cta.el,v 3.9 1998/05/26 14:06:10 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -142,40 +142,33 @@
 
 
 (defun irchat-ctl-a-version-msg (from chnl rest)
-  (let ((emacs-type (emacs-version))
-        (m1)
-        (emacs-subtype "GNU-emacs"))
-    (if (string-match "\\(.*\\) of .*" emacs-type) 
-        (progn
-          (setq m1 (format "%s" (matching-substring emacs-type 1)))
-          (if (string-match "\\(.*\\) (.*)" m1)
-              (setq emacs-subtype (format "%s" (matching-substring m1 1)))
-            (setq emacs-subtype m1))))
-    (if (not (equal 'none irchat-external-version-string))
-	(irchat-send-delayed 
-	 (format "NOTICE %s :VERSION %s" 
-		 from 
-		 (if (not (stringp irchat-external-version-string))
-		     (if irchat-use-ancient-version-format
-			 (format "%s %s :%s for %s"
-				 irchat-version 
-				 emacs-subtype
-				 irchat-version
-				 emacs-subtype)
-		       (format "%s (%s)"
-			       irchat-version 
-			       emacs-subtype))
-		   irchat-external-version-string))))
-    (if (string-ci-equal chnl irchat-real-nickname)
-        (message (format "CLIENT VERSION query from %s%s." 
-			 from
-			 (if (equal 'none irchat-external-version-string)
-			     ".  Ignored" "")))
-      (message (format "CLIENT VERSION query from %s (%s)%s." 
-		       from 
-		       chnl
+  (if (not (equal 'none irchat-external-version-string))
+      (let ((version-string 
+	     (if (not (stringp irchat-external-version-string))
+		 (if irchat-use-ancient-version-format
+		     (format "%s %s :%s for %s"
+			     irchat-version
+			     irchat-emacs-version-name
+			     irchat-version
+			     irchat-emacs-version-name)
+		   (format "%s :%s for %s"
+			   irchat-version
+			   irchat-client-name
+			   irchat-emacs-version-name))
+	       irchat-external-version-string)))
+	(irchat-send-delayed (format "NOTICE %s :VERSION %s" 
+				     from
+				     version-string))))
+  (if (string-ci-equal chnl irchat-real-nickname)
+      (message (format "CLIENT VERSION query from %s%s." 
+		       from
 		       (if (equal 'none irchat-external-version-string)
-			   ".  Ignored" ""))))))
+			   ".  Ignored" "")))
+    (message (format "CLIENT VERSION query from %s (%s)%s." 
+		     from 
+		     chnl
+		     (if (equal 'none irchat-external-version-string)
+			 ".  Ignored" "")))))
 
 
 (defun irchat-ctl-a-userinfo-msg (from chnl rest)
