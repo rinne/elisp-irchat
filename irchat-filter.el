@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-filter.el,v 3.1 1997/02/24 16:00:02 tri Exp $
+;;;  $Id: irchat-filter.el,v 3.2 1997/03/16 14:14:10 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -132,6 +132,25 @@
 	    rest-of-line (buffer-substring (match-beginning 4) (match-end 4))
 	    message (downcase 
 		     (buffer-substring (match-beginning 3) (match-end 3))))
+
+      (let ((cookie (if (and (stringp irchat-userathost)
+			     (> (length irchat-userathost) 2))
+			(substring irchat-userathost 0 1)
+		      nil)))
+	(cond ((null cookie)
+	       (setq irchat-userathost-type 'invalid))
+	      ((string= cookie "^")
+	       (setq irchat-userathost (substring irchat-userathost
+						  1
+						  (length irchat-userathost)))
+	       (setq irchat-userathost-type 'fake))
+	      ((string= cookie "~")
+	       (setq irchat-userathost (substring irchat-userathost
+						  1
+						  (length irchat-userathost)))
+	       (setq irchat-userathost-type 'not-verified))
+	      (t
+	       (setq irchat-userathost-type 'ok))))
 
       (set-buffer irchat-Dialogue-buffer)
       (setq irchat-current-function (list prefix message))
