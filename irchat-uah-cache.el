@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-uah-cache.el,v 1.7 1997/10/20 07:10:51 tri Exp $
+;;;  $Id: irchat-uah-cache.el,v 1.8 1997/10/20 08:08:49 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 ;;;
@@ -13,7 +13,7 @@
 
 (eval-when-compile (require 'irchat-inlines))
 
-(defconst irchat-nick-to-uah-vector-length 128
+(defconst irchat-nick-to-uah-vector-length 256
   "*Vector length")
 
 (defvar irchat-nick-to-uah-pos 0
