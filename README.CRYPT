@@ -60,8 +60,15 @@ Esim. (setq irchat-crypt-ignore-defected t)
 Yleisesti ottaen kryptatut viestit, joita ei saada auki, tallennetaan
 puskuriin *IRC CRYPT*.
 
+Jos haluat ignoroida myös viestit, joissa on väärä lähettäjänimi tai
+ekspiroitunut timestamppi, aseta muuttujan 
+irchat-crypt-ignore-suspicious arvoksi t.  Tämä ei välttämättä ole hyvä
+idea, koska ihmisten koneissa saattavat kellot joskus käydä leipiä.
+
+Esim. (setq irchat-crypt-ignore-suspicious t)
+
 Jaa ja nauti
 
 //tri
 
-$Id: README.CRYPT,v 1.1 1997/02/25 21:05:20 tri Exp $
+$Id: README.CRYPT,v 1.2 1997/02/25 22:37:17 tri Exp $
