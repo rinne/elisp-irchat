@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-handle.el,v 1.3 1997/02/05 15:46:57 too Exp $
+;;;  $Id: irchat-handle.el,v 1.4 1997/02/06 12:02:58 tmo Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright in(eval-wfo
 
@@ -394,7 +394,7 @@
   (let ((mylist irchat-buffer-preferences)
 	(found nil)
 	(result nil))
-    (while (and (not found) mylist)
+    (while (and chnl (not found) mylist)
       (if (string-match (car (car mylist)) chnl)
 	  (setq result (car (cdr (car mylist)))
 		found t))
