@@ -4,7 +4,7 @@
 ;;;  IDEA encryption in elisp.  Cool, ha?
 ;;;  ----------------------------------------------------------------------
 ;;;  Created      : Thu Jun 29 08:11:25 1995 tri
-;;;  Last modified: Thu Jun 25 03:00:56 1998 tri
+;;;  Last modified: Thu Jun 25 03:10:42 1998 tri
 ;;;  ----------------------------------------------------------------------
 ;;;  Copyright © 1995-1998
 ;;;  Timo J. Rinne <tri@iki.fi>
@@ -18,7 +18,7 @@
 ;;;  irchat-copyright.el applies only if used with irchat IRC client.
 ;;;  Contact the author for additional copyright info.
 ;;;
-;;;  $Id: idea.el,v 3.20 1998/06/25 00:01:02 tri Exp $
+;;;  $Id: idea.el,v 3.21 1998/06/25 00:10:54 tri Exp $
 ;;;
 
 (eval-and-compile  
@@ -375,7 +375,7 @@
 	       (if (listp passphrase)
 		   passphrase
 		 (error "IDEA key can be built from string or keylist."))))
-	 (annotation (if (not (= version 666))
+	 (annotation (if (or (null version) (not (= version 666)))
 			      (idea-build-key-annotation s1 
 							 "e"
 							 version)
