@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-handle.el,v 3.24 1997/10/28 07:10:53 tri Exp $
+;;;  $Id: irchat-handle.el,v 3.25 1997/10/28 11:20:12 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -498,7 +498,9 @@
 
 (defun irchat-handle-mode-msg (prefix rest)
   "Handle the MODE message."
-  (if (not irchat-ignore-changes)
+  (if (and (not irchat-ignore-changes)
+	   (or (not irchat-ignore-changes-from-ignored)
+	       (not (irchat-ignore-this-p prefix irchat-userathost))))
       (let ((chnl " ") (str ""))
 	(if (or (and (string-match "\\([^ ]*\\) :*\\(.*\\)" rest)
 		     (setq chnl (matching-substring rest 1)
