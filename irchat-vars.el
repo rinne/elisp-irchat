@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-vars.el,v 3.20 1997/06/17 10:05:05 tri Exp $
+;;;  $Id: irchat-vars.el,v 3.21 1997/07/10 10:32:41 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -33,6 +33,9 @@ screen). Useful for those (perverts) who use 24 line terminals.")
   "*Where to look for variables. Helps to remove clutter from your .emacs.
 This feature is most likely to dissappear in near future. The preferred 
 way is to put irchat variables on .emacs or file loaded from there.")
+
+(defvar irchat-backup-irchat-vars nil
+  "*Do we want to backup irchat-vars file when updating it.  Nil inhibits.")
  
 ;;;
 ;;;  Where to connect
