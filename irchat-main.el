@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-main.el,v 3.27 1997/10/20 15:49:11 tri Exp $
+;;;  $Id: irchat-main.el,v 3.28 1998/05/24 15:33:22 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -391,6 +391,7 @@ If already connected, just pop up the windows."
 	(irchat-CRYPT-setup-buffer)
 	(irchat-configure-windows)
 	(setq irchat-current-channels nil)
+	(irchat-send-delayed-reset)
 	(if irchat-current-channel
 	    (irchat-Command-join irchat-current-channel)
 	  (if irchat-startup-channel
