@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-400.el,v 3.7 1997/11/11 14:33:02 tri Exp $
+;;;  $Id: irchat-400.el,v 3.8 1997/11/11 14:43:18 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -89,7 +89,7 @@
   (if (not (eq irchat-nick-accepted 'ok))
       (progn
 	(setq irchat-real-nickname (irchat-iterate-nick irchat-real-nickname))
-	(setq old-irchat-nickname irchat-real-nickname)
+	(setq irchat-old-nickname irchat-real-nickname)
 	(irchat-send "NICK %s" irchat-real-nickname)
 	(setq irchat-nick-accepted 'sent))
     (save-excursion
@@ -114,7 +114,7 @@
   (if (not (eq irchat-nick-accepted 'ok))
       (progn
 	(setq irchat-real-nickname (irchat-iterate-nick irchat-real-nickname))
-	(setq old-irchat-nickname irchat-real-nickname)
+	(setq irchat-old-nickname irchat-real-nickname)
 	(irchat-send "NICK %s" irchat-real-nickname)
 	(setq irchat-nick-accepted 'sent))
     (save-excursion
