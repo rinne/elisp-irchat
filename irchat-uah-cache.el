@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-uah-cache.el,v 1.2 1997/10/19 16:03:53 tri Exp $
+;;;  $Id: irchat-uah-cache.el,v 1.3 1997/10/19 16:19:16 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 ;;;
@@ -56,7 +56,9 @@
       (setq pos (if (= pos 0) 
 		    (- irchat-nick-to-uah-vector-length 1)
 		  (- pos 1))))
-    (if (string-ci-equal nick (car (elt irchat-nick-to-uah-vector pos)))
+    (if (and (string-ci-equal nick (car (elt irchat-nick-to-uah-vector pos)))
+	     (stringp (cdr (elt irchat-nick-to-uah-vector pos)))
+	     (> (length (cdr (elt irchat-nick-to-uah-vector pos))) 0))
 	(cdr (elt irchat-nick-to-uah-vector pos))
       nil)))
 
