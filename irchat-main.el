@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-main.el,v 3.7 1997/02/26 13:28:28 kny Exp $
+;;;  $Id: irchat-main.el,v 3.8 1997/02/27 10:19:14 jsl Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -258,9 +258,15 @@ If optional argument SERVICE is non-nil, open by the service name."
 			(or (getenv "IRCNAME")
 			    (getenv "NAME")
 			    (user-full-name)))
-	   (setq irchat-old-nickname irchat-nickname)
+	   (if (not irchat-real-nickname)
+	       (setq irchat-real-nickname irchat-nickname)
+	     (let ((match (string-match "[^_]_+$" irchat-real-nickname)))
+	       (if match
+		   (setq irchat-real-nickname
+			 (substring irchat-real-nickname 0 (+ match 1))))))
+	   (setq irchat-old-nickname irchat-real-nickname)
 	   (setq irchat-nick-accepted 'sent)
-	   (irchat-send "NICK %s" irchat-nickname)
+	   (irchat-send "NICK %s" irchat-real-nickname)
 	   ; (irchat-send "PING %s" host)
 	   (setq status t)
 	   (if (setq status (irchat-wait-for-response ".*"))
@@ -406,7 +412,7 @@ For a list of the generic commands type \\[irchat-Command-generic] ? RET.
   (interactive)
   (kill-all-local-variables)
 
-  (setq irchat-nick-alist (list (list irchat-nickname))
+  (setq irchat-nick-alist (list (list irchat-real-nickname))
 	mode-line-modified "--- "
 	major-mode 'irchat-Command-mode
 	mode-name "IRCHAT Commands"
@@ -426,7 +432,7 @@ For a list of the generic commands type \\[irchat-Command-generic] ? RET.
 	  irchat-freeze-indicator
 	  irchat-ownfreeze-indicator 
 	  "- " 
-	  irchat-nickname "@" irchat-server 
+	  irchat-real-nickname "@" irchat-server 
 	  " %-"))
 
   (if (irchat-frozen (car irchat-D-buffer))
