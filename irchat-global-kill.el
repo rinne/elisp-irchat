@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-global-kill.el,v 1.1 1997/10/19 15:27:02 tri Exp $
+;;;  $Id: irchat-global-kill.el,v 1.2 1997/10/19 15:52:37 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 ;;;
@@ -11,21 +11,6 @@
 ;;;
 
 (eval-when-compile (require 'irchat-inlines))
-
-(defvar irchat-global-kill-valid-senders '()
-  "*List of strings or string-int pairs containing valid IGNORE senders.")
-
-(defvar irchat-global-kill-use-uah-p nil
-  "*Use user-at-host in ignore command if possible")
-
-(defvar irchat-global-kill-use-silent-ignore nil
-  "*If non-nil, no expire messages are shown.")
-
-(defvar irchat-global-kill-default-timeout-limit 99
-  "*Default timeout limit for valid senders.")
-
-(defvar irchat-global-kill-report-ignored nil
-  "*How to report ignored kill request. (nil, t, 'minibuffer or 'dialogue)")
 
 ;(setq irchat-global-kill-valid-senders 
 ;      (list ("mypal@.*\\.hut.fi" . 600) ;; max 600 minutes from my pal
