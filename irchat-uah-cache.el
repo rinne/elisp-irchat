@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-uah-cache.el,v 1.5 1997/10/20 06:54:29 tri Exp $
+;;;  $Id: irchat-uah-cache.el,v 1.6 1997/10/20 07:10:26 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 ;;;
@@ -63,6 +63,7 @@
 	  (u (nth 1 (elt irchat-nick-to-uah-vector pos)))
 	  (m (nth 2 (elt irchat-nick-to-uah-vector pos))))
     (if (and (string-ci-equal nick n)
+	     (not (equal m 'invalid))
 	     (stringp u)
 	     (> (length u) 0))
 	(list u m)
