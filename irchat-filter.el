@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-filter.el,v 3.10 2002/06/09 15:38:57 tri Exp $
+;;;  $Id: irchat-filter.el,v 3.11 2002/06/09 16:31:07 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -119,11 +119,11 @@
 	       (setq irchat-userathost-type 'ok))))
 
       (set-buffer irchat-Dialogue-buffer)
-      (setq irchat-current-function (list prefix message))
       (let ((parsed-sender nil)
 	    (parsed-msg nil))
+	(setq irchat-current-function (list parsed-sender parsed-msg prefix message))
 	(irchat-handle-message-2 parsed-sender parsed-msg prefix message rest-of-line))
-      (setq irchat-current-function (list "" ""))
+      (setq irchat-current-function (list "" "" "" ""))
       (set-buffer obuf)
       (delete-region beg end))))
 
