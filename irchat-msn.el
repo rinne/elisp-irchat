@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn.el,v 3.1 2002/06/04 15:47:27 tri Exp $
+;;;  $Id: irchat-msn.el,v 3.2 2002/06/04 19:27:31 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -221,7 +221,8 @@
 (defun irchat-msn-decode-name (name) 
   (let ((r name)) 
     (setq r (irchat-replace-in-string r "%20" " ")) 
-    r)) 
+    (setq r (irchat-msn-iso8859-1-to-utf8 r t))
+    r))
  
 (defun irchat-msn-encode-name (name) 
   (let ((r name))   

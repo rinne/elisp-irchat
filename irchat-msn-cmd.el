@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn-cmd.el,v 3.1 2002/06/04 15:47:27 tri Exp $
+;;;  $Id: irchat-msn-cmd.el,v 3.2 2002/06/04 19:27:31 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -259,6 +259,37 @@
 	      (setq m (cdr m)))
 	    (if x
 		(irchat-msn-send "CHG %d %s" (irchat-msn-seqno) x)))))))
+
+(defun irchat-Command-msn-list-discussion ()
+  (interactive)
+  (if (not (irchat-msn-server-opened))
+      (error "MSN Messenger connection is not open."))
+  t)
+
+(defun irchat-Command-msn-invite (&optional discussion user)
+  (interactive)
+  (if (not (irchat-msn-server-opened))
+      (error "MSN Messenger connection is not open."))
+  (if (null user)
+      (setq user (irchat-completing-default-read "Invite user: "
+						 (irchat-msn-online-users-alist)
+						 '(lambda (s) t) nil nil)))
+  (if (null discussion)
+      (setq discussion (irchat-completing-default-read "Discussion: "
+						       (irchat-msn-conversation-names-alist)
+						       '(lambda (s) t) t nil)))
+  (let ((p (irchat-msn-sub-server-search-with-name discussion)))
+    (cond ((null p)
+	   (message "No such discussion."))
+	  ((null (irchat-search-contact-list-with-name user irchat-msn-forward-list))
+	   (message "User not found."))
+	  ((null (irchat-search-contact-list-with-name user irchat-msn-online-list))
+	   (message "User not online."))
+	  (t 
+	   (irchat-msn-send-sub (nth 0 p)
+				"CAL %d %s"
+				(irchat-msn-sub-server-seqno (nth 0 p))
+				user)))))
 
 (eval-and-compile (provide 'irchat-msn-cmd))
 
