@@ -14,7 +14,10 @@ Käytössäsi olevat avaimet ovat merkkijonoja.  Etukäteen tietämäsi
 avaimet voit tallettaa stringilistana irchat-crypt-known-keys
 muuttujaan.  Jälkikäteen avaimia voidaan lisätä interaktiivisella
 irchat-Command-add-new-key (C-c % a) funktiolla.  Nämä avaimet ovat
-siis käytössäsi kaikkien viestien avaamiseen.
+siis käytössäsi kaikkien viestien avaamiseen.  Jos haluat poistaa
+dekryptausavaimia, onnistuu se funktiolla irchat-Command-delete-key
+(C-c % d).  Tämä on yleisesti ottaen tarpeetonta, mutta on toteutettu
+lähinnä symmetrian vuoksi.
 
 Esim: (setq irchat-crypt-known-keys '("kukkuu" "reset"))
 
@@ -22,10 +25,10 @@ Jos haluat kryptata tietylle vastaanottajalle (kanavalle/nicknamelle)
 menevät viestit, voit asettaa ne valmiiksi muuttujaan
 irchat-crypt-default-keys vastaanottaja-avain pareina.
 
-Esim: (setq irchat-crypt-default-keys '(("#sex" . "foo") (("mypal" . "bar"))))
+Esim: (setq irchat-crypt-default-keys '(("#sex" . "zap") (("mypal" . "fuz"))))
 
 Ajon aikana default-avaimia lisätään funktiolla
-irchat-Command-set-default-key (C-c % d), joka kysyy vastaanottajan ja
+irchat-Command-set-default-key (C-c % k), joka kysyy vastaanottajan ja
 avaimen.  Avain lisätään automaattisesti myös dekryptausavainten
 listaan.  Mikäli avaimeksi annetaan tyhjä stringi, poistetaan kyseinen
 oletusavain.
@@ -71,4 +74,4 @@ Jaa ja nauti
 
 //tri
 
-$Id: README.CRYPT,v 1.2 1997/02/25 22:37:17 tri Exp $
+$Id: README.CRYPT,v 1.3 1997/02/26 12:56:45 tri Exp $
