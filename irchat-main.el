@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-main.el,v 3.14 1997/03/14 14:37:59 tri Exp $
+;;;  $Id: irchat-main.el,v 3.15 1997/04/03 13:41:23 jsl Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -742,7 +742,10 @@ One is for entering commands and text, the other displays the IRC dialogue."
       (if buffer-read-only
 	  (setq buffer-read-only nil))
       (if (not (irchat-is-message-ignored string nbuf))
-	  (insert string))
+	  (progn
+	    (insert string)
+	    (if (and irchat-use-smiley (fboundp 'smiley-region))
+		(smiley-region spoint (point-max)))))		
       (setq buffer-read-only t)
       (goto-char spoint)
       (let ((win (irchat-get-buffer-window (get-buffer buffer))))

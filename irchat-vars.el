@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-vars.el,v 3.17 1997/03/18 15:58:48 tri Exp $
+;;;  $Id: irchat-vars.el,v 3.18 1997/04/03 13:41:23 jsl Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -236,6 +236,9 @@ If value is 'always, an arriving bell will always cause a beep (or flash).")
 (defvar irchat-system-fqdname (system-name)
   "*The fully qualified domain name of the system.
 Default is what (system-name) returns.")
+
+(defvar irchat-use-smiley nil
+  "*Display smileys in dialogue buffer.")
 
 ;;;
 ;;;  Send/Receive files
