@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-300.el,v 3.8 2002/06/09 15:16:02 tri Exp $
+;;;  $Id: irchat-300.el,v 3.9 2002/06/09 15:35:02 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -392,7 +392,7 @@ This is called if no specific handler exists"
 
 
 (defun irchat-handle-whoreply-msg (parsed-sender parsed-msg prefix rest)
-  (irchat-handle-352-msg prefix rest))
+  (irchat-handle-352-msg parsed-sender parsed-msg prefix rest))
 
 
 (defun irchat-handle-352-msg (parsed-sender parsed-msg prefix rest)
@@ -422,7 +422,7 @@ This is called if no specific handler exists"
 
 
 (defun irchat-handle-namreply-msg (parsed-sender parsed-msg prefix rest)
-  (irchat-handle-353-msg prefix rest))
+  (irchat-handle-353-msg parsed-sender parsed-msg prefix rest))
 
 (defun irchat-count-words-from-string (str)
   "count words from a string"

@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-handle.el,v 3.33 2002/06/09 15:16:02 tri Exp $
+;;;  $Id: irchat-handle.el,v 3.34 2002/06/09 15:35:02 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -154,7 +154,7 @@
 					   (matching-substring rest 1))))
 					; else send user a private message
 		 (t 
-		  (irchat-handle-privmsglike-msg prefix rest msg-encrypted-p)))
+		  (irchat-handle-privmsglike-msg parsed-sender parsed-msg prefix rest msg-encrypted-p)))
 	      (progn
 		;; no prefix
 		(string-match "^\\([^ ]*\\) :\\(.*\\)" rest)
