@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-commands.el,v 3.27 1997/10/19 19:28:53 tri Exp $
+;;;  $Id: irchat-commands.el,v 3.28 1997/10/20 05:57:09 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -442,10 +442,10 @@ contents are updated future sessions."
 		 (setq kill-nickname-var 
 		       (completing-read "Ignore nickname or regexp: " 
 					(append irchat-nick-alist
-						irchat-kill-nickname)
+						irchat-ignore-nickname)
 					'(lambda (s) t) nil nil))
 		 (if (and (not (string= "" kill-nickname-var))
-			  (not (assoc-ci-string kill-nickname-var irchat-kill-nickname)))
+			  (not (assoc-ci-string kill-nickname-var irchat-ignore-nickname)))
 		     (setq timeout
 			   (string-to-int
 			    (read-from-minibuffer "Timeout [RET for none]: "))))
@@ -459,7 +459,7 @@ contents are updated future sessions."
 	(goto-char (point-max))
 	(irchat-w-insert irchat-D-buffer
 			 (format "%sCurrently ignoring:" irchat-info-prefix))
-	(let ((mylist irchat-kill-nickname)
+	(let ((mylist irchat-ignore-nickname)
 	      (time (current-time)))
 	  (while mylist
 	    (let* ((expiretime (if (cdr (car mylist))
@@ -476,11 +476,11 @@ contents are updated future sessions."
 	(irchat-w-insert irchat-D-buffer "\n")
 	(set-buffer buf))
     ;; else not empty, check if exists
-    (let ((elem (assoc-ci-string kill-nickname-var irchat-kill-nickname)))
+    (let ((elem (assoc-ci-string kill-nickname-var irchat-ignore-nickname)))
       (if elem
 	  (progn
-	    (setq irchat-kill-nickname (remassoc (car elem)
-						 irchat-kill-nickname))
+	    (setq irchat-ignore-nickname (remassoc (car elem)
+						 irchat-ignore-nickname))
 	    (irchat-w-insert irchat-D-buffer
 			     (format "%sNo longer ignoring: %s.\n"
 				     irchat-info-prefix (car elem))))
@@ -490,9 +490,9 @@ contents are updated future sessions."
 						(* timeout 60)))))
 	  (if (and silent (> timeout 0))
 	      (setcar (cdr (cdr expire-time)) -1))
-	  (setq irchat-kill-nickname
+	  (setq irchat-ignore-nickname
 		(cons (cons kill-nickname-var expire-time)
-		      irchat-kill-nickname))
+		      irchat-ignore-nickname))
 	  (if (not silent)
 	      (progn
 		(irchat-w-insert irchat-D-buffer
@@ -513,11 +513,11 @@ contents are updated future sessions."
 		     (completion-ignore-case t))
 		 (setq kill-regexp-var 
 		       (completing-read "Ignore messages matching: " 
-					irchat-kill-message-regexp
+					irchat-ignore-message-regexp
 					'(lambda (s) t) nil nil))
 		 (if (and (not (string= "" kill-regexp-var))
 			  (not (assoc-ci-string kill-regexp-var
-						irchat-kill-message-regexp)))
+						irchat-ignore-message-regexp)))
 		     (setq timeout
 			   (string-to-int
 			    (read-from-minibuffer
@@ -533,7 +533,7 @@ contents are updated future sessions."
 	(irchat-w-insert irchat-D-buffer
 			 (format "%sCurrently ignoring messages matching:"
 				 irchat-info-prefix))
-	(let ((mylist irchat-kill-message-regexp)
+	(let ((mylist irchat-ignore-message-regexp)
 	      (time (current-time)))
 	  (while mylist
 	    (let* ((expiretime (if (cdr (car mylist))
@@ -553,12 +553,12 @@ contents are updated future sessions."
 	(irchat-w-insert irchat-D-buffer "\n")
 	(set-buffer buf))
     ;; else not empty, check if exists
-    (let ((elem (assoc-ci-string kill-regexp-var irchat-kill-message-regexp)))
+    (let ((elem (assoc-ci-string kill-regexp-var irchat-ignore-message-regexp)))
       (if elem
 	  (progn
-	    (setq irchat-kill-message-regexp 
+	    (setq irchat-ignore-message-regexp 
 		  (remassoc (car elem)
-			    irchat-kill-message-regexp))
+			    irchat-ignore-message-regexp))
 	    (irchat-w-insert irchat-D-buffer
 			     (format "%sNo longer ignoring: \"%s\".\n"
 				     irchat-info-prefix (car elem))))
@@ -568,9 +568,9 @@ contents are updated future sessions."
 						(* timeout 60)))))
 	  (if (and silent (> timeout 0))
 	      (setcar (cdr (cdr expire-time)) -1))
-	  (setq irchat-kill-message-regexp
+	  (setq irchat-ignore-message-regexp
 		(cons (cons kill-regexp-var expire-time)
-		      irchat-kill-message-regexp))
+		      irchat-ignore-message-regexp))
 	  (if (not silent)
 	      (progn
 		(irchat-w-insert irchat-D-buffer
@@ -1258,6 +1258,7 @@ be sent to the server.  For a list of messages, see irchat-Command-generic."
     (if (file-exists-p file)
 	(let ((nick irchat-real-nickname))
 	  (load-file file)
+	  (irchat-append-obsolete-vars)
 	  (setq irchat-real-nickname nick)
 	  (irchat-Command-reconfigure-windows)))))
 

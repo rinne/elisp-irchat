@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-global-kill.el,v 1.3 1997/10/19 19:28:26 tri Exp $
+;;;  $Id: irchat-global-kill.el,v 1.4 1997/10/20 05:57:27 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 ;;;
@@ -19,11 +19,11 @@
 
 (defun irchat-remove-from-ignore-list (name)
   "Remove NAME from ignore list, if there."
-  (let ((elem (assoc-ci-string name irchat-kill-nickname)))
+  (let ((elem (assoc-ci-string name irchat-ignore-nickname)))
     (if elem
-	(setq irchat-kill-nickname
-	      (remassoc (car elem) irchat-kill-nickname))))
-  irchat-kill-nickname)
+	(setq irchat-ignore-nickname
+	      (remassoc (car elem) irchat-ignore-nickname))))
+  irchat-ignore-nickname)
 
 
 (defun irchat-global-kill-valid-sender (uah)
@@ -83,7 +83,7 @@
 				    reason))
 		  (if (not ign-list)
 		      (if (not (assoc-ci-string ign-name 
-						irchat-kill-nickname))
+						irchat-ignore-nickname))
 			  (irchat-Command-ignore
 			   (downcase ign-name)
 			   real-timeout 
@@ -91,7 +91,7 @@
 		    (let ((l ign-list))
 		      (while l
 			(if (not (assoc-ci-string (car l)
-						  irchat-kill-nickname))
+						  irchat-ignore-nickname))
 			    (irchat-Command-ignore
 			     (downcase (car l))
 			     real-timeout

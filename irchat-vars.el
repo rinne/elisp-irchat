@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-vars.el,v 3.26 1997/10/19 15:52:16 tri Exp $
+;;;  $Id: irchat-vars.el,v 3.27 1997/10/20 05:57:31 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -9,7 +9,7 @@
 ;;;
 
 (defvar irchat-saved-forms 
-  (purecopy '(irchat-kill-nickname irchat-kill-message-regexp))
+  (purecopy '(irchat-ignore-nickname irchat-ignore-message-regexp))
   "*Variables whose values are saved via command irchat-Command-save-vars")
 
 (defvar irchat-command-window-height 4
@@ -336,21 +336,21 @@ Default is what (system-name) returns.")
 ;;;
 ;;;  Ignores
 ;;;
-(defvar irchat-kill-nickname nil
+(defvar irchat-ignore-nickname nil
   "*A list of nicknames, as symbols, to ignore.  Messages from these people
 won't be displayed.")
 
-(defvar irchat-kill-message-regexp nil
+(defvar irchat-ignore-message-regexp nil
   "*A list of regexps to ignore.  Messages matching to them 
 won't be displayed.")
 
-(defvar irchat-kill-realname nil
-  "*A list of real names of people to ignore. Messages from them
-won't be displayed.")
+;(defvar irchat-ignore-realname nil
+;  "*A list of real names of people to ignore. Messages from them
+;won't be displayed.")
 
-(defvar irchat-kill-logon nil
-  "*A list of logon names (user@host.dom.ain). Messages from them
-won't be displayed.")
+;(defvar irchat-ignore-logon nil
+;  "*A list of logon names (user@host.dom.ain). Messages from them
+;won't be displayed.")
 
 ;;;
 ;;; New Ignore

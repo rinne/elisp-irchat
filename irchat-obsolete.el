@@ -1,10 +1,42 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-obsolete.el,v 1.3 1997/10/19 19:47:38 tri Exp $
+;;;  $Id: irchat-obsolete.el,v 1.4 1997/10/20 05:57:17 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
 (eval-when-compile (require 'irchat-inlines))
+
+;;;
+;;;  Ignores
+;;;
+(defvar irchat-kill-nickname nil
+  "*Obsolete.  See irchat-ignore-nickname")
+
+(defvar irchat-kill-message-regexp nil
+  "*Obsolete.  See irchat-ignore-message-regexp.")
+
+;(defvar irchat-kill-realname nil
+;  "*Obsolete.  See irchat-ignore-realname.")
+
+;(defvar irchat-kill-logon nil
+;  "*Obsolete.  See irchat-ignore-logon.")
+
+(defun irchat-append-obsolete-vars ()
+  "Append obsolete variable values to the current ones."
+  (if irchat-kill-nickname
+      (progn
+	(message "Obsolete variable irchat-kill-nickname converted.")
+	(setq irchat-ignore-nickname (append irchat-ignore-nickname
+					     irchat-kill-nickname))
+	(setq irchat-kill-nickname nil)
+	(setq irchat-save-vars-is-dirty t)))
+  (if irchat-kill-message-regexp
+      (progn
+	(message "Obsolete variable irchat-kill-message-regexp converted.")
+	(setq irchat-ignore-message-regexp (append irchat-ignore-message-regexp
+						   irchat-kill-message-regexp))
+	(setq irchat-kill-message-regexp nil)
+	(setq irchat-save-vars-is-dirty t))))
 
 (defun irchat-Command-kill (kill-nickname-var &optional timeout silent)
   "Obsolete front end to irchat-Command-ignore."

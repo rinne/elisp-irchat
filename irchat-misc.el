@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-misc.el,v 3.26 1997/10/19 15:48:33 tri Exp $
+;;;  $Id: irchat-misc.el,v 3.27 1997/10/20 05:57:22 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -9,7 +9,7 @@
   (require 'irchat-filter))
 
 (defun irchat-ignore-this-p (nick uah &optional message)
-  (let ((mylist irchat-kill-nickname)
+  (let ((mylist irchat-ignore-nickname)
         (time (current-time)))
     (while mylist
       (let ((expiretime (if (cdr (car mylist))
@@ -17,8 +17,8 @@
                           1)))
         (if (< expiretime 0)
             (progn
-              (setq irchat-kill-nickname (remassoc (car (car mylist))
-                                                   irchat-kill-nickname)
+              (setq irchat-ignore-nickname (remassoc (car (car mylist))
+						     irchat-ignore-nickname)
                     irchat-save-vars-is-dirty t)
               (if (= (car (cdr (cdr (cdr (car mylist))))) 0)
                   (irchat-w-insert irchat-D-buffer
@@ -26,7 +26,7 @@
                                            irchat-info-prefix
                                            (car (car mylist)))))))
         (setq mylist (cdr mylist)))))
-  (let ((mylist irchat-kill-message-regexp)
+  (let ((mylist irchat-ignore-message-regexp)
         (time (current-time)))
     (while mylist
       (let ((expiretime (if (cdr (car mylist))
@@ -34,8 +34,8 @@
                           1)))
         (if (< expiretime 0)
             (progn
-              (setq irchat-kill-message-regexp (remassoc (car (car mylist))
-                                                   irchat-kill-message-regexp)
+              (setq irchat-ignore-message-regexp (remassoc (car (car mylist))
+							   irchat-ignore-message-regexp)
                     irchat-save-vars-is-dirty t)
               (if (= (car (cdr (cdr (cdr (car mylist))))) 0)
                   (irchat-w-insert irchat-D-buffer
@@ -65,13 +65,13 @@
 				       (= (match-beginning 0) 0)
 				       (= (match-end 0) (length uah))))))
                      (setq killit t))))
-              irchat-kill-nickname)
+              irchat-ignore-nickname)
       (if message
 	  (mapcar (function 
 		   (lambda (kill)
 		     (if (string-match (upcase (car kill)) (upcase message))
 			 (setq killit t))))
-		  irchat-kill-message-regexp))
+		  irchat-ignore-message-regexp))
       killit)))
 
 
