@@ -1,13 +1,13 @@
-#!/usr/bin/perl
 #!/usr/local/bin/perl
+#!/usr/bin/perl
 #!/usr/bin/perl -w
 # -*- perl -*-
-# $Id: dcc.perl,v 1.1 1997/02/21 14:51:43 too Exp $
+# $Id: dcc.perl,v 1.2 1997/02/21 14:56:07 too Exp $
 #
 # see file irchat-copyright.el for change log and copyright info
 #
 # Created: Mon May  8 12:33:04 1995 too
-# Last modified: Fri Feb 21 16:41:41 1997 too
+# Last modified: Fri Feb 21 16:49:36 1997 too
 #
 
 $AF_INET = 2;
@@ -32,27 +32,29 @@ if ($action eq 'receive')
 	unless (($host = shift(@ARGV)) && ($port = shift(@ARGV)) && 
 		($size = shift(@ARGV)) && ($filename = shift(@ARGV)));
 
-    socket(S, $AF_INET, $SOCK_STREAM, 0) || die "ERROR socket: $!";
+    socket(S, $AF_INET, $SOCK_STREAM, 0) || die "ERROR socket: $!.\n";
     setsockopt(S, $SOL_SOCKET, $SO_KEEPALIVE, 1);
 
     $that = pack($sockaddr, $AF_INET, $port, $host);
-    connect(S, $that) || die "ERROR connect: $!";
+    connect(S, $that) || die "ERROR connect: $!.\n";
+
+    select((select(S), $| = 1)[$[]);
 
     open(OUTPUT, ">$filename") || 
-	die "ERROR Cannot open output file `", $filename, "'\n";
+	die "ERROR Cannot open output file `", $filename, "'.\n";
 
     $toread = ($size > 32768)? 32768: $size;
 
     $shwprg = $size / 5;
     $bytesreceived = 0;
 
-    while ($bytesreceived < $size && ($len = sysread(S, $buf, $toread)) > 0)
+    while ($bytesreceived < $size && ($len = read(S, $buf, $toread)) > 0)
     {
 
-	print $len, "\n";
+#	print $len, "\n";
 	$bytesreceived+= $len;
-	&writeall(OUTPUT, $buf, $len);
-	&writeall(S, pack("N", $bytesreceived), 4);
+	print OUTPUT $buf;
+	print S pack("N", $bytesreceived);
 
 	if ($bytesreceived > $shwprg)
 	{
@@ -78,14 +80,14 @@ if ($action eq 'send')
 	unless (($port = shift(@ARGV)) && ($filename = shift(@ARGV)));
 
     open(INPUT, "$filename") 
-	|| die "ERROR Can not open file `", $filename, "'\n";
+	|| die "ERROR Can not open file `", $filename, "'.\n";
 
     chop($host = `hostname`);
     ($name, $aliases, $type, $len, $thisaddr) = gethostbyname($host);
     
     exit 2 unless $thisaddr;
 
-    socket(SS, $AF_INET, $SOCK_STREAM, 0) || die "ERROR socket: $!";
+    socket(SS, $AF_INET, $SOCK_STREAM, 0) || die "ERROR socket: $!.\n";
     setsockopt(SS, $SOL_SOCKET, $SO_REUSEADDR, 1);
 
     $this = pack($sockaddr, $AF_INET, $port, 0);
@@ -93,28 +95,30 @@ if ($action eq 'send')
     {
 	bind(SS, $this) && last;
 
-	die "bind $!" if ($tries == 9);
+	die "bind $!.\n" if ($tries == 9);
 
 	print STDERR "Binding stream socket ($!) retry in 20 seconds.\n";
 	sleep(20);
     }
 
-    listen(SS, 5) || die "ERROR listen: $!";
+    listen(SS, 5) || die "ERROR listen: $!.\n";
 
     $size = -s $filename;
     printf("DCC send %s %d %u %d\n",
 	   $filename, $port, unpack("N", $thisaddr), $size);
 
-    accept(S, SS) || die "ERROR accept $!";
+    accept(S, SS) || die "ERROR accept $!.\n";
     close SS;
 
-    READ: while ($len = sysread(INPUT, $buf, 32768))
+    select((select(S), $| = 1)[$[]);
+
+    READ: while ($len = read(INPUT, $buf, 32768))
     {
-	&writeall(S, $buf, $len);
+	print S $buf;
 	$bytessent += $len;
 #	print $bytessent, " ", $len, "\n";
 	do {
-	    $ln2 = sysread(S, $buf, 4); # inconsistent w/ respect to `writeall'
+	    $ln2 = sysread(S, $buf, 4);
 	    last READ unless $ln2;
 	} while (unpack("N", $buf) != $bytessent);
     }
@@ -132,7 +136,7 @@ if ($action eq 'send')
 if ($action eq 'resolve') 
 {
     die "Wrong number of parameters\n",
-    "Usage: dcc resolve <host\n" unless ($host = shift(@ARGV));
+    "Usage: dcc resolve <host>\n" unless ($host = shift(@ARGV));
 	
     do
     {
@@ -158,25 +162,9 @@ if ($action eq 'resolve')
 
 sub usage
 {
-die "Usage: dcc send <port> <filename>\n",
-    "Usage: dcc receive <host> <port> <size> <filename>\n",
-    "Usage: dcc listen <port>\n",
-    "Usage: dcc resolve <host> [<host>]\n";
+die "Usage:\n",
+    "       dcc send <port> <filename>\n",
+    "       dcc receive <host> <port> <size> <filename>\n",
+    "       dcc listen <port>\n",
+    "       dcc resolve <host> [<host>]\n\n";
 }
-
-sub writeall
-{
-    local($fd, $buf, $len) = @_;
-    $offset = 0;
-
-    while ($len)
-    {
-#	print $len, "\n";
-	$written = syswrite($fd, $buf, $len, $offset);
-	die "ERROR syswrite: $!" unless defined $written;
-	    
-	$len-= $written;
-	$offset+= $written;
-    }
-}
-
