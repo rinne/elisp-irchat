@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-vars.el,v 3.13 1997/03/12 16:18:48 jtp Exp $
+;;;  $Id: irchat-vars.el,v 3.14 1997/03/13 15:25:18 kny Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -376,9 +376,9 @@ The last ignores all messages that contain the word `fuck`.
 (defvar irchat-compress-treshold 1
   "*Number of lines to search back for a previous matching join/part/quit/mode.")
 
-(defvar irchat-buffer-maxsize 1000000
+(defvar irchat-buffer-maxsize 4242424
   "*Maximum size (in bytes) of any irchat buffer.")
-(defvar irchat-buffer-defsize 900000
+(defvar irchat-buffer-defsize 4042424
   "*Size to shrink buffer if it grows too big.")
 (defvar irchat-checkbuffer-interval (* 60 10)
   "*Interval between buffer-size checks.")
