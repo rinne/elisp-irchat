@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn-sub.el,v 3.2 2002/06/05 14:52:03 tri Exp $
+;;;  $Id: irchat-msn-sub.el,v 3.3 2002/06/05 21:22:00 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -229,6 +229,7 @@
 		       (string-match "TEXT/PLAIN" (upcase (irchat-msn-message-header-val "Content-type" m))))
 		  (progn
 		    (setq irchat-msn-recipient-cache (if (> (length (nth 6 p)) 1) (nth 1 p) pp-uid))
+		    (irchat-msn-name-cache-add pp-uid pp-name)
 		    (irchat-w-insert irchat-MSN-buffer
 				     (concat 
 				      (if (> (length (nth 6 p)) 1)
@@ -313,6 +314,7 @@
 		    (tot (string-to-int s3))
 		    (pp-uid s4)
 		    (pp-name (irchat-msn-decode-name s4)))
+		(irchat-msn-name-cache-add pp-uid pp-name)
 		(irchat-w-insert irchat-MSN-buffer 
 				 (format "%s%s <%s> joined %s.\n"
 					 irchat-msn-info-prefix 

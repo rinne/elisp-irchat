@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn.el,v 3.4 2002/06/05 12:00:52 tri Exp $
+;;;  $Id: irchat-msn.el,v 3.5 2002/06/05 21:22:00 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -33,6 +33,7 @@
 (defvar irchat-msn-conversation-counter '(0))
 (defvar irchat-msn-sub-servers '())
 (defvar irchat-msn-messages-pending-sb '())
+(defvar irchat-msn-name-cache '())
 (defvar irchat-msn-indicator "")
 (defvar irchat-msn-my-online-mode nil)
 (defvar irchat-msn-online-list '() 
@@ -86,6 +87,7 @@
     (setq irchat-msn-recipient-cache nil)
     (setq irchat-msn-my-online-mode "Offline")
     (irchat-set-msn-indicator)
+    (irchat-msn-name-cache-flush)
     (setq irchat-msn-server-int nil)
     (if host
 	(setq irchat-msn-server-int host))
@@ -347,6 +349,38 @@
 			 "")
 		       "}"))))
   irchat-msn-indicator)
+
+(defun irchat-msn-name-cache-delete (name)
+  (let ((l irchat-msn-name-cache)
+	(n (upcase name))
+	(r '()))
+    (while l
+      (if (not (string-equal (car (car l)) n))
+	  (setq r (cons (car l) r)))
+      (setq l (cdr l)))
+    (setq irchat-msn-name-cache r))
+  t)
+
+(defun irchat-msn-name-cache-add (name visible)
+  (let ((n (upcase name)))
+    (irchat-msn-name-cache-delete n)
+    (setq irchat-msn-name-cache (cons (cons n visible)
+				      irchat-msn-name-cache)))
+  t)
+
+(defun irchat-msn-name-cache-get (name)
+  (let ((l irchat-msn-name-cache)
+	(n (upcase name))
+	(r name))
+    (while l
+      (if (string-equal (car (car l)) n)
+	  (setq r (cdr (car l))
+		l '())
+	(setq l (cdr l))))
+    r))
+
+(defun irchat-msn-name-cache-flush ()
+  (setq irchat-msn-name-cache '()))
 
 (eval-and-compile (provide 'irchat-msn))
 

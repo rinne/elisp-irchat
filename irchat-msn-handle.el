@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn-handle.el,v 3.4 2002/06/05 12:00:52 tri Exp $
+;;;  $Id: irchat-msn-handle.el,v 3.5 2002/06/05 21:22:00 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -52,6 +52,7 @@
 	  (setq irchat-msn-online-list (cons user
 					     (irchat-remove-from-contact-list-with-name pp-uid
 											irchat-msn-online-list)))
+	  (irchat-msn-name-cache-add pp-uid pp-name)
 	  (if irchat-msn-show-status-changes
 	      (irchat-w-insert irchat-MSN-buffer 
 			       (format "%sUser %s <%s> status is %s.\n"
@@ -80,6 +81,7 @@
 	  (setq irchat-msn-online-list (cons user
 					     (irchat-remove-from-contact-list-with-name pp-uid
 											irchat-msn-online-list)))
+	  (irchat-msn-name-cache-add pp-uid pp-name)
 	  (if irchat-msn-show-status-changes
 	      (irchat-w-insert irchat-MSN-buffer 
 			       (format "%sUser %s <%s> status is %s.\n"
@@ -98,8 +100,9 @@
 										irchat-msn-online-list))
 	(if irchat-msn-show-status-changes
 	    (irchat-w-insert irchat-MSN-buffer 
-			     (format "%sUser %s goes Offline.\n"
+			     (format "%sUser %s <%s> goes Offline.\n"
 				     irchat-msn-info-prefix
+				     (irchat-msn-name-cache-get pp-uid)
 				     pp-uid)))))
   (irchat-set-msn-indicator))
 
