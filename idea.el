@@ -4,7 +4,7 @@
 ;;;  IDEA encryption in elisp.  Cool, ha?
 ;;;  ----------------------------------------------------------------------
 ;;;  Created      : Thu Jun 29 08:11:25 1995 tri
-;;;  Last modified: Thu Jun 25 02:29:12 1998 tri
+;;;  Last modified: Thu Jun 25 02:55:03 1998 tri
 ;;;  ----------------------------------------------------------------------
 ;;;  Copyright © 1995-1998
 ;;;  Timo J. Rinne <tri@iki.fi>
@@ -18,7 +18,7 @@
 ;;;  irchat-copyright.el applies only if used with irchat IRC client.
 ;;;  Contact the author for additional copyright info.
 ;;;
-;;;  $Id: idea.el,v 3.18 1998/06/24 23:29:29 tri Exp $
+;;;  $Id: idea.el,v 3.19 1998/06/24 23:55:24 tri Exp $
 ;;;
 
 (eval-and-compile  
@@ -302,7 +302,7 @@
   (if (= (length str) 0)
       '(0 0 0 0 0 0 0 0)
     (let* ((kk '(31415 58979 32384 62643 38327 16939 5820 45923))
-	   (ek (idea-build-encryption-key kk))
+	   (ek (idea-build-encryption-key kk 666))
 	   (bl (idea-cleartext-string-to-block-list str nil))
 	   (bl (idea-interlace-blocklist bl))
 	   (r1 '(7816 40628 62089 3482))
@@ -329,7 +329,8 @@
       (setq ek (idea-build-encryption-key (list (nth 0 r1) (nth 0 r2)
 						(nth 1 r1) (nth 1 r2)
 						(nth 2 r1) (nth 2 r2)
-						(nth 3 r1) (nth 3 r2))))
+						(nth 3 r1) (nth 3 r2))
+					  666))
       (setq bl (idea-interlace-blocklist bl))
       (setq i 0)
       (while (< i l)
@@ -374,9 +375,11 @@
 	       (if (listp passphrase)
 		   passphrase
 		 (error "IDEA key can be built from string or keylist."))))
-	 (annotation (idea-build-key-annotation s1 
-						"e"
-						version))
+	 (annotation (if (not (= version 666))
+			      (idea-build-key-annotation s1 
+							 "e"
+							 version)
+		       "e:xxxxxxxxxx"))
 	 (s2 (idea-shift-key-25bits-left s1))
 	 (s3 (idea-shift-key-25bits-left s2))
 	 (s4 (idea-shift-key-25bits-left s3))
