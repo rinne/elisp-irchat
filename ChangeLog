@@ -1,3 +1,15 @@
+Sun Jun 09 14:47:12 2002  Timo J. Rinne  <tri@iki.fi>
+
+	* Removed regexp nightmare from the msn protocol message handlers.
+	  Messages are now parsed within the message consumer function
+	  that is called directly from the process filter.  This is
+	  something that really should be done for IRC protocol too
+	  some day.
+	
+Sat Jun 08 21:29:48 2002  Timo J. Rinne  <tri@iki.fi>
+
+	* Fixed some interoperability issues for GNU Emacs.
+
 Sat Jun 08 20:28:18 2002  IRCHAT Distribution Generator <irchat@rinne.iki.fi>
 
 	* Generated release irchat-4.00-beta3.
