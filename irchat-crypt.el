@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-crypt.el,v 3.15 1998/06/24 09:46:19 tri Exp $
+;;;  $Id: irchat-crypt.el,v 3.16 1998/06/25 06:48:27 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -48,8 +48,16 @@
     (irchat-Command-add-new-key (car irchat-crypt-known-keys))
     (setq irchat-crypt-known-keys (cdr irchat-crypt-known-keys)))
   (while irchat-crypt-default-keys
-    (irchat-Command-set-default-key (car (car irchat-crypt-default-keys))
-				    (cdr (car irchat-crypt-default-keys)))
+    (let ((c (car irchat-crypt-default-keys)))
+      (if (and (consp c)
+	       (stringp (car c))
+	       (stringp (cdr c)))
+	  (irchat-Command-set-default-key (car c) (cdr c))
+	(if (and (listp c)
+		 (stringp (nth 0 c))
+		 (stringp (nth 1 c))
+		 (or (null (nth 2 c)) (numberp (nth 2 c))))
+	    (irchat-Command-set-default-key (nth 0 c) (nth 1 c) (nth 2 c)))))
     (setq irchat-crypt-default-keys (cdr irchat-crypt-default-keys)))
   t)
 
@@ -135,19 +143,22 @@
       nil)))
 
 (defun irchat-get-idea-encryption-key (address &optional version)
-  (if (not (numberp version)) (setq version irchat-crypt-version-default))
   (let ((r (assoc-ci-regexp-rev address 
 				irchat-default-idea-key-list)))
     (if r
-	(cond ((= version 1) (nth 2 r))
-	      ((= version 2) (nth 4 r))
-	      ((= version 3) (nth 6 r))
-	      (t nil))
+	(let* ((ve (cond ((numberp (nth 7 r)) (nth 7 r)) ; In default key
+			 ((numberp version) version)
+			 (t irchat-crypt-version-default))))
+	  (cond ((= ve 1) (nth 2 r))
+		((= ve 2) (nth 4 r))
+		((= ve 3) (nth 6 r))
+		(t nil)))
       nil)))
 
 (defun irchat-Command-set-default-key (addr-var 
 				       pass-var
-				       &optional interactive-p)
+				       &optional version-var
+				       interactive-p)
   "Set a default key for ADDRESS (channel/nick) to be KEY"
   (interactive (let (addr-var pass-var)
 		 (setq addr-var (irchat-completing-default-read
@@ -158,7 +169,7 @@
 		 (setq pass-var (irchat-read-passphrase "Passphrase: "))
 		 (if (string= pass-var "")
 		     (setq pass-var nil))	 
-		 (list addr-var pass-var t)))
+		 (list addr-var pass-var nil t)))
   (if (null pass-var)
       (let ((addr-var (upcase addr-var)))
 	(setq irchat-default-idea-key-list
@@ -166,18 +177,34 @@
 	(if interactive-p
 	    (message (format "Removed a default key from \"%s\"." addr-var))))
     (let* ((addr-var (upcase addr-var))
-	   (e-key-1 (idea-build-encryption-key pass-var 1))
-	   (fingerprint-1 (idea-key-fingerprint e-key-1))
-	   (e-key-2 (idea-build-encryption-key pass-var 2))
-	   (fingerprint-2 (idea-key-fingerprint e-key-2))
-	   (e-key-3 (idea-build-encryption-key pass-var 3))
-	   (fingerprint-3 (idea-key-fingerprint e-key-3)))
+	   (e-key-1 (if (or (null version-var)
+			    (= 1 version-var))
+			(idea-build-encryption-key pass-var 1)
+		      nil))
+	   (fingerprint-1 (if e-key-1 
+			      (idea-key-fingerprint e-key-1)
+			    nil))
+	   (e-key-2 (if (or (null version-var)
+			    (= 2 version-var))
+			(idea-build-encryption-key pass-var 2)
+		      nil))
+	   (fingerprint-2 (if e-key-2
+			      (idea-key-fingerprint e-key-2)
+			    nil))
+	   (e-key-3 (if (or (null version-var)
+			    (= 3 version-var))
+			(idea-build-encryption-key pass-var 3)
+		      nil))
+	   (fingerprint-3 (if e-key-3
+			      (idea-key-fingerprint e-key-3)
+			    nil)))
       (irchat-Command-add-new-key pass-var)
       (setq irchat-default-idea-key-list 
 	    (cons (list addr-var
 			fingerprint-1 e-key-1
 			fingerprint-2 e-key-2
 			fingerprint-3 e-key-3
+			version-var
 			pass-var)
 		  (remassoc addr-var 
 			    irchat-default-idea-key-list)))
