@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-crypt.el,v 3.1 1997/02/24 16:00:02 tri Exp $
+;;;  $Id: irchat-crypt.el,v 3.2 1997/02/26 12:20:14 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -52,6 +52,15 @@
 			  irchat-known-idea-key-list)))
     (if interactive-p
 	(message (format "Added new decryption key (%s)." fingerprint)))))
+
+(defun irchat-Command-delete-key (key-var &optional interactive-p)
+  "Delete a KEY from known decryption keys list"
+  (interactive (list (read-from-minibuffer "Passphrase: ") t))
+  (let ((fingerprint (idea-key-fingerprint key-var)))
+    (setq irchat-known-idea-key-list (remassoc fingerprint
+					       irchat-known-idea-key-list))
+    (if interactive-p
+	(message (format "Removed decryption key (%s)." fingerprint)))))
 
 (defun irchat-get-idea-decryption-key (fingerprint)
   "Find decryption key associated with FINGERPRINT"
