@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-crypt.el,v 3.11 1997/04/03 13:33:42 tri Exp $
+;;;  $Id: irchat-crypt.el,v 3.12 1997/10/07 14:50:48 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -10,10 +10,23 @@
   (require 'irchat-misc)
   (require 'idea))
 
-(defvar irchat-default-idea-key-list '() "List to save ADDRESS KEY pairs")
-(defvar irchat-known-idea-key-list '())
+(defvar irchat-crypt-version-default 1
+  "Which encryption version to use as default (1 or 2)")
 
-(defconst irchat-idea-encrypt-msg-format "|*E*|IDEA|1.0|%s|%s|")
+(defvar irchat-default-idea-key-list '() 
+  "List to save ADDRESS KEY pairs")
+
+(defvar irchat-known-idea-key-list '()
+  "List of known IDEA decryption keys.")
+
+(defconst irchat-idea-encrypt-msg-format-1 "|*E*|IDEA|1.0|%s|%s|")
+(defconst irchat-idea-encrypt-msg-format-2 "|*E*|IDEA|2.0|%s|%s|")
+
+(defun irchat-idea-encrypt-msg-format (&optional version)
+  (if (not (numberp version)) (setq version irchat-crypt-version-default))
+  (cond ((= version 1) irchat-idea-encrypt-msg-format-1)
+	((= version 2) irchat-idea-encrypt-msg-format-2)
+	(t nil)))
 
 (defun irchat-encrypted-message-p (message)
   (if (string-match "^|\\*E\\*|[^|]*|[0-9][0-9]*\\.[0-9][0-9]*|[^|]*|[^|]*|$"
@@ -29,16 +42,13 @@
 
 (defun irchat-init-crypt ()
   "Initialize crypt variables"
-  (let ((lst irchat-crypt-known-keys))
-    (while lst
-      (irchat-Command-add-new-key (car lst))
-      (setq lst (cdr lst))))
-  (setq irchat-crypt-known-keys '())
-  (let ((lst irchat-crypt-default-keys))
-    (while lst
-      (irchat-Command-set-default-key (car (car lst)) (cdr (car lst)))
-      (setq lst (cdr lst))))
-  (setq irchat-crypt-default-keys '())
+  (while irchat-crypt-known-keys
+    (irchat-Command-add-new-key (car irchat-crypt-known-keys))
+    (setq irchat-crypt-known-keys (cdr irchat-crypt-known-keys)))
+  (while irchat-crypt-default-keys
+    (irchat-Command-set-default-key (car (car irchat-crypt-default-keys))
+				    (cdr (car irchat-crypt-default-keys)))
+    (setq irchat-crypt-default-keys (cdr irchat-crypt-default-keys)))
   t)
 
 (defun irchat-read-passphrase (&optional prompt)
@@ -60,24 +70,43 @@
 			key-var)
 		       ((or (equal 'key-string my-key-type)
 			    (equal 'key-intlist my-key-type))
-			(idea-build-decryption-key key-var))
+			(idea-build-decryption-key key-var 1))
 		       (t (error "Invalid key."))))
-	 (fingerprint (idea-key-fingerprint my-key)))
+	 (my-key-2 (if (or (equal 'key-string my-key-type)
+			   (equal 'key-intlist my-key-type))
+		       (idea-build-decryption-key key-var 2)
+		     nil))
+	 (fingerprint (idea-key-fingerprint my-key))
+	 (fingerprint-2 (if my-key-2 (idea-key-fingerprint my-key-2) nil)))
     (setq irchat-known-idea-key-list 
 	  (cons (cons fingerprint my-key)
 		(remassoc fingerprint
 			  irchat-known-idea-key-list)))
+    (if (and my-key-2 fingerprint-2)
+	(setq irchat-known-idea-key-list 
+	      (cons (cons fingerprint-2 my-key-2)
+		    (remassoc fingerprint-2
+			      irchat-known-idea-key-list))))
     (if interactive-p
-	(message (format "Added new decryption key (%s)." fingerprint)))))
+	(message (format "Added new decryption key (%s%s)."
+			 fingerprint
+			 (if fingerprint-2 
+			     (concat " & " fingerprint-2)
+			   ""))))))
 
 (defun irchat-Command-delete-key (key-var &optional interactive-p)
   "Delete a KEY from known decryption keys list"
   (interactive (list (irchat-read-passphrase "Delete passphrase: ") t))
-  (let ((fingerprint (idea-key-fingerprint key-var)))
-    (setq irchat-known-idea-key-list (remassoc fingerprint
+  (let ((fingerprint-1 (idea-key-fingerprint key-var 1))
+	(fingerprint-2 (idea-key-fingerprint key-var 2)))
+    (setq irchat-known-idea-key-list (remassoc fingerprint-1
+					       irchat-known-idea-key-list))
+    (setq irchat-known-idea-key-list (remassoc fingerprint-2
 					       irchat-known-idea-key-list))
     (if interactive-p
-	(message (format "Removed decryption key (%s)." fingerprint)))))
+	(message (format "Removed decryption keys (%s and %s)." 
+			 fingerprint-1 
+			 fingerprint-2)))))
 
 (defun irchat-get-idea-decryption-key (fingerprint)
   "Find decryption key associated with FINGERPRINT"
@@ -86,8 +115,19 @@
 	(cdr k)
       nil)))
 
+(defun irchat-get-idea-encryption-key (address &optional version)
+  (if (not (numberp version)) (setq version irchat-crypt-version-default))
+  (let ((r (assoc-ci-regexp-rev address 
+				irchat-default-idea-key-list)))
+    (if r
+	(cond ((= version 1) (nth 2 r))
+	      ((= version 2) (nth 4 r))
+	      (t nil))
+      nil)))
 
-(defun irchat-Command-set-default-key (addr-var pass-var)
+(defun irchat-Command-set-default-key (addr-var 
+				       pass-var
+				       &optional interactive-p)
   "Set a default key for ADDRESS (channel/nick) to be KEY"
   (interactive (let (addr-var pass-var)
 		 (setq addr-var (irchat-completing-default-read
@@ -98,43 +138,47 @@
 		 (setq pass-var (irchat-read-passphrase "Passphrase: "))
 		 (if (string= pass-var "")
 		     (setq pass-var nil))	 
-		 (list addr-var pass-var)))
+		 (list addr-var pass-var t)))
   (if (null pass-var)
       (let ((addr-var (upcase addr-var)))
 	(setq irchat-default-idea-key-list
 	      (remassoc addr-var irchat-default-idea-key-list))
-	(message (format "Removed a default key from \"%s\"." addr-var)))
+	(if interactive-p
+	    (message (format "Removed a default key from \"%s\"." addr-var))))
     (let* ((addr-var (upcase addr-var))
-	   (e-key (idea-build-encryption-key pass-var))
-	   (d-key (idea-build-decryption-key pass-var))
-	   (print (idea-key-fingerprint d-key)))
-      (irchat-Command-add-new-key d-key)
+	   (e-key-1 (idea-build-encryption-key pass-var 1))
+	   (fingerprint-1 (idea-key-fingerprint e-key-1))
+	   (e-key-2 (idea-build-encryption-key pass-var 2))
+	   (fingerprint-2 (idea-key-fingerprint e-key-2)))
+      (irchat-Command-add-new-key pass-var)
       (setq irchat-default-idea-key-list 
-	    (cons (list addr-var print e-key d-key)
+	    (cons (list addr-var
+			fingerprint-1 e-key-1
+			fingerprint-2 e-key-2
+			pass-var)
 		  (remassoc addr-var 
 			    irchat-default-idea-key-list)))
-      (message (format "Added a default key for \"%s\"." addr-var))
+      (if interactive-p
+	  (message (format "Added a default key for \"%s\"." addr-var)))
       (irchat-set-crypt-indicator))))
 
 (defun irchat-make-encrypted-message (message key)
   "Build an encrypted message from MESSAGE with KEY"
-  (format irchat-idea-encrypt-msg-format
-	  (idea-key-fingerprint key)
-	  (idea-cbc-encrypt-string message key)))
+  (let ((version (idea-key-version key)))
+    (format (irchat-idea-encrypt-msg-format (if (numberp version) version))
+	    (idea-key-fingerprint key)
+	    (idea-cbc-encrypt-string message key))))
 
 (defun irchat-crypt-valid-version-p (method major minor)
   "Is METHOD, MAJOR, MINOR a valid encryption method?"
   (and (string= method "IDEA")
-       (= major 1)
+       (or (= major 1)
+	   (= major 2))
        (>= minor 0)))
 
 (defun irchat-encrypt-message (message address &optional no-clear-text)
   "Encrypt MESSAGE to ADDRESS.  NO-CLEAR-TEXT prohibits cleartext output"
-  (let ((key (car 
-	      (cdr
-	       (cdr
-		(assoc-ci-regexp-rev address 
-				     irchat-default-idea-key-list))))))
+  (let ((key (irchat-get-idea-encryption-key address)))
     (cond ((and no-clear-text
 		(null key))
 	   (error (format "No default key associated with \"%s\"." address)))
