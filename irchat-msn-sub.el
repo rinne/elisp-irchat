@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn-sub.el,v 3.13 2002/11/09 19:40:47 tri Exp $
+;;;  $Id: irchat-msn-sub.el,v 3.14 2002/11/09 21:09:56 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -239,6 +239,8 @@
   (let ((p (irchat-msn-sub-server-search-with-process process)))
     (if p
 	(let ((m (irchat-msn-parse-message msg)))
+	  (if irchat-msn-show-typing-notifications
+	      (message ""))
 	  (cond ((and m
 		      (> (length (cdr m)) 0)
 		      (irchat-msn-message-header-val "Content-type" m)
@@ -266,6 +268,13 @@
 			     (irchat-Command-send-message cmsg 'cleartext ""
 							  ""))))
 		     (setq irchat-msn-partner partner))))
+		((and m
+		      (irchat-msn-message-header-val "Content-type" m)
+		      (string-match "TEXT/X-MSMSGSCONTROL" (upcase (irchat-msn-message-header-val "Content-type" m)))
+		      (irchat-msn-message-header-val "TypingUser" m)
+		      (string-ci-equal pp-uid (irchat-msn-message-header-val "TypingUser" m)))
+		 (if irchat-msn-show-typing-notifications
+		     (message "MSN-User %s is typing a message." pp-uid)))
 		((and m
 		      (> (length (cdr m)) 0)
 		      (irchat-msn-message-header-val "Content-type" m)
