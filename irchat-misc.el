@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-misc.el,v 3.27 1997/10/20 05:57:22 tri Exp $
+;;;  $Id: irchat-misc.el,v 3.28 1997/10/20 07:11:56 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -291,9 +291,15 @@
   (if (and (stringp old)
 	   (stringp new)
 	   (not (string-ci-equal old new)))
-      (let ((uah (irchat-nick-to-uah old)))
-	(if uah
-	    (irchat-nick-to-uah-append new uah))))
+      (let ((uah-pair (irchat-nick-to-uah-raw old)))
+	(if uah-pair
+	    (progn
+	      (irchat-nick-to-uah-append new 
+					 (nth 0 uah-pair)
+					 (nth 1 uah-pair))
+	      (irchat-nick-to-uah-append old
+					 (nth 0 uah-pair)
+					 'invalid)))))
   (let ((pair (assoc old irchat-nick-alist)))
     (if new
 	(if pair
