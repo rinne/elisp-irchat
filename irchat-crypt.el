@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-crypt.el,v 3.13 1998/06/24 09:17:33 tri Exp $
+;;;  $Id: irchat-crypt.el,v 3.14 1998/06/24 09:29:47 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -10,8 +10,8 @@
   (require 'irchat-misc)
   (require 'idea))
 
-(defvar irchat-crypt-version-default 1
-  "Which encryption version to use as default (1 or 2)")
+(defvar irchat-crypt-version-default 3
+  "Which encryption version to use as default (1-3).  1 is proved insecure.")
 
 (defvar irchat-default-idea-key-list '() 
   "List to save ADDRESS KEY pairs")
@@ -27,7 +27,7 @@
   (if (not (numberp version)) (setq version irchat-crypt-version-default))
   (cond ((= version 1) irchat-idea-encrypt-msg-format-1)
 	((= version 2) irchat-idea-encrypt-msg-format-2)
-	((= version 2) irchat-idea-encrypt-msg-format-3)
+	((= version 3) irchat-idea-encrypt-msg-format-3)
 	(t nil)))
 
 (defun irchat-encrypted-message-p (message)
