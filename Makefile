@@ -2,7 +2,7 @@
 #
 # Makefile for irchat
 #
-# $Id: Makefile,v 1.3 1997/02/06 13:34:20 tri Exp $
+# $Id: Makefile,v 1.4 1997/02/18 12:34:48 too Exp $
 #
 
 #
@@ -21,11 +21,14 @@ TAR	= gtar
 
 
 # object order is important so compilation may take in order.
+# if, for some strange reason, `irchat-inlines.elc' is needed, put
+# it after `irchat-vars.el'
+
 OBJS 	= \
-	irchat-inlines.elc	\
-	irchat-globals.elc	\
 	irchat-version.elc	\
+	irchat-globals.elc	\
 	irchat-vars.elc		\
+	irchat-inlines.elc	\
 	irchat-filter.elc	\
 	irchat-dcc.elc		\
 	irchat-caesar.elc	\
@@ -56,12 +59,28 @@ gnuemacs:
 xemacs:
 	$(MAKE) EMACSCMD=xemacs irchat-build
 
+xemacs2:
+	$(MAKE) EMACSCMD=xemacs irchat2.elc
+
+#	cat $(SRCS) > irchat2.el
+#	xemacs -batch -q -l ./setpath.el -f batch-byte-compile $(DEFSUBST_SRC) irchat2.el
+
 %.elc: %.el
 	$(EMACS) -f batch-byte-compile $(DEFSUBST_SRC) $<
 
 irchat.elc:	$(OBJS)
 	rm -f $@
 	cat $(OBJS) > $@
+
+
+### Currently here as a test entries..
+irchat2.elc:	irchat2.el
+	$(EMACS) -f batch-byte-compile $(DEFSUBST_SRC) irchat2.el
+
+irchat2.el:	$(OBJS)
+	cat $(SRCS) > irchat2.el
+
+###
 
 #irchat.texinfo:
 #	cat i-irchat.texi i-etiq.texi i-overview.texi 	\
