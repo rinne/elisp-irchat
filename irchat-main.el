@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-main.el,v 3.18 1997/06/10 11:02:33 tri Exp $
+;;;  $Id: irchat-main.el,v 3.19 1997/06/10 12:26:31 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -713,16 +713,19 @@ One is for entering commands and text, the other displays the IRC dialogue."
 	   (oldwstart nil)
 	   (oldwpoint nil))
       ;;
-      ;; Check buffers and possibly insert timestamp.
+      ;; Deleted or nonexistent buffers are (re)created.
       ;;
-      (irchat-check-buffers-if-interval-expired)
-      (irchat-Command-timestamp-if-interval-expired)
-
       (if (not nbuf)
 	  (save-excursion
 	    (setq nbuf (irchat-get-buffer-create buffer))
 	    (set-buffer nbuf)
 	    (irchat-Dialogue-mode)))
+      ;;
+      ;; Check buffers and possibly insert timestamp.
+      ;;
+      (irchat-check-buffers-if-interval-expired)
+      (if (irchat-Dialogue-buffer-p buffer)
+	  (irchat-Command-timestamp-if-interval-expired))
 
       (if (irchat-get-buffer-window obuf)
 	  (progn
