@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-vars.el,v 3.25 1997/10/16 07:45:29 tri Exp $
+;;;  $Id: irchat-vars.el,v 3.26 1997/10/19 15:52:16 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -36,7 +36,7 @@ way is to put irchat variables on .emacs or file loaded from there.")
 
 (defvar irchat-backup-irchat-vars nil
   "*Do we want to backup irchat-vars file when updating it.  Nil inhibits.")
- 
+
 ;;;
 ;;;  Where to connect
 ;;;
@@ -251,6 +251,24 @@ Default is what (system-name) returns.")
 
 (defvar irchat-use-smiley nil
   "*Display smileys in dialogue buffer.")
+
+;;;
+;;; Global-kill system
+;;;
+(defvar irchat-global-kill-valid-senders '()
+  "*List of strings or string-int pairs containing valid IGNORE senders.")
+
+(defvar irchat-global-kill-use-uah-p nil
+  "*Use user-at-host in ignore command if possible")
+
+(defvar irchat-global-kill-use-silent-ignore nil
+  "*If non-nil, no expire messages are shown.")
+
+(defvar irchat-global-kill-default-timeout-limit 99
+  "*Default timeout limit for valid senders.")
+
+(defvar irchat-global-kill-report-ignored nil
+  "*How to report ignored kill request. (nil, t, 'minibuffer or 'dialogue)")
 
 ;;;
 ;;;  Send/Receive files
