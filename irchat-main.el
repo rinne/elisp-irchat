@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-main.el,v 3.3 1997/02/25 20:27:14 tri Exp $
+;;;  $Id: irchat-main.el,v 3.4 1997/02/26 07:05:14 jtp Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -701,7 +701,7 @@ One is for entering commands and text, the other displays the IRC dialogue."
 	  (insert string))
       (setq buffer-read-only t)
       (goto-char spoint)
-      (let ((win (get-buffer-window (get-buffer buffer))))
+      (let ((win (get-buffer-window (get-buffer buffer) t)))
 	(if (and (not (not win))
 		 (not frozen)
 		 (not (pos-visible-in-window-p (point-max) win)))
