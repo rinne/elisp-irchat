@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn-handle.el,v 3.5 2002/06/05 21:22:00 tri Exp $
+;;;  $Id: irchat-msn-handle.el,v 3.6 2002/06/06 11:06:54 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -320,7 +320,8 @@
 	  "^LST [0-9][0-9]* BL \\([0-9][0-9]*\\) 0 0"
 	  msg)
 	 (setq irchat-msn-block-list '()))
-	(t (irchat-msn-protocol-error))))
+	(t t))
+  (irchat-set-msn-indicator))
 
 (defun irchat-msn-handle-ADD (msg)
   (cond	((string-match 
