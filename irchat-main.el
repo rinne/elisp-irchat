@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-main.el,v 3.26 1997/10/20 06:30:15 tri Exp $
+;;;  $Id: irchat-main.el,v 3.27 1997/10/20 15:49:11 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -311,7 +311,7 @@ If the stream is opened, return T, otherwise return NIL."
 	(setq irchat-server-buffer (get-buffer-create " *IRC*"))
 	(set-buffer irchat-server-buffer)
 	(kill-all-local-variables)
-	(buffer-disable-undo (current-buffer))
+	(irchat-buffer-disable-undo (current-buffer))
 	(erase-buffer)
 	(setq irchat-server-process
 	      (open-network-stream "IRC" (current-buffer)
@@ -495,7 +495,7 @@ Instead, these commands are available:
 	  "-" (-3 . "%p") "-%-"))
 
   (use-local-map irchat-Dialogue-mode-map)
-  (buffer-disable-undo (current-buffer))
+  (irchat-buffer-disable-undo (current-buffer))
   (if (not irchat-keep-buffers) 
       (erase-buffer))
   (set-buffer irchat-Dialogue-buffer)
