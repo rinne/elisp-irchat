@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-vars.el,v 3.23 1997/10/02 05:52:36 tri Exp $
+;;;  $Id: irchat-vars.el,v 3.24 1997/10/06 12:54:20 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -76,6 +76,9 @@ If nil, do not join any channel.")
 (defvar irchat-grow-tail "_"
   "*Add irchat-grow-tail to nick when reconnecting. Otherwise you might get
 killed again if automagic reconnect is too fast.")
+
+(defvar irchat-message-length-limit 256
+  "*Messages longer than this are split to pieces")
 
 ;;;
 ;;;  Hooks, each message type has its own hook. These are used to setup
