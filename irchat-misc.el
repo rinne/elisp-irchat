@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-misc.el,v 3.5 1997/03/03 13:32:16 tri Exp $
+;;;  $Id: irchat-misc.el,v 3.6 1997/03/06 16:49:44 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -53,16 +53,23 @@
   (let ((item (apply 'format args)) ditem)
     (let ((conv-list irchat-send-convert-list))
       (while conv-list
-	(setq item (irchat-replace-in-string item (car (car conv-list))
-				      (car (cdr (car conv-list)))))
-	(setq conv-list (cdr conv-list))))
-    (process-send-string irchat-server-process
-			 (concat item "\r"))
+        (setq item (irchat-replace-in-string item (car (car conv-list))
+                                      (car (cdr (car conv-list)))))
+        (setq conv-list (cdr conv-list))))
+    (let* ((sndstr (concat item "\r"))
+	   (len (length sndstr)))
+      (if (> len 512)
+	  (progn
+	    (message (format "Protocol message too long (%d).  Truncated."
+			     (length sndstr)))
+	    (if irchat-beep-on-bells
+		(beep))))
+      (process-send-string irchat-server-process sndstr))
     (setq ditem (downcase item))
     (if (string-match "^list" (downcase ditem))
-	(if (string-match "\\(^list\\) \\(.+\\)" ditem)
-	    (setq irchat-channel-filter (matching-substring ditem 2))
-	  (setq irchat-channel-filter "")))))    
+        (if (string-match "\\(^list\\) \\(.+\\)" ditem)
+            (setq irchat-channel-filter (matching-substring ditem 2))
+          (setq irchat-channel-filter "")))))
 
 
 (defun irchat-clean-hostname (hostname)
