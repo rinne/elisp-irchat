@@ -1,52 +1,18 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-globals.el,v 1.3 1997/02/05 14:57:56 tri Exp $
+;;;  $Id: irchat-globals.el,v 1.4 1997/02/06 13:34:20 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
+
+(eval-when-compile
+  (require 'irchat-version))
 
 ;;;
 ;;; Do not change these
 ;;;
 
-(defconst irchat-client-version-major "2"
-  "Major version number. Major functional changes change this number.")
-
-(defconst irchat-client-version-minor "54"
-  "Minor version number. Server Protocol changes and bug fixes change this number.")
-
-(defconst irchat-client-version-beta-p t
-  "Is this version a beta version?")
-
-(defconst irchat-client-version-alpha-p t
-  "Is this version an alpha version?")
-
-(defconst irchat-client-version-release "$Date: 1997/02/05 14:57:56 $"
-  "version release date")
-
-(defconst irchat-client-name "Irchat"
-  "*Name of this program.")
-
-(defconst irchat-version
-  (format "%s %s.%s%s %s" 
-	  irchat-client-name 
-	  irchat-client-version-major
-	  irchat-client-version-minor
-	  (cond (irchat-client-version-alpha-p "alpha")
-		(irchat-client-version-beta-p  "beta")
-		(t ""))
-	  (if (string-match ".*: \\([^ ]*\\) .*"
-			    irchat-client-version-release)
-	      (concat "("
-		      (substring irchat-client-version-release 
-				 (match-beginning 1)
-				 (match-end 1))
-		      ")")
-	    ""))
-  "The version of irchat you are using.")
-
 (defconst irchat-author-nickname "tml"
   "The nickname used by the author of IRCHAT.")
-
 
 (defvar irchat-emacs-version (string-to-int (substring emacs-version 0 2))
   "*Emacs major version number.")
