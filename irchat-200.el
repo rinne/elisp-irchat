@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-200.el,v 3.2 1997/03/12 16:20:15 jtp Exp $
+;;;  $Id: irchat-200.el,v 3.3 1998/08/07 19:13:56 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -211,7 +211,7 @@
 
 (defun irchat-handle-215-msg (prefix rest)
   "215 RPL_STATSILINE k2 I * * * 0 0"
-  (if (string-match "[^ ]* I \\([^ ]*\\) \\(.\\) \\([^ ]*\\)" rest)
+  (if (string-match "[^ ]* I \\([^ ]*\\) \\([^ ]*\\) \\([^ ]*\\)" rest)
       (let ((domain (matching-substring rest 1))
             (passwd (matching-substring rest 2))
             (redomain (matching-substring rest 3)))
@@ -219,7 +219,7 @@
 			 (format "%sI:%s:%s:%s\n"
 				 irchat-info-prefix domain passwd redomain)))
     (message "IRCHAT: Strange 215 message")))
-	  
+
 
 (defun irchat-handle-216-msg (prefix rest)
   "216 RPL_STATSKLINE k2 K *.hut.fi * tsh 0 -1"
