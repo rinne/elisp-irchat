@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-main.el,v 3.38 2002/06/06 11:04:54 tri Exp $
+;;;  $Id: irchat-main.el,v 3.39 2002/06/07 13:09:00 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -417,20 +417,29 @@ If already connected, just pop up the windows."
 	(run-hooks 'irchat-Startup-hook)
 
 	(if (not irchat-timers-list-initialized-p)
-	    (setq irchat-timers   
-		  (append irchat-timers
-			  (list
-		          ;(list nil (function irchat-Command-timestamp) 
-		          ;      irchat-timestamp-interval)
-			   (list nil (function irchat-Command-pollnames) 
-				 irchat-pollnames-interval)
-			   (list nil (function irchat-Command-keepalive)
-				 irchat-keepalive-interval)
-		          ;(list nil (function irchat-check-buffers)
-		             ;     irchat-checkbuffer-interval)
-			   ))
-		  irchat-timers-list-initialized-p t))
-	(setq 
+	    (progn
+	      (setq irchat-timers   
+		    (append irchat-timers
+			    (list
+			     ;(list nil (function irchat-Command-timestamp)
+			     ;      irchat-timestamp-interval)
+			     (list nil (function irchat-Command-pollnames) 
+				   irchat-pollnames-interval)
+			     (list nil (function irchat-Command-keepalive)
+				   irchat-keepalive-interval)
+			     ;(list nil (function irchat-check-buffers)
+			     ;     irchat-checkbuffer-interval)
+			     ))
+		    irchat-timers-list-initialized-p t)
+	      (if (and (fboundp 'irchat-Command-msn-ping-server)
+		       (boundp 'irchat-msn-server-ping-interval)
+		       (> irchat-msn-server-ping-interval 0))
+		  (setq irchat-timers   
+			(append irchat-timers
+				(list
+				 (list nil (function irchat-Command-msn-ping-server)
+				       irchat-msn-server-ping-interval)))))))
+	(setq
 	 irchat-obarray (make-vector irchat-obarray-size nil)
 	 irchat-timers
 	      (mapcar 

@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn-cmd.el,v 3.6 2002/06/06 11:04:55 tri Exp $
+;;;  $Id: irchat-msn-cmd.el,v 3.7 2002/06/07 13:09:00 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -346,6 +346,23 @@
 					  (irchat-msn-name-cache-get (car u))))
 		 (setq u (cdr u)))
 	       (setq l (cdr l))))))))
+
+(defun irchat-Command-msn-ping-server () 
+  (interactive) 
+  (cond ((not (irchat-msn-server-opened)) 
+         nil)
+        ((stringp irchat-msn-fake-client-version) 
+         (progn 
+           (irchat-msn-send "CVR %d %s"  
+                            (irchat-msn-seqno) 
+                            irchat-msn-fake-client-version) 
+           t))
+        ((stringp irchat-msn-my-online-mode) 
+         (progn 
+           (irchat-msn-send "CHG %d %s"  
+                            (irchat-msn-seqno) 
+                            (irchat-msn-status-code irchat-msn-my-online-mode)))) 
+        (t nil)))
 
 (eval-and-compile (provide 'irchat-msn-cmd))
 

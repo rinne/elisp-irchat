@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn.el,v 3.8 2002/06/07 08:28:48 tri Exp $
+;;;  $Id: irchat-msn.el,v 3.9 2002/06/07 13:09:00 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -18,6 +18,7 @@
 ;;;
 ;;; Internal variables
 ;;;
+(defvar irchat-msn-server-ping-interval 600)
 (defvar irchat-msn-server-closed-because-of-another-login nil)
 (defvar irchat-msn-server-int nil)
 (defvar irchat-msn-seqno 0)
@@ -231,6 +232,18 @@
     (if r
 	r
       (format "Unknown Status (%s)" s))))
+
+(defun irchat-msn-status-code (status)
+  "Translate user status code to English."
+  (let ((l irchat-msn-status-strings)
+	(s (upcase status))
+	(r nil))
+    (while l
+      (if (string-equal (upcase (cdr (car l))) s)
+	  (setq r (car (car l))
+		l nil)
+	(setq l (cdr l))))
+    r))
 
 (defun irchat-msn-decode-name (name) 
   (let ((r name)) 
