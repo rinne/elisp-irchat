@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-vars.el,v 3.12 1997/03/05 22:28:30 tri Exp $
+;;;  $Id: irchat-vars.el,v 3.13 1997/03/12 16:18:48 jtp Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -174,7 +174,7 @@ IRCHAT to suit old users of the irc-loser-client.")
 (defvar irchat-wallops-prefix "*** Notice: "
   "*String to add before any WALLOPS message")
 
-(defvar irchat-info-prefix ""
+(defvar irchat-info-prefix "*** Info: "
   "*String to add before any informational message")
 
 ;;;
