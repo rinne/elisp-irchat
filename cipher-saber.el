@@ -4,7 +4,7 @@
 ;;;  Cipher Saber encryption in elisp.  Cool, ha?
 ;;;  ----------------------------------------------------------------------
 ;;;  Created      : Tue Jul  7 18:55:02 1998 tri
-;;;  Last modified: Wed Jul  8 15:00:08 1998 tri
+;;;  Last modified: Sun Jul 19 20:13:10 1998 tri
 ;;;  ----------------------------------------------------------------------
 ;;;  Copyright © 1998
 ;;;  Timo J. Rinne <tri@iki.fi>
@@ -18,11 +18,13 @@
 ;;;  irchat-copyright.el applies only if used with irchat IRC client.
 ;;;  Contact the author for additional copyright info.
 ;;;
-;;;  $Id: cipher-saber.el,v 1.5 1998/07/08 12:00:16 tri Exp $
+;;;  $Id: cipher-saber.el,v 1.6 1998/07/19 17:15:45 tri Exp $
 ;;;
 
 (eval-and-compile  
   (require 'rc4)
+  (require 'b64)
+  (require 'crc32)
   (provide 'cipher-saber))
 
 (defconst cipher-saber-iv-length 10
@@ -159,5 +161,48 @@
     (delete-region (point-min) (point-max) (current-buffer))
     (insert c)
     (goto-char (point-min))))
+
+(defun cs-make-pad (len)
+  "Make random padding of LEN (1-15) bytes."
+  (let* ((len (logand len 15))
+	 (r (make-string len 0))
+	 (i (- len 1)))
+    (while (> i 0)
+      (aset r i (cipher-saber-random-byte))
+      (setq i (- i 1)))
+    (aset r 0 (logior (logand (cipher-saber-random-byte) 240) len))
+    r))
+
+(defun cs-remove-pad (str)
+  "Remove padding made with cs-make-pad and is concatenated in front of STR."
+  (if (> (length str) 1)
+      (let ((slen (length str))
+	    (plen (logand (elt str 0) 15)))
+	(if (< slen plen)
+	    ""
+	  (substring str plen slen)))
+    ""))
+
+(defun cs-encrypt-string (str key)
+  "Add crc and padding to STR, enctypt it with KEY and b64 encode it."
+  (let* ((l (+ (length str) 4 10))
+	 (crc (crc32-string str 'raw-string))
+	 (pad (cs-make-pad (- 9 (% l 3)))))
+    (b64-encode-string (cipher-saber-encrypt-string (concat pad crc str) 
+						    key))))
+
+(defun cs-decrypt-string (str key)
+  "Decrypt STR that is encrypted with KEY with cs-encrypt-string."
+  (let* ((s (b64-decode-string str))
+	 (s (if s (cipher-saber-decrypt-string s key)))
+	 (s (if s (cs-remove-pad s) nil))
+	 (l (if s (length s) nil)))
+    (if (and (numberp l) (> l 3))
+	(let* ((istr (substring s 4 l))
+	       (icrc (substring s 0 4))
+	       (ocrc (crc32-string istr 'raw-string)))
+	  (message (concat icrc " " ocrc " " istr))
+	  (if (string= icrc ocrc) istr nil))
+      nil)))
 
 ;;; eof (cipher-saber.el)
