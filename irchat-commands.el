@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-commands.el,v 3.39 2001/11/04 12:30:51 tri Exp $
+;;;  $Id: irchat-commands.el,v 3.40 2002/06/04 15:12:51 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -104,7 +104,6 @@
 	    (irchat-Command-save-vars))
 	(irchat-Command-timestamp)
 	(setq irchat-last-timestamp-no-cons-p no-cons))))
-
 
 (defun irchat-Command-timestamp ()
   (interactive)

@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-300.el,v 3.6 2001/06/07 12:46:10 tri Exp $
+;;;  $Id: irchat-300.el,v 3.7 2002/06/04 15:12:51 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -225,25 +225,73 @@ This is called if no specific handler exists"
   nil)
 
 
-(defun irchat-handle-317-msg (prefix rest)
-  "Handle the 317 WHOISIDLE."
-  (if (string-match "^[^ ]+ [^ ]+ \\([0-9]*\\) :\\(.*\\)" rest)
-      (irchat-w-insert irchat-300-buffer (format "%sIDLE for %s\n" irchat-info-prefix 
-		(irchat-convert-seconds (matching-substring rest 1))))
-    (if (string-match "^[^ ]+ \\([0-9]*\\) :\\(.*\\)" rest)
-	(irchat-w-insert irchat-300-buffer (format "%sIDLE for %s\n" irchat-info-prefix
-		(irchat-convert-seconds (matching-substring rest 1))))
-      (if (string-match ; maybe older 2.6 or 2.5 server?
-	   "^\\([^ ]+\\) \\([^ ]+\\) \\([^ ]+\\) +\\([^ ]+\\) \\([^ ]+\\) \\([^ ]+\\) :\\(.*\\)"
-	   rest)
-	  (let ((dofw (matching-substring rest 2))
-		(month (matching-substring rest 3))
-		(date (matching-substring rest 4))
-		(time (matching-substring rest 5))
-		(year (matching-substring rest 6)))
-	    (irchat-w-insert irchat-300-buffer (format "%sLast input received %s.\n" irchat-info-prefix time))
-	    )
-	(message "IRCHAT: Strange 317 reply")))))
+(defun irchat-317-args-parse (str) 
+  (let* ((al (irchat-split-protocol-args str)) 
+         (nl (if (> (length al) 1) 
+                 (split-string (nth (- (length al) 1) al)  
+                               ",[ \t]*") 
+               '())) 
+         (r '())) 
+    (if (eq (length nl) (- (length al) 1)) 
+        (while nl 
+          (setq r (cons (cons (car nl) (car al)) r)) 
+          (setq nl (cdr nl)) 
+          (setq al (cdr al)))) 
+    r)) 
+ 
+(defun irchat-317-args-lookup (name parsed-args)  
+  (let ((r nil)) 
+    (while parsed-args 
+      (if (string-ci-equal name (car (car parsed-args))) 
+          (setq r (cdr (car parsed-args)) 
+                parsed-args '()) 
+        (setq parsed-args (cdr parsed-args)))) 
+    r)) 
+
+ 
+(defun irchat-handle-317-msg (prefix rest) 
+  "Handle the 317 WHOISIDLE." 
+  (let ((s nil)
+	(l nil))
+    (if (string-match "^[^ ]+ [^ ]+ \\(.*\\)" rest)   
+	(let ((p (irchat-317-args-parse (matching-substring rest 1))))
+	  (setq s (irchat-317-args-lookup "seconds idle" p)
+		l (irchat-317-args-lookup "signon time" p))))
+    (if (and (null s) 
+             (string-match "^[^ ]+ \\([0-9]*\\) :\\(.*\\)" rest)) 
+        (setq s (matching-substring rest 1))) 
+    (if (and (null s) 
+             (string-match 
+              "^\\([^ ]+\\) \\([^ ]+\\) \\([^ ]+\\) +\\([^ ]+\\) \\([^ ]+\\) \\([^ ]+\\) :\\(.*\\)" 
+              rest)) 
+        (let ((dofw (matching-substring rest 2)) 
+              (month (matching-substring rest 3))    
+              (date (matching-substring rest 4)) 
+              (time (matching-substring rest 5)) 
+              (year (matching-substring rest 6))) 
+          (irchat-w-insert irchat-300-buffer
+                           (format "%sLast input received %s.\n"  
+                                   irchat-info-prefix  
+                                   time)) 
+          (setq s 0))) 
+    (if (not (null l))
+	(let ((c (irchat-time-val-string-to-current-time-format l)))
+	  (if (not (null c))
+	      (irchat-w-insert irchat-300-buffer
+			       (format "%sSign-on time is %s\n"
+				       irchat-info-prefix
+				       (if irchat-format-time-function
+					   (apply irchat-format-time-function
+						  (list (current-time-string
+							 c)))
+					 (current-time-string c)))))))
+    (if (not (null s)) 
+        (if (stringp s)
+            (irchat-w-insert irchat-300-buffer
+                             (format "%sIDLE for %s\n"
+                                     irchat-info-prefix
+                                     (irchat-convert-seconds s))))
+      (message "IRCHAT: Strange 317 reply")))) 
 
 
 (defun irchat-handle-318-msg (prefix rest)
@@ -545,7 +593,8 @@ don't display anything."
   (if (string-match "^\\([^ ]+\\) +\\(.*\\)" rest)
       (let ((time (matching-substring rest 2)))
 	(irchat-w-insert irchat-300-buffer 
-			 (format "%sServer time: %s\n" irchat-info-prefix time)))
+			 (format "%sServer time: %s\n" irchat-info-prefix
+				 time)))
     (message "IRCHAT: Strange 391 message")))
 
 ;;;
