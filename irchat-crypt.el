@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-crypt.el,v 3.6 1997/03/03 18:26:06 tri Exp $
+;;;  $Id: irchat-crypt.el,v 3.7 1997/03/05 13:41:39 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -33,9 +33,18 @@
 	  (irchat-Command-set-default-key (car (car lst)) (cdr (car lst)))
 	  (setq lst (cdr lst))))))
 
+(defun irchat-read-passphrase (&optional prompt)
+  "PROMPT for passphrase.  Use comint if possible."
+  (if (null prompt)
+      (setq prompt ""))
+  (if (and (fboundp 'comint-read-noecho)
+	   irchat-crypt-use-comint-on-passphrase)
+      (comint-read-noecho prompt)
+    (read-from-minibuffer prompt)))
+
 (defun irchat-Command-add-new-key (key-var &optional interactive-p)
   "Add new KEY to known decryption keys list"
-  (interactive (list (read-from-minibuffer "Add passphrase: ") t))
+  (interactive (list (irchat-read-passphrase "Add passphrase: ") t))
   (let* ((my-key-type (idea-legal-key key-var))
 	 (my-key (cond ((equal 'key-complete-encryption my-key-type)
 			(error "KEY is not an decryption key."))
@@ -55,7 +64,7 @@
 
 (defun irchat-Command-delete-key (key-var &optional interactive-p)
   "Delete a KEY from known decryption keys list"
-  (interactive (list (read-from-minibuffer "Delete passphrase: ") t))
+  (interactive (list (irchat-read-passphrase "Delete passphrase: ") t))
   (let ((fingerprint (idea-key-fingerprint key-var)))
     (setq irchat-known-idea-key-list (remassoc fingerprint
 					       irchat-known-idea-key-list))
@@ -78,7 +87,7 @@
 				 (append irchat-nick-alist
 					 irchat-channel-alist)
 				 '(lambda (s) t) nil irchat-privmsg-partner))
-		 (setq pass-var (read-from-minibuffer "Passphrase: "))
+		 (setq pass-var (irchat-read-passphrase "Passphrase: "))
 		 (if (string= pass-var "")
 		     (setq pass-var nil))	 
 		 (list addr-var pass-var)))

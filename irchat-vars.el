@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-vars.el,v 3.10 1997/02/27 10:19:14 jsl Exp $
+;;;  $Id: irchat-vars.el,v 3.11 1997/03/05 13:41:39 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -273,6 +273,8 @@ Default is what (system-name) returns.")
   "If t, irchat encrypts all messages it has a default key for.")
 (defvar irchat-crypt-ignore-defected nil
   "If t, ignore encrypted messages that cannot be opened.")
+(defvar irchat-crypt-use-comint-on-passphrase nil
+  "If t, read passphrases with comint (if possible).")
 
 ;;;
 ;;;  Conversions: Not used.
