@@ -4,7 +4,7 @@
 ;;;  IDEA encryption in elisp.  Cool, ha?
 ;;;  ----------------------------------------------------------------------
 ;;;  Created      : Thu Jun 29 08:11:25 1995 tri
-;;;  Last modified: Wed Feb 26 14:23:35 1997 tri
+;;;  Last modified: Thu Feb 27 03:47:43 1997 tri
 ;;;  ----------------------------------------------------------------------
 ;;;  Copyright © 1995-1997
 ;;;  Timo J. Rinne <tri@iki.fi>
@@ -18,7 +18,7 @@
 ;;;  irchat-copyright.el applies only if used with irchat IRC client.
 ;;;  Contact the author for additional copyright info.
 ;;;
-;;;  $Id: idea.el,v 3.4 1997/02/26 12:24:06 tri Exp $
+;;;  $Id: idea.el,v 3.5 1997/02/27 01:50:08 tri Exp $
 ;;;
 
 (eval-and-compile  
@@ -456,9 +456,10 @@
 
 (defun idea-remove-padding (str)
   "Remove block padding from the STRING"
-  (let* ((len (length str))
-	 (pad (+ 1 (idea->> (elt str 0) 5))))
-    (substring str pad len)))
+  (let* ((len (length str)))
+    (if (< len 8)
+	nil
+      (substring str (+ 1 (idea->> (elt str 0) 5)) len))))
 
 (defun idea-cleartext-string-to-block-list (str &optional rndpad)
   "Convert cleartext STRING the list of encryption blocks (CLEARTEXT)"
