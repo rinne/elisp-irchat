@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-300.el,v 3.5 2001/05/06 19:58:16 tri Exp $
+;;;  $Id: irchat-300.el,v 3.6 2001/06/07 12:46:10 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -388,6 +388,34 @@ This is called if no specific handler exists"
 	  (setq seen t))
 	(setq i (- i 1))))
     words))
+
+(defun irchat-handle-346-msg (prefix rest)
+  "Handle the 346 invitation list."
+  (if (string-match "[^ ]* \\([^ ]*\\) \\([^ ]*\\)" rest)
+      (let ((chnl (matching-substring rest 1))
+	    (regexp (matching-substring rest 2)))
+	(irchat-w-insert (irchat-pick-buffer chnl)
+			 (format "%s%s carries invitation to %s\n"
+				 irchat-info-prefix regexp chnl)))
+    (message "IRCHAT: Strange 346 message")))
+
+(defun irchat-handle-347-msg (prefix rest)
+  "Handle the 347 ???????."
+  nil)
+
+(defun irchat-handle-348-msg (prefix rest)
+  "Handle the 348 ban exceptions."
+  (if (string-match "[^ ]* \\([^ ]*\\) \\([^ ]*\\)" rest)
+      (let ((chnl (matching-substring rest 1))
+	    (regexp (matching-substring rest 2)))
+	(irchat-w-insert (irchat-pick-buffer chnl)
+			 (format "%s%s carries exception to ban on %s\n"
+				 irchat-info-prefix regexp chnl)))
+    (message "IRCHAT: Strange 348 message")))
+
+(defun irchat-handle-349-msg (prefix rest)
+  "Handle the 347 ???????."
+  nil)
 
 (defvar irchat-353-nameschnl nil "")
 (defvar irchat-353-nameslist "" "names list reply string")
