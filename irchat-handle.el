@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-handle.el,v 3.4 1997/02/25 22:01:31 tri Exp $
+;;;  $Id: irchat-handle.el,v 3.5 1997/02/26 16:43:17 too Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright in(eval-wfo
 
@@ -182,7 +182,7 @@
 	      nil
 	    (progn
 	      (if (string-match "\\(.*\\)" temp)
-		  (setq temp (irchat-ctl-a-msg prefix temp)))
+		  (setq temp (irchat-ctl-a-msg prefix chnl temp)))
 	      (if (not (string= temp ""))
 		  (progn
 		    ;; only private messages to us get time-stamp
@@ -248,7 +248,7 @@
 	  (temp (matching-substring rest 2))
 	  (case-fold-search t))
       (if (string-match "\\(.*\\)" temp)
-	  (setq temp (irchat-ctl-a-msg prefix temp)))
+	  (setq temp (irchat-ctl-a-msg prefix chnl temp)))
       (if (not (string= temp ""))
 	  (cond
 	   ((string-ci-equal chnl irchat-nickname)
