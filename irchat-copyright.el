@@ -1,9 +1,9 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-copyright.el,v 1.1 1996/12/19 14:54:48 tri Exp $
+;;;  $Id: irchat-copyright.el,v 1.2 1997/02/13 09:10:47 tri Exp $
 ;;;
 (defvar irchat-copyright "
-    $Id: irchat-copyright.el,v 1.1 1996/12/19 14:54:48 tri Exp $
+    $Id: irchat-copyright.el,v 1.2 1997/02/13 09:10:47 tri Exp $
     Internet Relay CHAT interface for GNU Emacs
     Copyright (C) 1989 Tor Lillqvist
  
@@ -42,12 +42,16 @@
 	   Janne Liimatainen	<jsl@iki.fi>
 	   Tero T. Mononen     	<tmo@iki.fi>
 	   Kim Nyberg          	<kny@iki.fi>
+           Tomi Ollila          <too@iki.fi>
 	   Jukka Partanen      	<jtp@iki.fi>
 	   Timo J. Rinne	<tri@iki.fi>
 " "Basically GPL")
 
 ;;;
 ;;;  $Log: irchat-copyright.el,v $
+;;;  Revision 1.2  1997/02/13 09:10:47  tri
+;;;  Added Domo to "current" team.
+;;;
 ;;;  Revision 1.1  1996/12/19 14:54:48  tri
 ;;;  Initial revision
 ;;;
