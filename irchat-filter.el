@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-filter.el,v 3.5 1997/10/19 15:39:19 tri Exp $
+;;;  $Id: irchat-filter.el,v 3.6 1998/03/24 09:25:48 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -129,6 +129,7 @@
   "Filter function for IRC server process."
   (let ((obuf (current-buffer))
 	(data (match-data))
+	(output (irchat-decode-coding-string output))
 	bol)
     ;;
     ;; C-c C-d creates debug buffer for incoming messages...
