@@ -4,7 +4,7 @@
 ;;;  IDEA encryption in elisp.  Cool, ha?
 ;;;  ----------------------------------------------------------------------
 ;;;  Created      : Thu Jun 29 08:11:25 1995 tri
-;;;  Last modified: Thu Feb 27 03:47:43 1997 tri
+;;;  Last modified: Tue Oct  7 14:08:07 1997 tri
 ;;;  ----------------------------------------------------------------------
 ;;;  Copyright © 1995-1997
 ;;;  Timo J. Rinne <tri@iki.fi>
@@ -18,7 +18,7 @@
 ;;;  irchat-copyright.el applies only if used with irchat IRC client.
 ;;;  Contact the author for additional copyright info.
 ;;;
-;;;  $Id: idea.el,v 3.5 1997/02/27 01:50:08 tri Exp $
+;;;  $Id: idea.el,v 3.6 1997/10/07 11:13:52 tri Exp $
 ;;;
 
 (eval-and-compile  
@@ -27,6 +27,9 @@
 
 (eval-and-compile  
   (provide 'idea))
+
+(defvar idea-default-key-expand-version 1
+  "Which version of key expand is used as default (1 or 2).")
 
 ;;;; 16bit basic arithmetic operations for IDEA.
 (defun idea-mask-16bit (x)
@@ -176,8 +179,15 @@
 	(idea-| (idea-<< (nth 7 key) 9) (idea->> (nth 0 key) 7))
 	(idea-| (idea-<< (nth 0 key) 9) (idea->> (nth 1 key) 7))))
 
-(defun idea-expand-string-to-key (string)
+(defun idea-expand-string-to-key (string &optional version)
   "Expand string to full 128bit key (list of 8 16bit ints)"
+  (if (null version) (setq version idea-default-key-expand-version))
+  (cond ((= version 1) (idea-expand-string-to-key-version-1 string))
+	((= version 2) (idea-expand-string-to-key-version-2 string))
+	(t (error "Unknown key expansion version"))))
+
+(defun idea-expand-string-to-key-version-1 (string)
+  "Expand string to full 128bit key (list of 8 16bit ints) (version 1)"
   (if (= (length string) 0)
       '(0 0 0 0 0 0 0 0)
     (let* ((s (if (< (length string) 64)
@@ -213,19 +223,71 @@
 	   (k8 (idea-4hex-to-int (substring v4 4 8))))
       (list k1 k2 k3 k4 k5 k6 k7 k8))))
 
+(defun idea-expand-string-to-key-version-2 (string)
+  "Expand string to full 128bit key (list of 8 16bit ints) (version 2)"
+  (if (= (length string) 0)
+      '(0 0 0 0 0 0 0 0)
+    (let* ((s (if (> (length string) 3) 
+		  string 
+		(concat string (crc32-string string 'raw-string))))
+	   (l (length s))
+	   (s1 (idea-expand-substring (concat (format "%c%c" 0 (logand l 255)) 
+					      (substring s 0 (/ l 4)))))
+	   (s2 (idea-expand-substring (concat (format "%c%c" 85 (logand l 255))
+					      (substring s (/ l 4) (/ l 2)))))
+	   (s3 (idea-expand-substring (concat (format "%c%c" 
+						      170 
+						      (logand l 255))
+					      (substring s  
+							 (/ l 2) 
+							 (+ (/ l 2)
+							    (/ l 4))))))
+	   (s4 (idea-expand-substring (concat (format "%c%c" 
+						      255 
+						      (logand l 255))
+					      (substring s
+							 (+ (/ l 2) (/ l 4)) 
+							 l))))
+	   (v1 (crc32-string s1))
+	   (v2 (crc32-string s2))
+	   (v3 (crc32-string s3))
+	   (v4 (crc32-string s4))
+	   (k1 (idea-4hex-to-int (substring v1 0 4)))
+	   (k2 (idea-4hex-to-int (substring v1 4 8)))
+	   (k3 (idea-4hex-to-int (substring v2 0 4)))
+	   (k4 (idea-4hex-to-int (substring v2 4 8)))
+	   (k5 (idea-4hex-to-int (substring v3 0 4)))
+	   (k6 (idea-4hex-to-int (substring v3 4 8)))
+	   (k7 (idea-4hex-to-int (substring v4 0 4)))
+	   (k8 (idea-4hex-to-int (substring v4 4 8))))
+      (list k1 k2 k3 k4 k5 k6 k7 k8))))
+
+(defun idea-expand-substring (string)
+  (if (= (length string) 0)
+      string
+    (progn
+      (setq string (concat (crc32-string string 'raw-string) string))
+      (let ((i (+ 3 (logand 3 (elt string 0)))))
+	(while (> i 0)
+	  (setq i (- i 1))
+	  (setq string (concat (crc32-string string 'raw-string) string))))
+      string)))
+
 (defun idea-random-key ()
   "Generate random IDEA key (list of 8 16bit values)"
   (list (idea-random) (idea-random) (idea-random) (idea-random)
 	(idea-random) (idea-random) (idea-random) (idea-random)))
 
-(defun idea-build-encryption-key (passphrase)
+(defun idea-build-encryption-key (passphrase &optional version)
   "Build idea encryption context from string or keylist (list of 8 16bit ints)"
   (let* ((s1 (if (stringp passphrase) 
-		 (idea-expand-string-to-key passphrase)
+		 (idea-expand-string-to-key passphrase version)
 	       (if (listp passphrase)
 		   passphrase
 		 (error "IDEA key can be built from string or keylist."))))
-	 (annotation (idea-build-key-annotation s1 "e"))
+	 (annotation (idea-build-key-annotation s1 
+						"e"
+						version))
 	 (s2 (idea-shift-key-25bits-left s1))
 	 (s3 (idea-shift-key-25bits-left s2))
 	 (s4 (idea-shift-key-25bits-left s3))
@@ -253,9 +315,9 @@
 		   (nth 3 s7))))
     (list r1 r2 r3 r4 r5 r6 r7 r8 r9 annotation)))
 
-(defun idea-build-decryption-key (passphrase)
+(defun idea-build-decryption-key (passphrase &optional version)
   "Build idea decryption context from string or keylist (list of 8 16bit ints)"
-  (let* ((k (idea-build-encryption-key passphrase))
+  (let* ((k (idea-build-encryption-key passphrase version))
 	 (annotation (idea-build-key-annotation (list (nth 0 (nth 0 k))
 						      (nth 1 (nth 0 k))
 						      (nth 2 (nth 0 k))
@@ -263,7 +325,9 @@
 						      (nth 4 (nth 0 k))
 						      (nth 5 (nth 0 k))
 						      (nth 0 (nth 1 k))
-						      (nth 1 (nth 1 k))) "d")))
+						      (nth 1 (nth 1 k))) 
+						"d"
+						version)))
     (list
      (list (idea-multiplicative-inverse (nth 0 (nth 8 k)))
 	   (idea-additive-inverse (nth 1 (nth 8 k)))
@@ -396,18 +460,18 @@
     (nth 7 key))
    (nth 8 key)))
 
-(defun idea-encrypt-block (data key)
+(defun idea-encrypt-block (data key &optional version)
   "Encrypt single data block (4 * 16bits) with key"
   (let ((my-key (if (listp key) key 
-		  (if (stringp key) (idea-build-encryption-key key)
+		  (if (stringp key) (idea-build-encryption-key key version)
 		    (error 
 		     "IDEA key has to be key-context or string.")))))
     (idea-crypt-transform-block data my-key)))
 
-(defun idea-decrypt-block (data key)
+(defun idea-decrypt-block (data key &optional version)
   "Decrypt single data block (4 * 16bits) with key"
   (let ((my-key (if (listp key) key 
-		  (if (stringp key) (idea-build-decryption-key key)
+		  (if (stringp key) (idea-build-decryption-key key version)
 		    (error 
 		     "IDEA key has to be key-context or string.")))))
     (idea-crypt-transform-block data my-key)))
@@ -482,7 +546,7 @@
       (setq i (+ 8 i)))
     r))
 
-(defun idea-ecb-encrypt-string (str key)
+(defun idea-ecb-encrypt-string (str key &optional version)
   "Encrypt STRING with KEY (either key context or string)"
   (let* ((my-key-type (idea-legal-key key))
 	 (my-key (cond ((equal 'key-complete-decryption my-key-type)
@@ -491,7 +555,7 @@
 			key)
 		       ((or (equal 'key-string my-key-type)
 			   (equal 'key-intlist my-key-type))
-			(idea-build-encryption-key key))
+			(idea-build-encryption-key key version))
 		       (t (error "Invalid key."))))
 	 (data (idea-cleartext-string-to-block-list str '()))
 	 (l (length data))
@@ -512,7 +576,7 @@
       (setq i (+ 1 i)))
     (b64-encode-string r)))
 
-(defun idea-ecb-decrypt-string (cipstr key)
+(defun idea-ecb-decrypt-string (cipstr key &optional version)
   "Decrypt STRING with KEY (either key context or string)"
   (let ((str (b64-decode-string cipstr)))
     (if (and str (= 0 (% (length str) 8)))
@@ -523,7 +587,7 @@
 			      key)
 			     ((or (equal 'key-string my-key-type)
 				  (equal 'key-intlist my-key-type))
-			      (idea-build-decryption-key key))
+			      (idea-build-decryption-key key version))
 			     (t (error "Invalid key."))))
 	       (data (idea-ciphertext-string-to-block-list str))
 	       (l (length data))
@@ -549,7 +613,7 @@
 	      '())))
       '())))
 
-(defun idea-cbc-encrypt-string (str key)
+(defun idea-cbc-encrypt-string (str key &optional version)
   "Encrypt STRING with KEY (either key context or string) cbc mode."
   (let* ((my-key-type (idea-legal-key key))
 	 (my-key (cond ((equal 'key-complete-decryption my-key-type)
@@ -558,7 +622,7 @@
 			key)
 		       ((or (equal 'key-string my-key-type)
 			   (equal 'key-intlist my-key-type))
-			(idea-build-encryption-key key))
+			(idea-build-encryption-key key version))
 		       (t (error "Invalid key."))))
 	 (data (idea-cleartext-string-to-block-list str t))
 	 (context '(0 0 0 0))
@@ -582,7 +646,7 @@
       (setq i (+ 1 i)))
     (b64-encode-string r)))
 
-(defun idea-cbc-decrypt-string (cipstr key)
+(defun idea-cbc-decrypt-string (cipstr key &optional version)
   "Decrypt STRING with KEY (either key context or string) cbc mode."
   (let ((str (b64-decode-string cipstr)))
     (if (and str (= 0 (% (length str) 8)))
@@ -593,7 +657,7 @@
 			      key)
 			     ((or (equal 'key-string my-key-type)
 				  (equal 'key-intlist my-key-type))
-			      (idea-build-decryption-key key))
+			      (idea-build-decryption-key key version))
 			     (t (error "Invalid key."))))
 	       (data (idea-ciphertext-string-to-block-list str))
 	       (context '(0 0 0 0))
@@ -644,7 +708,14 @@
 	  (+ (- x ?A) 10)
 	-1))))
 
-(defun idea-build-key-annotation (key type)
+(defun idea-build-key-annotation (key type &optional version)
+  "Build annotation table of KEY that is of TYPE \"e\" or \"\d\"."
+  (if (null version) (setq version idea-default-key-expand-version))
+  (cond ((= version 1) (idea-build-key-annotation-version-1 key type))
+	((= version 2) (idea-build-key-annotation-version-2 key type))
+	(t (error "Unknown key expansion version"))))
+
+(defun idea-build-key-annotation-version-1 (key type)
   "Build annotation table of KEY that is of TYPE \"e\" or \"\d\"."
   (let ((r (make-string 16 0)))
     (aset r 15 (idea-& (nth 0 key) 255))
@@ -664,6 +735,44 @@
     (aset r 1  (idea-& (nth 7 key) 255))
     (aset r 0  (idea-& (idea->> (nth 7 key) 8) 255))
     (concat type ":" (crc32-string r))))
+
+(defun idea-build-key-annotation-version-2 (key type)
+  "Build annotation table of KEY that is of TYPE \"e\" or \"\d\"."
+  (if (and (= 0 (nth 0 key))
+	   (= 0 (nth 1 key))
+	   (= 0 (nth 2 key))
+	   (= 0 (nth 3 key))
+	   (= 0 (nth 4 key))
+	   (= 0 (nth 5 key))
+	   (= 0 (nth 6 key))
+	   (= 0 (nth 7 key)))
+      (concat type ":000000000000")
+    (let ((r (make-string 9 0))
+	  (s (make-string 9 0)))
+      (aset r 8 0)
+      (aset r 7 (idea-& (nth 0 key) 255))
+      (aset r 6 (idea-& (idea->> (nth 0 key) 8) 255))
+      (aset r 5 (idea-& (nth 1 key) 255))
+      (aset r 4 (idea-& (idea->> (nth 1 key) 8) 255))
+      (aset r 3 (idea-& (nth 2 key) 255))
+      (aset r 2 (idea-& (idea->> (nth 2 key) 8) 255))
+      (aset r 1 (idea-& (nth 3 key) 255))
+      (aset r 0 (idea-& (idea->> (nth 3 key) 8) 255))
+      (aset s 8 255)
+      (aset s 7 (idea-& (nth 4 key) 255))
+      (aset s 6 (idea-& (idea->> (nth 4 key) 8) 255))
+      (aset s 5 (idea-& (nth 5 key) 255))
+      (aset s 4 (idea-& (idea->> (nth 5 key) 8) 255))
+      (aset s 3 (idea-& (nth 6 key) 255))
+      (aset s 2 (idea-& (idea->> (nth 6 key) 8) 255))
+      (aset s 1 (idea-& (nth 7 key) 255))
+      (aset s 0 (idea-& (idea->> (nth 7 key) 8) 255))
+      (setq s (concat (crc32-string (concat r s) 'raw-string) s))
+      (setq r (concat (crc32-string (concat s r) 'raw-string) r))
+      (concat type 
+	      ":"
+	      (substring (crc32-string r) 0 6)
+	      (substring (crc32-string s) 0 6)))))
 
 (defun idea-legal-subkey-p (subkey)
   "Is SUBKEY a legal subkey structure?"
@@ -756,7 +865,7 @@
 	   'key-complete-decryption))
 	(t nil)))
 
-(defun idea-key-fingerprint (key)
+(defun idea-key-fingerprint (key &optional version)
   "Get an IDEA-KEY fingerprint."
   (let* ((my-key-type (idea-legal-key key))
 	 (my-key (cond ((equal 'key-complete-decryption my-key-type)
@@ -765,7 +874,7 @@
 			key)
 		       ((or (equal 'key-string my-key-type)
 			   (equal 'key-intlist my-key-type))
-			(idea-build-encryption-key key))
+			(idea-build-encryption-key key version))
 		       (t nil))))
     (if my-key
 	(let ((annotation (nth 9 my-key)))
@@ -785,7 +894,7 @@
 		       (>= (idea-hex-char-to-int (elt annotation 9)) 0))
 		  (if (or (= ty ?e)
 			  (= ty ?d))
-		      (substring annotation 2 10)
+		      (substring annotation 2 (length annotation))
 		    nil)
 		nil))))
       nil)))
