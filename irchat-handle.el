@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-handle.el,v 3.22 1997/10/19 16:15:12 tri Exp $
+;;;  $Id: irchat-handle.el,v 3.23 1997/10/20 06:50:14 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright in(eval-wfo
 
@@ -175,7 +175,7 @@
 
 ;; Is this still needed?
 (defun irchat-handle-msg-msg (prefix rest)
-  (irchat-nick-to-uah-append prefix irchat-userathost)
+  (irchat-nick-to-uah-append prefix irchat-userathost irchat-userathost-type)
   (if (or (and prefix
 	       (irchat-ignore-this-p prefix irchat-userathost)
 	       (irchat-msg-from-ignored prefix rest))
@@ -202,7 +202,7 @@
 		     rest)))))))
 
 (defun irchat-handle-privmsg-msg (prefix rest)
-  (irchat-nick-to-uah-append prefix irchat-userathost)
+  (irchat-nick-to-uah-append prefix irchat-userathost irchat-userathost-type)
   (if (and prefix
 	   (irchat-ignore-this-p prefix irchat-userathost)
 	   (irchat-msg-from-ignored prefix rest))
@@ -359,7 +359,7 @@
 	   (irchat-ignore-this-p prefix irchat-userathost)
 	   (irchat-msg-from-ignored prefix rest))
       nil
-    (irchat-nick-to-uah-append prefix irchat-userathost)
+    (irchat-nick-to-uah-append prefix irchat-userathost irchat-userathost-type)
     (string-match "^\\([^ ]+\\) :\\(.*\\)" rest)
     (let ((chnl (matching-substring rest 1))
 	  (temp (matching-substring rest 2))
@@ -602,7 +602,7 @@
 				   (if flags (format " [%s]" flags) "")
                                    irchat-userathost 
                                    rest))))
-    (irchat-nick-to-uah-append prefix irchat-userathost)
+    (irchat-nick-to-uah-append prefix irchat-userathost irchat-userathost-type)
     (irchat-change-nick-of prefix prefix)))
 
 
