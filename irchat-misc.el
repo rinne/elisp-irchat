@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-misc.el,v 3.37 1998/05/24 11:39:06 tri Exp $
+;;;  $Id: irchat-misc.el,v 3.38 1998/05/24 11:58:43 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -345,9 +345,10 @@
   "Same as irchat-send but queues send."
   (irchat-reset-idle)
   (let ((item (apply 'format format args)))
+    (setq item (irchat-replace-in-string item "%" "%%"))
     (setq irchat-send-delayed-queue (cons item irchat-send-delayed-queue))
     (irchat-send-delayed-start-timer)))
-	  
+
 ;;;
 ;;; end of delayed send stuff...
 ;;;
