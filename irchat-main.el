@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-main.el,v 3.29 1998/06/29 11:47:33 tri Exp $
+;;;  $Id: irchat-main.el,v 3.30 1998/07/11 17:11:16 jtp Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -364,6 +364,9 @@ If already connected, just pop up the windows."
 	(irchat-append-obsolete-vars)))
   (if (irchat-server-opened)
       (irchat-configure-windows)
+    (message "Initializing crypt keys...")
+    (irchat-init-crypt)
+    (message "Initializing crypt keys...done")
     (unwind-protect
 	(progn
 	  (switch-to-buffer (irchat-get-buffer-create irchat-Command-buffer))
@@ -382,7 +385,6 @@ If already connected, just pop up the windows."
 	      (setq irchat-freeze-indicator "-")
 	      (irchat-freeze-toggle (car irchat-D-buffer))))
 	(irchat-set-crypt-indicator)
-	(irchat-init-crypt)
 	(irchat-Dialogue-setup-buffer)
 	(irchat-Private-setup-buffer)
 	(irchat-KILLS-setup-buffer)
