@@ -1,8 +1,8 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-handle.el,v 3.23 1997/10/20 06:50:14 tri Exp $
+;;;  $Id: irchat-handle.el,v 3.24 1997/10/28 07:10:53 tri Exp $
 ;;;
-;;; see file irchat-copyright.el for change log and copyright in(eval-wfo
+;;; see file irchat-copyright.el for change log and copyright info
 
 (eval-when-compile (require 'irchat-inlines))
 (eval-and-compile  
@@ -460,21 +460,27 @@
 
 (defun irchat-handle-quit-msg (prefix rest)
   "Handle the QUIT message."
-  (if (not irchat-ignore-changes)
+  (if (and (not irchat-ignore-changes)
+	   (or (not irchat-ignore-changes-from-ignored)
+	       (not (irchat-ignore-this-p prefix irchat-userathost))))
       (if irchat-compress-changes
 	  (let* ((text (format " \\(has\\|have\\) left IRC%s" 
 			       (irchat-ifrest rest t)))
 		 (match (format "^%s.*%s$" 
 				(regexp-quote irchat-change-prefix) text))
 		 (default (format "%s%s has left IRC%s\n" 
-				  irchat-change-prefix prefix (irchat-ifrest rest))))
+				  irchat-change-prefix
+				  prefix
+				  (irchat-ifrest rest))))
 	    (irchat-w-replace irchat-D-buffer 
 			      match default text
 			      (format ", %s have left IRC%s" 
 				      prefix (irchat-ifrest rest))))
 	(irchat-w-insert irchat-D-buffer
 			 (format "%s%s has left IRC%s\n" 
-				 irchat-change-prefix prefix (irchat-ifrest rest)))))
+				 irchat-change-prefix
+				 prefix
+				 (irchat-ifrest rest)))))
   (irchat-change-nick-of prefix nil))
 
 
@@ -577,7 +583,9 @@
                 (format "Channel %s" rest))
           (irchat-set-crypt-indicator))
       (irchat-add-to-channel prefix rest))
-    (if (not irchat-ignore-changes)
+    (if (and (not irchat-ignore-changes)
+	     (or (not irchat-ignore-changes-from-ignored)
+		 (not (irchat-ignore-this-p prefix irchat-userathost))))
         (if irchat-compress-changes
             (let* ((text (format " \\(has\\|have\\) joined channel %s" 
                                  (regexp-quote rest)))
@@ -616,7 +624,9 @@
 	      irchat-current-channel (car irchat-current-channels)
 	      irchat-channel-indicator (if irchat-current-channel (format "Channel %s" irchat-current-channel) "No channel"))
 	(irchat-set-crypt-indicator)))
-  (if (not irchat-ignore-changes)
+  (if (and (not irchat-ignore-changes)
+	   (or (not irchat-ignore-changes-from-ignored)
+	       (not (irchat-ignore-this-p prefix irchat-userathost))))
       (if irchat-compress-changes
 	  (let* ((text (format " \\(has\\|have\\) left channel %s"
 			       (regexp-quote rest)))
