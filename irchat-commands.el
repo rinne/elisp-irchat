@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-commands.el,v 3.13 1997/03/12 16:19:49 jtp Exp $
+;;;  $Id: irchat-commands.el,v 3.14 1997/03/13 20:39:36 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -63,7 +63,8 @@
 
 (defun irchat-Command-keepalive ()
   (if (not (irchat-server-opened))
-      (irchat 'always)))
+      (irchat 'always))
+  (irchat-ping-if-idle))
 
 
 (defun irchat-compose-servertimestring (s)
@@ -1303,6 +1304,13 @@ mode, the current channel and current chat partner are not altered)"
 	(irchat-set-crypt-indicator)
 	(set-buffer-modified-p (buffer-modified-p))))))
 
+(defun irchat-Command-ping ()
+  (interactive)
+  (if (stringp irchat-server-name)
+      (progn
+	(irchat-send "PING %s" irchat-server-name)
+	t)
+    nil))
 ;;;
 ;;; Cannot use completing read, user may want to query many names
 ;;;

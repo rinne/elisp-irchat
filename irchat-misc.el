@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-misc.el,v 3.9 1997/03/12 16:19:20 jtp Exp $
+;;;  $Id: irchat-misc.el,v 3.10 1997/03/13 20:39:36 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -55,6 +55,7 @@
   (irchat-w-insert irchat-P-buffer (format "%s\n" message)))
 
 (defun irchat-send (&rest args)
+  (irchat-reset-idle)
   (let ((item (apply 'format args)) ditem)
     (let ((conv-list irchat-send-convert-list))
       (while conv-list
@@ -186,6 +187,28 @@
 	 (ss (format "%d seconds" seconds)))
     (concat ds hs ms (if seconds ss ""))))
 
+(defvar irchat-idle-point nil "Timestamp of last idle reset")
+
+(defun irchat-reset-idle ()
+  "Reset idle counter and return last idle."
+  (let ((r (irchat-idle)))
+    (setq irchat-idle-point (current-time))
+    r))
+
+(defun irchat-idle ()
+  "How long has irchat been idle"
+  (if irchat-idle-point
+      (irchat-time-difference irchat-idle-point (current-time))
+    9999999))
+
+(defun irchat-ping-if-idle (&optional limit)
+  (if (null limit)
+      (setq limit 120))
+  (if (> (irchat-idle) limit)
+      (progn
+	(irchat-Command-ping)
+	t)
+    nil))
 
 (defun irchat-msg-from-ignored (prefix rest)
   (save-excursion
