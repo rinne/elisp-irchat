@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-main.el,v 3.5 1997/02/26 07:56:47 jtp Exp $
+;;;  $Id: irchat-main.el,v 3.6 1997/02/26 12:40:22 jtp Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -58,6 +58,7 @@ carried out.")))))
 (defvar irchat-Command-mode-map nil)
 (defvar irchat-Dialogue-mode-map nil)
 (defvar irchat-Client-query-map nil)
+(defvar irchat-Crypt-map nil)
 
 (put 'irchat-Command-mode 'mode-class 'special)
 (put 'irchat-Dialogue-mode 'mode-class 'special)
@@ -107,6 +108,13 @@ carried out.")))))
     )
   "Key definition table for Dialogue mode")
 
+
+(defvar irchat-Crypt-keys
+  '(("t"	irchat-Command-toggle-crypt)
+    ("k"	irchat-Command-set-default-key)
+    ("a"	irchat-Command-add-new-key)
+    ("d"	irchat-Command-delete-key))
+  "Key definition table for crypt keys (Dialogue and Command mode).")
 
 (defvar irchat-Command-keys
   '(("\C-cg" 	irchat-Command-dcc-receive)
@@ -164,10 +172,7 @@ carried out.")))))
     ("\C-[\C-i" lisp-complete-symbol)
     ("\C-c$" 	irchat-Command-eod-buffer)
     ("\C-c>" 	irchat-Command-push)
-    ("\C-c<" 	irchat-Command-pop)
-    ("\C-c%t"	irchat-Command-toggle-crypt)
-    ("\C-c%d"	irchat-Command-set-default-key)
-    ("\C-c%a"	irchat-Command-add-new-key))
+    ("\C-c<" 	irchat-Command-pop))
   "Key definition table for Command mode")
     
 (defun irchat-define-keys (map keys)
@@ -188,10 +193,17 @@ carried out.")))))
   (suppress-keymap irchat-Dialogue-mode-map)
   (irchat-define-keys irchat-Dialogue-mode-map irchat-Dialogue-keys))
 
+(if irchat-Crypt-map
+    nil
+  (setq irchat-Crypt-map (make-sparse-keymap))
+  (irchat-define-keys irchat-Crypt-map irchat-Crypt-keys)
+  (define-key irchat-Dialogue-mode-map "%" irchat-Crypt-map))
+
 (if irchat-Command-mode-map
     nil
   (setq irchat-Command-mode-map (make-sparse-keymap))
   (irchat-define-keys irchat-Command-mode-map irchat-Command-keys)
+  (define-key irchat-Command-mode-map "\C-c%" irchat-Crypt-map)
   (if irchat-want-traditional
       (define-key irchat-Command-mode-map "/" 'irchat-Command-irc-compatible)))
 
