@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn-handle.el,v 3.9 2002/06/09 14:23:38 tri Exp $
+;;;  $Id: irchat-msn-handle.el,v 3.10 2002/09/02 20:28:19 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -9,7 +9,14 @@
 ;;;
 
 (defun irchat-msn-handle-generic (parsed msg)
-  t)
+  (cond ((string-match "^[0-9][0-9]*$" (nth 0 parsed))
+	 (progn
+	   (irchat-w-insert irchat-MSN-buffer 
+			    (format "%s%s.\n"
+				    irchat-msn-error-prefix
+				    (irchat-msn-protocol-error-string (nth 0 parsed))))
+	   t))
+	(t t)))
 
 (defun irchat-msn-handle-MSG-message (cmd-len pp-uid pp-name len msg)
   t)

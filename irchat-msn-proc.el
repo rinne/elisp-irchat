@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn-proc.el,v 3.4 2002/06/09 14:23:38 tri Exp $
+;;;  $Id: irchat-msn-proc.el,v 3.5 2002/09/02 20:28:19 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -21,9 +21,6 @@
     (set-buffer (process-buffer process))
     (goto-char (point-max))
     (insert output)
-    (goto-char (point-min))
-    (while (re-search-forward "\n\n" (point-max) t)
-      (delete-char -1)) ; This hack (from mta) is for 2.4 servers
     (goto-char (point-min))
     (if (string-match "\n" output)
 	(irchat-msn-handle-message))

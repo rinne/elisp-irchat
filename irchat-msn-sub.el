@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn-sub.el,v 3.10 2002/06/10 11:05:56 tri Exp $
+;;;  $Id: irchat-msn-sub.el,v 3.11 2002/09/02 20:28:19 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -164,9 +164,6 @@
     (goto-char (point-max))
     (insert output)
     (goto-char (point-min))
-    (while (re-search-forward "\n\n" (point-max) t)
-      (delete-char -1)) ; This hack (from mta) is for 2.4 servers
-    (goto-char (point-min))
     (if (string-match "\n" output)
 	(irchat-msn-handle-sub-message process))
     (set-buffer obuf)
@@ -224,7 +221,18 @@
 	  (t nil))))
 
 (defun irchat-msn-sub-handle-generic (process parsed msg)
-  nil)
+  (let ((p (irchat-msn-sub-server-search-with-process process)))
+    (if p
+	(cond ((string-match "^[0-9][0-9]*$" (nth 0 parsed))
+	       (progn
+		 (irchat-w-insert irchat-MSN-buffer 
+				  (format "%s[%s] %s.\n"
+					  irchat-msn-error-prefix
+					  (nth 1 p)
+					  (irchat-msn-protocol-error-string (nth 0 parsed))))
+		 t))
+	      (t t)))
+    nil))
 
 (defun irchat-msn-sub-handle-MSG-message (process cmd-len pp-uid pp-name len msg)
   (let ((p (irchat-msn-sub-server-search-with-process process)))

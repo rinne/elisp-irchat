@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-main.el,v 3.42 2002/06/20 10:00:09 tri Exp $
+;;;  $Id: irchat-main.el,v 3.43 2002/09/02 20:28:19 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -499,6 +499,7 @@ For a list of the generic commands type \\[irchat-Command-generic] ? RET.
     (make-variable-buffer-local 'blink-matching-paren)
     (set-default 'blink-matching-paren t)
     (setq blink-matching-paren nil))
+  (setq buffer-read-only nil)
   (run-hooks 'irchat-Command-mode-hook))
   
 

@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn.el,v 3.11 2002/06/08 11:57:19 tri Exp $
+;;;  $Id: irchat-msn.el,v 3.12 2002/09/02 20:28:19 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -68,6 +68,44 @@
 				      ("PHN" . "On the Phone")
 				      ("LUN" . "Out to Lunch"))
   "Translate table for status message codes.")
+
+(defconst irchat-msn-protocol-error-codes '((200 . "Syntax error")
+					    (201 . "Invalid parameter")
+					    (205 . "Invalid user")
+					    (206 . "Domain name missing")
+					    (207 . "Already logged in")
+					    (208 . "Invalid username")
+					    (209 . "Invalid fusername")
+					    (210 . "User list full")
+					    (215 . "User already there")
+					    (216 . "User already on list")
+					    (217 . "User not online")
+					    (218 . "Already in mode")
+					    (219 . "User is in the opposite list")
+					    (280 . "Switchboard failed")
+					    (281 . "Transfer to switchboard failed")
+					    (300 . "Required field missing")
+					    (302 . "Not logged in")
+					    (500 . "Internal server error")
+					    (501 . "Database server error")
+					    (510 . "File operation failed")
+					    (520 . "Memory allocation failed")
+					    (600 . "Server is busy")
+					    (601 . "Server is unavaliable")
+					    (602 . "Peer nameserver is down")
+					    (603 . "Database connection failed")
+					    (604 . "Server is going down")
+					    (707 . "Could not create connection")
+					    (711 . "Write is blocking")
+					    (712 . "Session is overloaded")
+					    (713 . "Too many active users")
+					    (714 . "Too many sessions")
+					    (715 . "Not expected")
+					    (717 . "Bad friend file")
+					    (911 . "Authentication failed")
+					    (913 . "Not allowed when offline")
+					    (920 . "Not accepting new users"))
+  "Translate table for protocol error messages sent by the server.")
 
 (defun irchat-msn ()
   (interactive)
@@ -414,6 +452,20 @@
 	       (string-match "^\\(\\)\\([^ ][^ ]*\\)$" m))
       (setq r (cons (matching-substring m 2) r)
 	    m (matching-substring m 1)))
+    r))
+
+(defun irchat-msn-protocol-error-string (errorcode)
+  (let ((l irchat-msn-protocol-error-codes)
+	(r nil))
+    (while l
+      (if (or (eq (car (car l)) errorcode)
+	      (and (stringp errorcode)
+		   (string= (format "%03d" (car (car l))) errorcode)))
+	  (setq r (cdr (car l))
+		l nil)
+	(setq l (cdr l))))
+    (if (null r)
+	(setq r (format "Unknown error #%s" errorcode)))
     r))
 
 (eval-and-compile (provide 'irchat-msn))
