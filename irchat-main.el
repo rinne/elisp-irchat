@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-main.el,v 3.33 2001/06/08 18:44:27 tri Exp $
+;;;  $Id: irchat-main.el,v 3.34 2001/10/01 18:27:13 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -70,6 +70,7 @@ carried out.")))))
   
 (defvar irchat-Dialogue-keys
   '(("\C-?" 	scroll-down)
+    ("\C-h" 	scroll-down)
     (" " 	scroll-up)
     ("$" 	end-of-buffer)
     ("/" 	irchat-Command-generic)
