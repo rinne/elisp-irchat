@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-400.el,v 3.3 1997/03/18 15:58:18 tri Exp $
+;;;  $Id: irchat-400.el,v 3.4 1997/03/19 15:58:34 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -64,6 +64,24 @@
 	(irchat-iterate-nick (format "_%s" nick))
       new)))
 
+
+(defun irchat-handle-432-msg (prefix rest) ;;; ERR_ERRONEUSNICKNAME
+  "Handle the 432 reply (erroneus nickname)"
+  (save-excursion
+    (set-buffer irchat-Command-buffer)
+    (beep)
+    (let ((nick (if (string-match "^\\([^ ]+\\) +\\([^ ]+\\) +:\\(.*\\)" 
+				  rest)
+		    (matching-substring rest 2)
+		  (if (string-match "^ *\\([^ ]+\\) :.*" rest)
+		      (matching-substring rest 1)
+		    "UNKNOWN (Could not figure out, contact developers)"))))
+      (if (eq irchat-nick-accepted 'ok)
+	  (setq irchat-real-nickname irchat-old-nickname))
+      (message "IRCHAT: Nickname %s erronous.  Choose a new one with %s."
+	       nick
+	       (substitute-command-keys "\\[irchat-Command-nickname]")))))
+	
 
 (defun irchat-handle-433-msg (prefix rest) ;;; ERR_NICKNAMEINUSE
   "Handle the 433 reply (nickname already in use)"
