@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-vars.el,v 3.35 1998/05/24 15:34:05 tri Exp $
+;;;  $Id: irchat-vars.el,v 3.36 1998/05/25 15:10:32 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -233,9 +233,8 @@ IRCHAT to suit old users of the irc-loser-client.")
 ;;;
 ;;;  Misc
 ;;;
-
 (defvar irchat-send-delayed-allow-duplicates nil
-  "Allow duplicate strings to be queued in send-delayed?")
+  "*Allow duplicate strings to be queued in send-delayed?")
 
 (defvar irchat-send-delayed-interval 3
   "Seconds between delayed sends.")
@@ -283,6 +282,9 @@ Default is what (system-name) returns.")
 
 (defvar irchat-use-smiley nil
   "*Display smileys in dialogue buffer.")
+
+(defvar irchat-use-ancient-version-format nil
+  "*Use ancient ultra-long and ultra-ugly version query reply.")
 
 ;;;
 ;;; Global-kill system
