@@ -4,7 +4,7 @@
 ;;;  CRC32 compatible crc in elisp.  Cool, ha?
 ;;;  ----------------------------------------------------------------------
 ;;;  Created      : Fri Dec 16 13:47:25 1995 tri
-;;;  Last modified: Tue Oct  7 11:31:24 1997 tri
+;;;  Last modified: Tue Oct  7 13:27:46 1997 tri
 ;;;  ----------------------------------------------------------------------
 ;;;  Copyright © 1995-1997
 ;;;  Timo J. Rinne <tri@iki.fi>
@@ -18,7 +18,7 @@
 ;;;  irchat-copyright.el applies only if used with irchat IRC client.
 ;;;  Contact the author for additional copyright info.
 ;;;
-;;;  $Id: crc32.el,v 3.2 1997/10/07 09:57:41 tri Exp $
+;;;  $Id: crc32.el,v 3.3 1997/10/07 10:28:17 tri Exp $
 ;;;
 
 (eval-and-compile  
@@ -131,7 +131,7 @@
   (let* ((h (car x)) 
 	 (l (cdr x)))
     (cons (/ h 256)
-	  (logior (* (% h 256) 256) (/ l 256)))))
+	  (logior (* (logand h 255) 256) (/ l 256)))))
 
 ;;; CRC32 function
 (defun crc32-string (str &optional raw)
