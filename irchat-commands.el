@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-commands.el,v 3.17 1997/03/19 15:52:13 jtp Exp $
+;;;  $Id: irchat-commands.el,v 3.18 1997/03/21 13:06:26 too Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -940,20 +940,19 @@ be sent to the server.  For a list of messages, see irchat-Command-generic."
 	       client-x-face-nick-var irchat-query-client-x-face))
 
 
-(defun irchat-Command-client-generic (client-generic-nick-var)
+(defun irchat-Command-client-generic (client-generic-nick-var
+				      irchat-query-client-command)
   "Ask about someones client clientinfo."
-  (interactive (let (client-generic-nick-var (completion-ignore-case t))
-		 (setq client-generic-nick-var 
-		       (irchat-completing-default-read 
+  (interactive (let ((completion-ignore-case t))
+		 (list (irchat-completing-default-read 
 			"Whose client: " irchat-nick-alist
-			'(lambda (s) t) nil irchat-query-client-nick))
-		 (list client-generic-nick-var)))
+			'(lambda (s) t) nil irchat-query-client-nick)
+		       (irchat-completing-default-read 
+			"What info: " irchat-query-client-alist 
+			'(lambda (s) t) nil irchat-query-client-lastcommand)
+		       )))
   (setq irchat-query-client-nick client-generic-nick-var
-	irchat-query-client-lastcommand
-	(irchat-completing-default-read 
-	 "What info: " 
-	 irchat-query-client-alist '(lambda (s) t) nil 
-	 irchat-query-client-lastcommand))
+	irchat-query-client-lastcommand irchat-query-client-command)
   (if (string-ci-equal irchat-query-client-lastcommand "ping")
       (setq irchat-ctcp-ping-time (current-time)))
   (irchat-send "PRIVMSG %s :%s%s"
