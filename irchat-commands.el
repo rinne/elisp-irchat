@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-commands.el,v 3.31 1998/01/23 08:11:13 tri Exp $
+;;;  $Id: irchat-commands.el,v 3.32 1998/01/27 16:38:49 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -633,7 +633,15 @@ contents are updated future sessions."
 			"Kick out nickname: " 
 			irchat-nick-alist
 			'(lambda (s) t) nil nil))
-		 (setq why-var (read-from-minibuffer "Why? "))
+		 (setq why-var (if irchat-ask-kick-message
+				   (read-from-minibuffer 
+				    "Kick message: "
+				    (if (stringp irchat-default-kick-message)
+					irchat-default-kick-message
+				      nil))
+				 (if (stringp irchat-default-kick-message)
+				     irchat-default-kick-message
+				   nil)))
 		 (list kick-nickname-var (if (and why-var
 						  (not (string= ""
 								why-var)))
