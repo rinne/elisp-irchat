@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-commands.el,v 3.33 1998/05/24 10:40:19 tri Exp $
+;;;  $Id: irchat-commands.el,v 3.34 1998/06/25 06:41:15 jsl Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -48,12 +48,12 @@
     (let ((obuffer (current-buffer))
           (range ""))
       (switch-to-buffer irchat-Dialogue-buffer)
-      (if (re-search-backward "^\*\*\* Time: " (point-min) t)
+      (if (re-search-backward "^\\*\\*\\* Time: " (point-min) t)
           (let ((start (+ (point) 10)))
             (end-of-line)
             (setq range (format "%s   ---   "
                                 (buffer-substring start (point))))))
-      (if (re-search-forward "^\*\*\* Time: " (point-max) t)
+      (if (re-search-forward "^\\*\\*\\* Time: " (point-max) t)
           (let ((start (point)))
             (end-of-line)
             (setq range (concat range (buffer-substring start (point))))))
