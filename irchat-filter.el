@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-filter.el,v 3.9 2002/06/09 15:16:02 tri Exp $
+;;;  $Id: irchat-filter.el,v 3.10 2002/06/09 15:38:57 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -37,7 +37,7 @@
 	    r)
 	nil))))
 
-(defsubst irchat-handle-message-2 (prefix message rest-of-line)
+(defsubst irchat-handle-message-2 (parsed-sender parsed-msg prefix message rest-of-line)
   "Helper function (actually a macro) for irchat-handle-message."
   (let ((hook (intern (concat "irchat-" message "-hook")))
 	(after-hook (intern (concat "irchat-after-" message "-hook")))
@@ -49,12 +49,12 @@
 
       (progn
 	(if (string= message "msg")
-	    (irchat-handle-msg-msg nil nil prefix rest-of-line)
+	    (irchat-handle-msg-msg parsed-sender parsed-msg prefix rest-of-line)
 	    
 	  (if (fboundp (setq fun (intern
 				  (concat "irchat-handle-" message "-msg"))))
 	      (progn
-		(apply fun (list nil nil prefix rest-of-line)))
+		(apply fun (list parsed-sender parsed-msg prefix rest-of-line)))
 	    (let* ((message-number (string-to-int message))
 		   (default-number (/ message-number 100)))
 	      (if (and (> message-number 0)
@@ -64,7 +64,7 @@
 							   default-number)
 						   "-msgs")))))
 		  (progn
-		    (apply fun (list message-number nil nil prefix rest-of-line)))
+		    (apply fun (list message-number parsed-sender parsed-msg prefix rest-of-line)))
 		(message "IRCHAT: Unknown IRC message \":%s %s %s\"" prefix
 			 (upcase message) rest-of-line)
 		(irchat-w-insert irchat-D-buffer 
@@ -120,7 +120,9 @@
 
       (set-buffer irchat-Dialogue-buffer)
       (setq irchat-current-function (list prefix message))
-      (irchat-handle-message-2 prefix message rest-of-line)
+      (let ((parsed-sender nil)
+	    (parsed-msg nil))
+	(irchat-handle-message-2 parsed-sender parsed-msg prefix message rest-of-line))
       (setq irchat-current-function (list "" ""))
       (set-buffer obuf)
       (delete-region beg end))))
