@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-misc.el,v 3.39 1998/05/24 12:05:17 tri Exp $
+;;;  $Id: irchat-misc.el,v 3.40 1998/05/24 15:33:36 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -298,7 +298,8 @@
 ;;; saves order between other delayed sends, but direct irchat-send
 ;;; calls can violate the order.  Use this to send replies for example
 ;;; to ctcp queries that don't need to be sent immediately and can
-;;; cause excess flood.
+;;; cause excess flood.  If string is already in the queue, it's not
+;;; added there again.
 ;;;
 ;;; //tri 19980523
 ;;;
@@ -311,7 +312,8 @@
   (if irchat-send-delayed-timer
       nil
     (setq irchat-send-delayed-timer
-	  (irchat-start-timer 'irchat-commit-delayed-send 3))))
+	  (irchat-start-timer 'irchat-commit-delayed-send 
+			      irchat-send-delayed-interval))))
 
 (defun irchat-send-delayed-reset ()
   "Wipe delayed sends.  This is done automagically in quit."
@@ -343,11 +345,21 @@
 
 (defun irchat-send-delayed (format &rest args)
   "Same as irchat-send but queues send."
-  (irchat-reset-idle)
   (let ((item (apply 'format format args)))
     (setq item (irchat-replace-in-string item "%" "%%"))
-    (setq irchat-send-delayed-queue (cons item irchat-send-delayed-queue))
-    (irchat-send-delayed-start-timer)))
+    (if (or (not irchat-send-delayed-interval)
+	    (< irchat-send-delayed-interval 1))
+	(irchat-send item)
+      (progn
+	(if (or irchat-send-delayed-allow-duplicates
+		(not (string-list-memberp item irchat-send-delayed-queue)))
+	    (progn
+	      (setq irchat-send-delayed-queue (cons item 
+						    irchat-send-delayed-queue))
+	      (irchat-send-delayed-start-timer))
+	  (message (format "Duplicate delayed message not sent \"%s\""
+			   (irchat-truncate-string (format item) 38))))))))
+    
 
 ;;;
 ;;; end of delayed send stuff...
@@ -658,6 +670,16 @@
 	     (fboundp 'decode-coding-string))
 	(decode-coding-string string coding)
       string)))
+
+(defun irchat-truncate-string (str limit)
+  "Make STR at most LIMIT characters long.  Mark truncation with dots..."
+  (if (> (length str) limit)
+      (if (< limit 3)
+	  (substring str 0 limit)
+	(if (< limit 8)
+	    (concat (substring str 0 (- limit 2)) "..")
+	  (concat (substring str 0 (- limit 3)) "...")))
+    str))
 
 (eval-and-compile (provide 'irchat-misc))
 ;;;
