@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-crypt.el,v 3.8 1997/03/05 22:28:30 tri Exp $
+;;;  $Id: irchat-crypt.el,v 3.9 1997/03/06 12:39:07 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -21,7 +21,14 @@
       t
     nil))
 
+(defun irchat-crypt-address-has-default-key-p (address)
+  "Is there a default key for ADDRESS."
+  (if (assoc-ci-regexp-rev address irchat-default-idea-key-list)
+      t
+    nil))
+
 (defun irchat-init-crypt ()
+  "Initialize crypt variables"
   (if (null irchat-known-idea-key-list)
       (let ((lst irchat-crypt-known-keys))
 	(while lst

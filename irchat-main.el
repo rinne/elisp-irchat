@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-main.el,v 3.9 1997/02/27 11:31:29 jsl Exp $
+;;;  $Id: irchat-main.el,v 3.10 1997/03/06 12:39:07 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -370,7 +370,7 @@ If already connected, just pop up the windows."
 	    (progn
 	      (setq irchat-freeze-indicator "-")
 	      (irchat-freeze-toggle (car irchat-D-buffer))))
-	(setq irchat-crypt-indicator (if irchat-crypt-mode-active "C" "-"))
+	(irchat-set-crypt-indicator)
 	(irchat-init-crypt)
 	(irchat-Dialogue-setup-buffer)
 	(irchat-Private-setup-buffer)
@@ -412,6 +412,7 @@ For a list of the generic commands type \\[irchat-Command-generic] ? RET.
   (interactive)
   (kill-all-local-variables)
 
+  (irchat-set-crypt-indicator)
   (setq irchat-nick-alist (list (list irchat-nickname))
 	mode-line-modified "--- "
 	major-mode 'irchat-Command-mode
@@ -419,7 +420,6 @@ For a list of the generic commands type \\[irchat-Command-generic] ? RET.
 	irchat-privmsg-partner nil
 	irchat-private-indicator nil
 	irchat-away-indicator "-"
-	irchat-crypt-indicator (if irchat-crypt-mode-active "C" "-")
 	irchat-freeze-indicator "-"
 	irchat-ownfreeze-indicator "-"
 
@@ -519,6 +519,18 @@ One is for entering commands and text, the other displays the IRC dialogue."
       (setq start (point))
       (end-of-line)
       (kill-ring-save start (point)))))
+
+
+(defun irchat-set-crypt-indicator ()
+  "Set crypt mode indicator"
+  (setq irchat-crypt-indicator
+	(cond ((and irchat-crypt-mode-active
+		    (not (null irchat-current-channel))
+		    (irchat-crypt-address-has-default-key-p 
+		     irchat-current-channel))
+	       "C")
+	      (irchat-crypt-mode-active "c")
+	      (t "-"))))
 
 
 (defun irchat-Dialogue-setup-buffer ()

@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-handle.el,v 3.8 1997/03/04 11:25:57 tri Exp $
+;;;  $Id: irchat-handle.el,v 3.9 1997/03/06 12:39:07 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright in(eval-wfo
 
@@ -28,7 +28,8 @@
 	  (setq irchat-channel-indicator
 		(if ispart
 		    "No channel"
-		  (format "Channel %s" rest)))))
+		  (format "Channel %s" rest)))
+	  (irchat-set-crypt-indicator)))
     (if ispart
 	(if (not irchat-ignore-changes)
 	    (irchat-w-insert irchat-D-buffer
@@ -454,6 +455,7 @@
 					  (format "Channel %s" 
 						  irchat-current-channel) 
 					"No channel"))
+	    (irchat-set-crypt-indicator)
 	    (irchat-remove-from-thischannel irchat-real-nickname match1))
 	  (irchat-w-insert irchat-D-buffer 
 			   (format "%s%s has kicked %s out%s\n" 
@@ -480,7 +482,8 @@
 			 (format "*** IRCHAT: You were killed by %s. Path: %s. RIP\n" 
 				 prefix path)))
     (message "IRCHAT: strange KILL"))
-  (setq irchat-channel-indicator "No channel"))
+  (setq irchat-channel-indicator "No channel")
+  (irchat-set-crypt-indicator))
 
 
 (defun irchat-handle-join-msg (prefix rest) ; kmk, 14101990
@@ -492,7 +495,8 @@
 	(setq irchat-current-channels
 	      (cons irchat-current-channel irchat-current-channels))
  	(setq irchat-channel-indicator
-	      (format "Channel %s" rest)))
+	      (format "Channel %s" rest))
+	(irchat-set-crypt-indicator))
     (irchat-add-to-channel prefix rest))
   (if (not irchat-ignore-changes)
       (if irchat-compress-changes
@@ -515,10 +519,12 @@
   (if (string-match "\\([^ ]*\\)\ .*" rest)
       (setq rest (matching-substring rest 1))) ;; throw away user given info.
   (if (string= prefix irchat-real-nickname)
-      (setq irchat-current-channels
-	    (string-list-ci-delete rest irchat-current-channels)
-	    irchat-current-channel (car irchat-current-channels)
-	    irchat-channel-indicator (if irchat-current-channel (format "Channel %s" irchat-current-channel) "No channel")))
+      (progn
+	(setq irchat-current-channels
+	      (string-list-ci-delete rest irchat-current-channels)
+	      irchat-current-channel (car irchat-current-channels)
+	      irchat-channel-indicator (if irchat-current-channel (format "Channel %s" irchat-current-channel) "No channel"))
+	(irchat-set-crypt-indicator)))
   (if (not irchat-ignore-changes)
       (if irchat-compress-changes
 	  (let* ((text (format " \\(has\\|have\\) left channel %s"

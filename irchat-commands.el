@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-commands.el,v 3.9 1997/03/05 08:57:04 tri Exp $
+;;;  $Id: irchat-commands.el,v 3.10 1997/03/06 12:39:07 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -303,7 +303,8 @@ with specified user."
 	      irchat-channel-indicator (if irchat-current-chat-partner
 					   (format "Chatting with %s" 
 						   irchat-current-chat-partner)
-					 "No partner")))
+					 "No partner"))
+		(irchat-set-crypt-indicator))
     (progn
       (let ((nicks irchat-nick-alist)
 	    (found nil))
@@ -327,6 +328,7 @@ with specified user."
 	      (if irchat-current-channel
 		  (format "Channel %s" irchat-current-channel)
 		"No channel"))
+	(irchat-set-crypt-indicator)
 	(setq irchat-invited-channel nil)
 	(or found (irchat-send "JOIN %s" join-channel-var))))))
 
@@ -348,16 +350,18 @@ with specified user."
 			  irchat-current-channel)))
 		 (list part-channel-var)))
   (if (eq irchat-command-buffer-mode 'chat)
-      (setq irchat-current-chat-partners (string-list-ci-delete
-					  part-channel-var
-					  irchat-current-chat-partners)
-	    irchat-current-chat-partner (car irchat-current-chat-partners)
-	    irchat-chat-partner-alist (list-to-assoclist 
-				       irchat-current-chat-partners)
-	    irchat-channel-indicator (if irchat-current-chat-partner
-					 (format "Chatting with %s" 
-						 irchat-current-chat-partner)
-				       "No partner"))
+      (progn
+	(setq irchat-current-chat-partners (string-list-ci-delete
+					    part-channel-var
+					    irchat-current-chat-partners)
+	      irchat-current-chat-partner (car irchat-current-chat-partners)
+	      irchat-chat-partner-alist (list-to-assoclist 
+					 irchat-current-chat-partners)
+	      irchat-channel-indicator (if irchat-current-chat-partner
+					   (format "Chatting with %s" 
+						   irchat-current-chat-partner)
+					 "No partner"))
+	(irchat-set-crypt-indicator))
     (progn
       (if (string-list-ci-memberp part-channel-var irchat-current-channels)
 	  (setq irchat-current-channel part-channel-var)) ; just refocusing
@@ -746,12 +750,9 @@ be a string to send NICK upon entering."
 (defun irchat-Command-toggle-crypt ()
   (interactive)
   (if irchat-crypt-mode-active
-      (progn
-	(setq irchat-crypt-mode-active nil)
-	(setq irchat-crypt-indicator "-"))
-    (progn
-      (setq irchat-crypt-mode-active t)
-      (setq irchat-crypt-indicator "C")))
+      (setq irchat-crypt-mode-active nil)
+    (setq irchat-crypt-mode-active t))
+  (irchat-set-crypt-indicator)
   (switch-to-buffer (current-buffer)))
 
 
@@ -1217,6 +1218,7 @@ mode, the current channel and current chat partner are not altered)"
 					 (format "Channel %s" 
 						 irchat-current-channel)
 				       "No channel")))
+    (irchat-set-crypt-indicator)
     ;; refresh mode line
     (set-buffer-modified-p (buffer-modified-p))))
 
@@ -1240,7 +1242,8 @@ mode, the current channel and current chat partner are not altered)"
 		      (if irchat-current-chat-partner
 			  (format "Chatting with %s" 
 				  irchat-current-chat-partner)
-			"No partner"))))
+			"No partner"))
+		(irchat-set-crypt-indicator)))
 	  (set-buffer-modified-p (buffer-modified-p))))
     (if irchat-current-channels
 	(let ((channel (nth (1- (length irchat-current-channels))
@@ -1255,7 +1258,8 @@ mode, the current channel and current chat partner are not altered)"
 		(setq irchat-channel-indicator
 		      (if irchat-current-channel
 			  (format "Channel %s" irchat-current-channel)
-			"No channel"))))
+			"No channel"))
+		(irchat-set-crypt-indicator)))
 	  (set-buffer-modified-p (buffer-modified-p))))))
 
 
@@ -1276,6 +1280,7 @@ mode, the current channel and current chat partner are not altered)"
 		    (format "Chatting with %s" 
 			    irchat-current-chat-partner)
 		  "No partner"))
+	  (irchat-set-crypt-indicator)
 	  (set-buffer-modified-p (buffer-modified-p))))
 
     (let ((channel irchat-current-channel))
@@ -1288,6 +1293,7 @@ mode, the current channel and current chat partner are not altered)"
 	      irchat-current-channel (car irchat-current-channels)
 	      irchat-channel-indicator (format "Channel %s" 
 					       irchat-current-channel))
+	(irchat-set-crypt-indicator)
 	(set-buffer-modified-p (buffer-modified-p))))))
 
 ;;;
