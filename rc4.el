@@ -4,7 +4,7 @@
 ;;;  RC4 encryption in elisp.  Cool, ha?
 ;;;  ----------------------------------------------------------------------
 ;;;  Created      : Tue Jun 23 15:02:41 1998 tri
-;;;  Last modified: Tue Jun 23 17:14:35 1998 tri
+;;;  Last modified: Mon Aug 10 17:58:50 1998 tri
 ;;;  ----------------------------------------------------------------------
 ;;;  Copyright © 1998
 ;;;  Timo J. Rinne <tri@iki.fi>
@@ -18,7 +18,7 @@
 ;;;  irchat-copyright.el applies only if used with irchat IRC client.
 ;;;  Contact the author for additional copyright info.
 ;;;
-;;;  $Id: rc4.el,v 1.1 1998/06/23 14:19:52 tri Exp $
+;;;  $Id: rc4.el,v 1.2 1998/08/10 15:04:17 tri Exp $
 ;;;
 
 (eval-and-compile  
@@ -30,38 +30,42 @@
     (aset vector idx1 (elt vector idx2))
     (aset vector idx2 x)))
 
-(defun rc4-make-state (key)
+(defun rc4-make-state (key &optional limit)
   "Build rc4 state from string or integer vector KEY."
-  (let ((S (make-vector 256 0))
-	(K (make-vector 256 0))
-	(l (length key))
-	(i 0)
-	(j 0))
+  (let* ((limit (if (and (numberp limit) (> limit 0)) limit 256))
+	 (S (make-vector limit 0))
+	 (K (make-vector limit 0))
+	 (l (length key))
+	 (i 0)
+	 (j 0))
     (if (= l 0)
 	(progn
 	  (setq l 1)
 	  (setq key (make-vector 1 0))))
     (setq i 0)
-    (while (< i 256)
-      (aset K i (% (elt key (% i l)) 256))
+    (while (< i limit)
+      (aset K i (% (elt key (% i l)) limit))
       (aset S i i)
       (setq i (+ i 1)))
     (setq i 0)
     (setq j 0)
-    (while (< i 256)
-      (setq j (% (+ j (elt S i) (elt K i)) 256))
+    (while (< i limit)
+      (setq j (% (+ j (elt S i) (elt K i)) limit))
       (rc4-elt-swap S i j)
       (setq i (+ i 1)))
     (vector 0 0 S)))
 
 (defun rc4-random (state)
   "Generate rc4 stream byte from STATE and update state accordingly."
-  (aset state 0 (% (+ (elt state 0) 1) 256))
-  (aset state 1 (% (+ (elt state 1) (elt (elt state 2) (elt state 0))) 256))
-  (rc4-elt-swap (elt state 2) (elt state 0) (elt state 1))
-  (elt (elt state 2)
-       (% (+ (elt (elt state 2) (elt state 0))
-	     (elt (elt state 2) (elt state 1))) 256)))
+  (let ((limit (length (elt state 2))))
+    (aset state 0 
+	  (% (+ (elt state 0) 1) limit))
+    (aset state 1 
+	  (% (+ (elt state 1) (elt (elt state 2) (elt state 0))) limit))
+    (rc4-elt-swap (elt state 2) (elt state 0) (elt state 1))
+    (elt (elt state 2)
+	 (% (+ (elt (elt state 2) (elt state 0))
+	       (elt (elt state 2) (elt state 1))) limit))))
 
 (defun rc4-encrypt (str state)
   "Encrypt STRING with rc4 STATE and update state accordingly."
@@ -73,13 +77,13 @@
       (setq i (+ i 1)))
     r))
 
-(defun rc4-random-vector-complex (str len &optional skip level)
+(defun rc4-random-vector-complex (str len &optional skip level limit)
   (if (null skip)
       (setq skip 0))
   (if (null level)
       (setq level 0))
   (let ((r (make-vector len 0))
-	(s (rc4-make-state str))
+	(s (rc4-make-state str limit))
 	(i 0)
 	(j 0))
     (setq i skip)
@@ -95,7 +99,7 @@
       (setq j (- j 1)))
     (rc4-encrypt r s)))
 
-(defun rc4-random-vector (str len)
-  (rc4-random-vector-complex str len 0 0))
+(defun rc4-random-vector (str len &optional limit)
+  (rc4-random-vector-complex str len 0 0 limit))
 
 ;;; eof (rc4.el)
