@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-inlines.el,v 3.3 1997/03/03 18:26:06 tri Exp $
+;;;  $Id: irchat-inlines.el,v 3.4 1997/03/03 18:32:35 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -87,7 +87,7 @@
   (assoc-if
    (function
     (lambda (x)
-      (not (null (string-match (upcase key) (upcase x))))))
+      (not (null (string-match (concat "^" (upcase key) "$") (upcase x))))))
    lst))
 
 (defsubst assoc-ci-regexp-rev (key lst)
