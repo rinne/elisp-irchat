@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-handle.el,v 3.12 1997/03/18 13:04:09 tri Exp $
+;;;  $Id: irchat-handle.el,v 3.13 1997/03/20 09:22:51 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright in(eval-wfo
 
@@ -129,30 +129,39 @@
       (if (or (not irchat-ignore-extra-notices)
 	      (not prefix)
 	      (not (string-match "as being away" rest)))
-	  (if prefix
-	      (cond 
+	  (if (let ((irchat-current-message-encrypted-p msg-encrypted-p)
+		    (irchat-current-message-suspicious-p msg-suspicious-p)
+		    (irchat-current-message-fingerprint msg-fingerprint)
+		    (irchat-current-message-timestamp msg-timestamp))
+		(irchat-run-message-hook-types 'irchat-notice-cleartext-hook
+					       prefix
+					       rest))
+	      nil
+	    (if prefix
+		(cond 
 					; prefixed clt-a-notice
-	       ((string-match "\\(.*\\)" rest) 
-		(irchat-ctl-a-notice prefix rest))
-	       ((and irchat-ignore-fakes
-		     (string-match ".*Notice.*Fake:.*" rest))
-		t)
+		 ((string-match "\\(.*\\)" rest) 
+		  (irchat-ctl-a-notice prefix rest))
+		 ((and irchat-ignore-fakes
+		       (string-match ".*Notice.*Fake:.*" rest))
+		  t)
 					; not a clt-a, but notice
-	       ((string-match ".*Notice -- \\(.*\\)" rest) 
-		(irchat-w-insert irchat-D-buffer 
-				 (format "%s%s: %s\n" 
-					 irchat-notice-prefix
-					 prefix (matching-substring rest 1))))
+		 ((string-match ".*Notice -- \\(.*\\)" rest) 
+		  (irchat-w-insert irchat-D-buffer 
+				   (format "%s%s: %s\n" 
+					   irchat-notice-prefix
+					   prefix 
+					   (matching-substring rest 1))))
 					; else send user a private message
-	       (t 
-		(irchat-handle-privmsglike-msg prefix rest msg-encrypted-p)))
-	    (progn
-	      ;; no prefix
-	      (string-match "^\\([^ ]*\\) :\\(.*\\)" rest)
-	      (irchat-w-insert irchat-D-buffer 
-			       (format "%s%s\n"
-				       irchat-notice-prefix 
-				       (matching-substring rest 2)))))))))
+		 (t 
+		  (irchat-handle-privmsglike-msg prefix rest msg-encrypted-p)))
+	      (progn
+		;; no prefix
+		(string-match "^\\([^ ]*\\) :\\(.*\\)" rest)
+		(irchat-w-insert irchat-D-buffer 
+				 (format "%s%s\n"
+					 irchat-notice-prefix 
+					 (matching-substring rest 2))))))))))
 
 
 (defun irchat-handle-ping-msg (prefix rest)
