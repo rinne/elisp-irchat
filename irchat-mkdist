@@ -1,6 +1,6 @@
 #! /bin/sh
 #
-# $Id: irchat-mkdist,v 1.9 1999/10/03 10:13:29 tri Exp $
+# $Id: irchat-mkdist,v 1.10 1999/10/03 10:19:29 tri Exp $
 #
 # This file is part of irchat.  Command irchat-mkdist creates 
 # a snapshot of irchat current.  This file itself does not go 
@@ -13,12 +13,12 @@
 
 distfiles=""
 
-clogdir="`finger -l jsl | sed -n 's,^.*[Dd]irectory: \([^ ]*/jsl\)*.*$,\1/irchat,p' 2>/dev/null | head -1`" 
+clogdir="`finger -l tri | sed -n 's,^.*[Dd]irectory: \([^ ]*/tri\)*.*$,\1/irchat,p' 2>/dev/null | head -1`" 
 
 if [ "x$1" != "x" ] ; then
     distname="irchat-""$1"
 else
-    distname="irchat-`date -u '+%y%m%d'`"
+    distname="irchat-`date -u '+%Y%m%d'`"
 fi
 
 [ -d "$distname" ] && { echo "You have already made $distname today."; exit 1; }
