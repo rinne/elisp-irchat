@@ -2,7 +2,7 @@
 #
 # Makefile for irchat
 #
-# $Id: Makefile,v 3.16 1998/11/04 10:54:33 tri Exp $
+# $Id: Makefile,v 3.17 1999/10/03 10:11:36 tri Exp $
 #
 
 #
@@ -37,7 +37,6 @@ NO_CRYPTO_OBJS =		\
 XOBJS 	=                       \
 	irchat-globals.elc	\
 	irchat-vars.elc		\
-	$(CRYPTO_OBJS)		\
 	irchat-inlines.elc	\
 	irchat-filter.elc	\
 	irchat-dcc.elc		\
@@ -56,7 +55,9 @@ XOBJS 	=                       \
 	irchat-main.elc		\
 	irchat-uah-cache.elc	\
 	irchat-global-kill.elc	\
-	irchat-obsolete.elc
+	irchat-obsolete.elc	\
+	$(CRYPTO_OBJS)
+
 
 OBJS	= 			\
 	irchat-version.elc	\
