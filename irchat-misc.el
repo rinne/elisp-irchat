@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-misc.el,v 3.19 1997/10/06 12:52:47 tri Exp $
+;;;  $Id: irchat-misc.el,v 3.20 1997/10/06 13:17:27 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -110,10 +110,11 @@
 			     (regexp-quote (format format-string
 						   sender
 						   channel))
-			     " .*\\(\\)$")))
-	      (irchat-w-insert '("*kukkuu*") (concat ">>>" s "<<<\n"))
+			     " .*\\(\\)$"))
+		  (buf (get-buffer buffer)))
 	      (save-excursion
-		(if (and (set-buffer buffer)
+		(if (and buf
+			 (set-buffer buf)
 			 (or (goto-char (point-max)) t)
 			 (re-search-backward s
 					     (let ((p (point)))
