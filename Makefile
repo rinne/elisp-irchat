@@ -2,7 +2,7 @@
 #
 # Makefile for irchat
 #
-# $Id: Makefile,v 3.7 1997/10/19 15:35:50 tri Exp $
+# $Id: Makefile,v 3.8 1997/10/20 06:12:31 tri Exp $
 #
 
 #
@@ -48,7 +48,8 @@ OBJS 	= \
 	b64.elc			\
 	crc32.elc		\
 	idea.elc		\
-	irchat-crypt.elc
+	irchat-crypt.elc	\
+	irchat-obsolete.elc
 
 SRCS	= $(OBJS:.elc=.el)
 
