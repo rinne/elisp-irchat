@@ -2,6 +2,22 @@ Sun Nov 17 22:40:40 2002  IRCHAT Distribution Generator <irchat@rinne.iki.fi>
 
 	* Generated release irchat-4.00-beta6.
 
+	* MSN code should now work also in GNU-Emacs
+
+	* MSN Gateway implemented by kny@iki.fi
+
+	* Cleanups and minor fixes.
+
+	* IRC protocol messages are parsed already in the process sentinel
+	  and passed to the handler as a parsed list.  The original
+	  message is also passed since there are about 200 old-fashioned
+	  message handlers that are using regexps in parsing the message.
+	  At some point the handlers should be fixed so that they would
+	  use the parsed message only.
+
+	* Prepaing for 4.00 release that should come soon if beta6 proves
+	  to be stable.
+	
 Sat Nov 09 21:10:03 2002  IRCHAT Distribution Generator <irchat@rinne.iki.fi>
 
 	* Generated release irchat-20021109-3.
@@ -21,10 +37,6 @@ Sat Nov 09 18:39:51 2002  IRCHAT Distribution Generator <irchat@rinne.iki.fi>
 Sat Oct 12 14:40:30 2002  IRCHAT Distribution Generator <irchat@rinne.iki.fi>
 
 	* Generated release irchat-4.00-beta5.
-
-Sat Oct 12 14:39:35 2002  IRCHAT Distribution Generator <irchat@rinne.iki.fi>
-
-	* Generated release irchat-beta5.
 
 Sat Oct 12 14:39:06 2002  IRCHAT Distribution Generator <irchat@rinne.iki.fi>
 
@@ -783,7 +795,7 @@ Tue Sep 19 23:59:09 1995  Tomi Ollila  <too@iki.fi>
         * Changed compilation order in Makefile so all files doesn't need
           to be deleted after irchat.elc is produced.
 
-	* Wrote indentical `require's for all files that is `require'd in
+	* Wrote identical `require's for all files that is `require'd in
 	  a required file, to the files that requires it, since it doesn't
 	  work otherwise (does `eval-when-compile' affect the behaviour ?)
 	  Confused? So am I. See the `require' -paths and you'll
