@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-commands.el,v 3.11 1997/03/12 11:24:06 jsl Exp $
+;;;  $Id: irchat-commands.el,v 3.12 1997/03/12 12:58:42 jsl Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -367,8 +367,7 @@ with specified user."
 	  (setq irchat-current-channel part-channel-var)) ; just refocusing
       (irchat-send "PART %s" part-channel-var))))
 
-
-(defun irchat-Command-kill (kill-nickname-var &optional timeout)
+(defun irchat-Command-kill (kill-nickname-var &optional timeout silent)
   "Ignore messages from this user. Username can be given as case insensitive
 regular expression of form \".*@.*\.sub.domain\". 
 If already ignoring him/her, toggle.
@@ -379,15 +378,16 @@ contents are updated future sessions."
 		     (completion-ignore-case t))
 		 (setq kill-nickname-var 
 		       (completing-read "Ignore nickname or regexp: " 
-			(append irchat-nick-alist irchat-kill-nickname)
-			'(lambda (s) t) nil nil))
+					(append irchat-nick-alist
+						irchat-kill-nickname)
+					'(lambda (s) t) nil nil))
 		 (if (and (not (string= "" kill-nickname-var))
 			  (not (assoc-ci-string kill-nickname-var irchat-kill-nickname)))
 		     (setq timeout
 			   (string-to-int
 			    (read-from-minibuffer "Timeout [RET for none]: "))))
 		 (list kill-nickname-var timeout)))
-
+  
   ;; empty, just list them
   (if (string= "" kill-nickname-var)
       (let ((buf (current-buffer))
@@ -420,22 +420,24 @@ contents are updated future sessions."
 	    (irchat-w-insert irchat-D-buffer
 			     (format "*** No longer ignoring: %s.\n"
 				     (car elem))))
-      ;; did not find, add to ignored ones
-	(progn
+	;; did not find, add to ignored ones
+	(let ((expire-time (if (> timeout 0)
+			       (irchat-time-add (current-time)
+						(* timeout 60)))))
+	  (if (and silent (> timeout 0))
+	      (setcar (cdr (cdr expire-time)) -1))
 	  (setq irchat-kill-nickname
-		(cons (cons kill-nickname-var
-			    (if (> timeout 0)
-				(irchat-time-add (current-time)
-						 (* timeout 60))))
+		(cons (cons kill-nickname-var expire-time)
 		      irchat-kill-nickname))
-	  (irchat-w-insert irchat-D-buffer
-			   (format "*** Ignoring %s" kill-nickname-var))
-	  (irchat-w-insert irchat-D-buffer
-			   (if (> timeout 0)
-			       (format " for %d minutes.\n" timeout)
-			     (format ".\n"))))))
-      (setq irchat-save-vars-is-dirty t)))
-
+	  (if (not silent)
+	      (progn
+		(irchat-w-insert irchat-D-buffer
+				 (format "*** Ignoring %s" kill-nickname-var))
+		(irchat-w-insert irchat-D-buffer
+				 (if (> timeout 0)
+				     (format " for %d minutes.\n" timeout)
+				   (format ".\n"))))))))
+    (setq irchat-save-vars-is-dirty t)))
 
 (defun irchat-Command-send-action (&optional private)
   "Send action ctcp - if on empty line, ask for the message"
