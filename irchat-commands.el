@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-commands.el,v 3.22 1997/07/10 10:32:27 tri Exp $
+;;;  $Id: irchat-commands.el,v 3.23 1997/09/04 06:43:51 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -192,9 +192,18 @@ current channel."
     (setq start (point))
     (end-of-line)
     (setq message (buffer-substring start (point)))
-    (if (irchat-Command-send-message message crypt-type key)
-	(irchat-next-line 1))))
-
+    (if (and irchat-confirm-bell-on-channel-message
+	     (stringp irchat-current-channel)
+	     (string-match "^#" irchat-current-channel)
+	     (string-match "" message))
+	(if (yes-or-no-p 
+	     (format "Do you really want to send bell to the channel %s? "
+		     irchat-current-channel))
+	    (if (irchat-Command-send-message message crypt-type key)
+		(irchat-next-line 1))
+	  (message "Message not sent!"))
+      (if (irchat-Command-send-message message crypt-type key)
+	  (irchat-next-line 1)))))
 
 (defun irchat-Command-enter-message ()
   (interactive)
