@@ -4,7 +4,7 @@
 ;;;  IDEA encryption in elisp.  Cool, ha?
 ;;;  ----------------------------------------------------------------------
 ;;;  Created      : Thu Jun 29 08:11:25 1995 tri
-;;;  Last modified: Thu Jun 25 02:55:03 1998 tri
+;;;  Last modified: Thu Jun 25 03:00:56 1998 tri
 ;;;  ----------------------------------------------------------------------
 ;;;  Copyright © 1995-1998
 ;;;  Timo J. Rinne <tri@iki.fi>
@@ -18,7 +18,7 @@
 ;;;  irchat-copyright.el applies only if used with irchat IRC client.
 ;;;  Contact the author for additional copyright info.
 ;;;
-;;;  $Id: idea.el,v 3.19 1998/06/24 23:55:24 tri Exp $
+;;;  $Id: idea.el,v 3.20 1998/06/25 00:01:02 tri Exp $
 ;;;
 
 (eval-and-compile  
@@ -815,6 +815,7 @@
   (cond ((= version 1) (idea-build-key-annotation-version-1 key type))
 	((= version 2) (idea-build-key-annotation-version-2 key type))
 	((= version 3) (idea-build-key-annotation-version-3 key type))
+	((= version 666) (concat type ":xxxxxxxxxx"))
 	(t (error "Unknown key expansion version"))))
 
 (defun idea-build-key-annotation-version-1 (key type)
