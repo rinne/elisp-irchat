@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-200.el,v 3.3 1998/08/07 19:13:56 tri Exp $
+;;;  $Id: irchat-200.el,v 3.4 2002/06/09 15:16:02 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -9,7 +9,7 @@
 ;;;
 ;;;  200 replies
 ;;;
-(defun irchat-handle-200-msgs (number prefix rest)
+(defun irchat-handle-200-msgs (number parsed-sender parsed-msg prefix rest)
   (if (string-match "[^ ]* \\([^ :]*\\) *\\([^ :]*\\) *:\\(.*\\)" rest)
       (let ((target1 (matching-substring rest 1))
 	    (target2 (matching-substring rest 2))
@@ -28,7 +28,7 @@
     (message "IRCHAT: Strange %s reply" number)))
 
 
-(defun irchat-handle-200-msg (prefix rest)
+(defun irchat-handle-200-msg (parsed-sender parsed-msg prefix rest)
   "200 TRACELINK Link <version & debug level> <destination> <next server>"
   (if (string-match "Link \\([^ ]*\\)[ :]*\\([^ ]*\\)[ :]*\\(.*\\)" rest)
       (let ((version (matching-substring rest 1))
@@ -40,7 +40,7 @@
     (message "IRCHAT: Strange 200 message")))
 
 
-(defun irchat-handle-201-msg (prefix rest)
+(defun irchat-handle-201-msg (parsed-sender parsed-msg prefix rest)
   "201 TRACECONNECTING Try. <class> <server>"
   (if (string-match "[^ ]* [^ ]* \\([0-9]*\\)[ :]*\\(.*\\)" rest)
       (let ((class (matching-substring rest 1))
@@ -51,7 +51,7 @@
     (message "IRCHAT: Strange 201 message")))
 
 
-(defun irchat-handle-202-msg (prefix rest)
+(defun irchat-handle-202-msg (parsed-sender parsed-msg prefix rest)
   "202 RPL_TRACEHANDSHAKE H.S. <class> <server>"
   (if (string-match "[^ ]* [^ ]* \\([0-9]*\\)[ :]*\\(.*\\)" rest)
       (let ((class (matching-substring rest 1))
@@ -62,7 +62,7 @@
     (message "IRCHAT: Strange 202 message")))
 
 
-(defun irchat-handle-203-msg (prefix rest)
+(defun irchat-handle-203-msg (parsed-sender parsed-msg prefix rest)
   "203 RPL_TRACEUNKNOWN ???? <class> [<client IP address in dot form>]"
   (if (string-match "\\([^ ]*\\) \\([^ ]*\\) \\([^ ]*\\)[ :]+\\(.*\\)" rest)
       (let ((status (matching-substring rest 2))
@@ -74,7 +74,7 @@
     (message "IRCHAT: Strange 203 message")))
 
 
-(defun irchat-handle-204-msg (prefix rest)
+(defun irchat-handle-204-msg (parsed-sender parsed-msg prefix rest)
   "204 RPL_TRACEOPERATOR Oper <class> <nick>"
   (if (string-match "\\([^ ]*\\) \\([^ ]*\\) \\([^ ]*\\)[ :]+\\(.*\\)" rest)
       (let ((status (matching-substring rest 2))
@@ -86,7 +86,7 @@
   (message "IRCHAT: Strange 204 message")))
 
 
-(defun irchat-handle-205-msg (prefix rest)
+(defun irchat-handle-205-msg (parsed-sender parsed-msg prefix rest)
   "205 RPL_TRACEUSER User %d %s"
   (if (string-match "[^ ]* \\([^ ]*\\) \\([0-9]*\\)[ :]*\\(.*\\)" rest)
       (let ((kind (matching-substring rest 1))
@@ -98,7 +98,7 @@
     (message "IRCHAT: Strange 205 message")))
 
 
-(defun irchat-handle-206-msg (prefix rest)
+(defun irchat-handle-206-msg (parsed-sender parsed-msg prefix rest)
   "206 RPL_TRACESERVER Serv %d %dS %dC %s %s!%s@%s"
   (if (string-match "Serv \\([^ ]*\\) \\(.*\\)" rest)
       (let ((class (matching-substring rest 1))
@@ -123,7 +123,7 @@
     (message "IRCHAT: Strange 206 message")))
 
 
-(defun irchat-handle-207-msg (prefix rest)
+(defun irchat-handle-207-msg (parsed-sender parsed-msg prefix rest)
   "207 RPL_TRACESERVICE Service %d %s"
   (if (string-match "[^ ]* Service \\([0-9]*\\) \\(.*\\)" rest)
       (let ((class (matching-substring rest 1))
@@ -133,7 +133,7 @@
     (message "IRCHAT: Strange 207 message")))
 
 
-(defun irchat-handle-208-msg (prefix rest)
+(defun irchat-handle-208-msg (parsed-sender parsed-msg prefix rest)
   "208 RPL_TRACENEWTYPE <newtype> 0 %s"
   (irchat-w-insert irchat-200-buffer 
 		   (format "%s%s: RPL_TRACENEWTYPE: Why this?\n"
@@ -141,7 +141,7 @@
   nil)
 
 
-(defun irchat-handle-209-msg (prefix rest)
+(defun irchat-handle-209-msg (parsed-sender parsed-msg prefix rest)
   "RPL_TRACECLASS Class %d %d"
   (if (string-match "[^ ]* Class \\([0-9]*\\) \\([0-9]*\\)" rest)
       (let ((class (matching-substring rest 1))
@@ -152,7 +152,7 @@
     (message "IRCHAT: Strange 209 message")))
 
 
-(defun irchat-handle-211-msg (prefix rest)
+(defun irchat-handle-211-msg (parsed-sender parsed-msg prefix rest)
   "NOTICE %s :%-15.15s%5u%7u%10u%7u%10u %s"
   (if (string-match "\\([^ ]*\\) \\([^ ]*\\) \\([^ ]*\\) \\([^ ]*\\) \\([^ ]*\\) \\([^ ]*\\) \\([^ ]*\\)[ :]+\\(.*\\)" rest)
       (let ((link (matching-substring rest 2))
@@ -168,7 +168,7 @@
     (message "IRCHAT: Strance 211 message")))
 
 
-(defun irchat-handle-212-msg (prefix rest)
+(defun irchat-handle-212-msg (parsed-sender parsed-msg prefix rest)
   "212 RPL_STATSCOMMANDS %s %u %u"
   (if (string-match "[^ ]* \\([^ ]*\\) \\([0-9]*\\)" rest)
       (let ((cmd (matching-substring rest 1))
@@ -179,7 +179,7 @@
     (message "IRCHAT: Strange 212 message")))
 
 
-(defun irchat-handle-213-msg (prefix rest)
+(defun irchat-handle-213-msg (parsed-sender parsed-msg prefix rest)
   "213 RPL_STATSCLINE %c %s * %s %d %d"
   (if (string-match "[^ ]* \\(.\\) \\([^ ]*\\) \\(.\\) \\([^ ]*\\) \\([0-9]*\\) \\([0-9]*\\)" rest)
       (let ((cn (matching-substring rest 1))
@@ -194,7 +194,7 @@
     (message "IRCHAT: Strange 213 message")))
 
 
-(defun irchat-handle-214-msg (prefix rest)
+(defun irchat-handle-214-msg (parsed-sender parsed-msg prefix rest)
   "214 RPL_STATSNLINE %c %s * %s %d %d"
   (if (string-match "[^ ]* \\(.\\) \\([^ ]*\\) \\(.\\) \\([^ ]*\\) \\([0-9]*\\) \\([0-9]*\\)" rest)
       (let ((cn (matching-substring rest 1))
@@ -209,7 +209,7 @@
     (message "IRCHAT: Strange 214 message")))
 
 
-(defun irchat-handle-215-msg (prefix rest)
+(defun irchat-handle-215-msg (parsed-sender parsed-msg prefix rest)
   "215 RPL_STATSILINE k2 I * * * 0 0"
   (if (string-match "[^ ]* I \\([^ ]*\\) \\([^ ]*\\) \\([^ ]*\\)" rest)
       (let ((domain (matching-substring rest 1))
@@ -221,7 +221,7 @@
     (message "IRCHAT: Strange 215 message")))
 
 
-(defun irchat-handle-216-msg (prefix rest)
+(defun irchat-handle-216-msg (parsed-sender parsed-msg prefix rest)
   "216 RPL_STATSKLINE k2 K *.hut.fi * tsh 0 -1"
   (if (or
        (string-match "[^ ]* K \\([^ ]*\\) \\(.\\) \\([^ ]*\\) 0 -1" rest)
@@ -235,7 +235,7 @@
     (message "IRCHAT: Strange 216 message")))
 
 
-(defun irchat-handle-217-msg (prefix rest)
+(defun irchat-handle-217-msg (parsed-sender parsed-msg prefix rest)
   "217 RPL_STATSQLINE k2 Q <NULL> * eris.berkeley.edu 0 -1"
   (if (string-match "[^ ]* Q \\([^ ]*\\) \\(.\\) \\([^ ]*\\) \\(.*\\)" rest)
       (let ((reason (matching-substring rest 1))
@@ -248,7 +248,7 @@
     (message "IRCHAT: Strange 217 message")))
 
 
-(defun irchat-handle-218-msg (prefix rest)
+(defun irchat-handle-218-msg (parsed-sender parsed-msg prefix rest)
   "218 RPL_STATSYLINE k2 Y 1 90 300 10"
   (if (string-match "[^ ]* Y \\([0-9]*\\) \\([0-9]*\\) \\([0-9]*\\) \\([0-9]*\\)" 
 		    rest)
@@ -263,12 +263,12 @@
     (message "IRCHAT: Strange 218 message")))
 
     
-(defun irchat-handle-219-msg (prefix rest)
+(defun irchat-handle-219-msg (parsed-sender parsed-msg prefix rest)
   "219 RPL_ENDOFSTATS %c :End of /STATS report" 
   nil)
 
 
-(defun irchat-handle-221-msg (prefix rest) 
+(defun irchat-handle-221-msg (parsed-sender parsed-msg prefix rest) 
   "221 RPL_UMODEIS %s"
   (if (string-match "[^ ]* \\(.*\\)" rest)
       (let ((str (matching-substring rest 1)))
@@ -281,32 +281,32 @@
 ;;;
 ;;; 230 series not implemented as 7/94
 ;;;
-(defun irchat-handle-231-msg (prefix rest)
+(defun irchat-handle-231-msg (parsed-sender parsed-msg prefix rest)
   "231 RPL_SERVICEINFO"
   nil)
 
 
-(defun irchat-handle-232-msg (prefix rest)
+(defun irchat-handle-232-msg (parsed-sender parsed-msg prefix rest)
   "232 RPL_ENDOFSERVICES"
   nil)
 
 
-(defun irchat-handle-233-msg (prefix rest)
+(defun irchat-handle-233-msg (parsed-sender parsed-msg prefix rest)
   "233 RPL_SERVICE"
   nil)
 
 
-(defun irchat-handle-234-msg (prefix rest)
+(defun irchat-handle-234-msg (parsed-sender parsed-msg prefix rest)
   "234 RPL_SERVLIST"
   nil)
 
 
-(defun irchat-handle-235-msg (prefix rest)
+(defun irchat-handle-235-msg (parsed-sender parsed-msg prefix rest)
   "235 RPL_SERVLISTEND"
   nil)
 
 
-(defun irchat-handle-241-msg (prefix rest)
+(defun irchat-handle-241-msg (parsed-sender parsed-msg prefix rest)
   "241 RPL_STATSLLINE %c %s * %s %d %d"
   (if (string-match "[^ ]* \\(.*\\)" rest)
       (let ((msg (matching-substring rest 1)))
@@ -315,7 +315,7 @@
     (message "IRCHAT: Strange 241 reply")))
 
 
-(defun irchat-handle-242-msg (prefix rest)
+(defun irchat-handle-242-msg (parsed-sender parsed-msg prefix rest)
   "242 RPL_STATSUPTIME :Server Up %d days, %d:%02d:%02d"
   (if (string-match "[^ ]* \\(.*\\)" rest)
       (let ((msg (matching-substring rest 1)))
@@ -324,7 +324,7 @@
     (message "IRCHAT: Strange 242 reply")))
 
 
-(defun irchat-handle-243-msg (prefix rest)
+(defun irchat-handle-243-msg (parsed-sender parsed-msg prefix rest)
   "243 RPL_STATSOLINE %c %s * %s %d %d"
   (if (string-match "[^ ]* \\(.*\\)" rest)
       (let ((msg (matching-substring rest 1)))
@@ -333,7 +333,7 @@
     (message "IRCHAT: Strange 243 reply")))
 
 
-(defun irchat-handle-244-msg (prefix rest)
+(defun irchat-handle-244-msg (parsed-sender parsed-msg prefix rest)
   "244 RPL_STATSHLINE %c %s * %s %d %d"
   (if (string-match "[^ ]* \\(.*\\)" rest)
       (let ((msg (matching-substring rest 1)))
@@ -342,7 +342,7 @@
     (message "IRCHAT: Strange 244 reply")))
 
 
-(defun irchat-handle-245-msg (prefix rest)
+(defun irchat-handle-245-msg (parsed-sender parsed-msg prefix rest)
   "245 RPL_STATSSLINE %c %s * %s %d %d"
   (if (string-match "[^ ]* \\(.*\\)" rest)
       (let ((msg (matching-substring rest 1)))

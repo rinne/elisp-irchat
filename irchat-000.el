@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-000.el,v 3.2 1997/03/12 16:20:21 jtp Exp $
+;;;  $Id: irchat-000.el,v 3.3 2002/06/09 15:16:02 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -9,7 +9,7 @@
 ;;;
 ;;;  000 replies -- what is the author of ircd thinking
 ;;;
-(defun irchat-handle-000-msgs (number prefix rest)
+(defun irchat-handle-000-msgs (number parsed-sender parsed-msg prefix rest)
   (setq irchat-nick-accepted 'ok)
   (if (string-match "[^ ]* \\([^ :]*\\) *\\([^ :]*\\) *:\\(.*\\)" rest)
       (let ((target1 (matching-substring rest 1))
@@ -29,7 +29,7 @@
     (message "IRCHAT: Strange %s reply" number)))
 
 
-(defun irchat-handle-004-msg (prefix rest)
+(defun irchat-handle-004-msg (parsed-sender parsed-msg prefix rest)
   (if (string-match "[^ ]* \\(.*\\)" rest)
       (let ((msg (matching-substring rest 1)))
 	(irchat-w-insert irchat-000-buffer

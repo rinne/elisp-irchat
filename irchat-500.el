@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-500.el,v 3.2 1997/03/18 15:58:09 tri Exp $
+;;;  $Id: irchat-500.el,v 3.3 2002/06/09 15:16:02 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -9,7 +9,7 @@
 ;;;
 ;;;  500 replies -- ERRORS
 ;;;
-(defun irchat-handle-500-msgs (number prefix rest)
+(defun irchat-handle-500-msgs (number parsed-sender parsed-msg prefix rest)
   (if (string-match "[^ ]* \\([^ :]*\\) *\\([^ :]*\\) *:\\(.*\\)" rest)
       (let ((target1 (matching-substring rest 1))
 	    (target2 (matching-substring rest 2))

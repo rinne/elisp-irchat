@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-300.el,v 3.7 2002/06/04 15:12:51 tri Exp $
+;;;  $Id: irchat-300.el,v 3.8 2002/06/09 15:16:02 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -14,7 +14,7 @@
 (defvar irchat-recursing-whowas nil)
 (defvar irchat-recursing-whois-for-host-mask nil)
 
-(defun irchat-handle-300-msgs (number prefix rest)
+(defun irchat-handle-300-msgs (number parsed-sender parsed-msg prefix rest)
   "Generic handler for 3?? messages. 
 This is called if no specific handler exists"
   (if (string-match "[^ ]* \\([^ :]*\\) *\\([^ :]*\\) *:\\(.*\\)" rest)
@@ -36,7 +36,7 @@ This is called if no specific handler exists"
     (message "IRCHAT: Strange %s reply" number)))
 
 
-(defun irchat-handle-301-msg (prefix rest)
+(defun irchat-handle-301-msg (parsed-sender parsed-msg prefix rest)
   "Handle the 301 RPL_AWAY."
   (if (string-match "^[^ ]+ \\([^ ]+\\) +:\\(.*\\)" rest)
       (let ((who (matching-substring rest 1))
@@ -49,7 +49,7 @@ This is called if no specific handler exists"
     (irchat-w-insert irchat-300-buffer "IRCHAT: Strange 301 reply")))
 
 
-(defun irchat-handle-302-msg (prefix rest)
+(defun irchat-handle-302-msg (parsed-sender parsed-msg prefix rest)
   "Handle the 302 USERHOST."
   (while (string-match 
 	  "^[^ ]* :[ ]*\\([^*=]+\\)\\([*]*\\)=\\([+-]\\)\\([^ ]+\\)" rest)
@@ -68,7 +68,7 @@ This is called if no specific handler exists"
       (setq rest (concat " :" (substring rest (match-end 4) nil))))))
 
 
-(defun irchat-handle-303-msg (prefix rest)
+(defun irchat-handle-303-msg (parsed-sender parsed-msg prefix rest)
   "Handle the 303 ISON"
   (if (string-match "[^ ]+ :\\(.*\\)" rest)
       (if (string= (matching-substring rest 1) "")
@@ -82,7 +82,7 @@ This is called if no specific handler exists"
     (irchat-w-insert irchat-300-buffer "IRCHAT: Strange 303 reply")))
 
 
-(defun irchat-handle-305-msg (prefix rest)
+(defun irchat-handle-305-msg (parsed-sender parsed-msg prefix rest)
   "Handle the 305 UNAWAY"
   (if (string-equal irchat-away-indicator "A")
       (progn
@@ -100,7 +100,7 @@ This is called if no specific handler exists"
 	  (irchat-w-insert irchat-300-buffer "IRCHAT: Strange 305 reply\n")))))
 
 
-(defun irchat-handle-306-msg (prefix rest)
+(defun irchat-handle-306-msg (parsed-sender parsed-msg prefix rest)
   "Handle the 306 NOWAWAY"
   (setq irchat-away-indicator "A")
   (if (string-match "[^:]:\\(.*\\)" rest)
@@ -115,7 +115,7 @@ This is called if no specific handler exists"
     (irchat-w-insert irchat-300-buffer "IRCHAT: Strange 306 reply\n")))
 
 
-(defun irchat-handle-311-msg (prefix rest)
+(defun irchat-handle-311-msg (parsed-sender parsed-msg prefix rest)
   "Handle the 311 WHOISUSER."
   (if (string-match "[^ ]+ \\([^ ]+\\) \\([^ ]+\\) \\([^ ]+\\) \\([^ ]+\\) :\\(.*\\)" rest)
       (let ((nick (matching-substring rest 1))
@@ -131,7 +131,7 @@ This is called if no specific handler exists"
     (irchat-w-insert irchat-300-buffer "IRCHAT: Strange 311 reply")))
 
 
-(defun irchat-handle-312-msg (prefix rest)
+(defun irchat-handle-312-msg (parsed-sender parsed-msg prefix rest)
   "Handle the 312 WHOISSERVER."
   (if (string-match "^[^ ]+ \\(\\([^ ]+\\) \\)?\\([^ ]+\\) :\\(.*\\)" rest)
       (let ((who (matching-substring rest 2))
@@ -159,7 +159,7 @@ This is called if no specific handler exists"
     (irchat-w-insert irchat-300-buffer "IRCHAT: Strange 312 reply")))
 
 
-(defun irchat-handle-313-msg (prefix rest)
+(defun irchat-handle-313-msg (parsed-sender parsed-msg prefix rest)
   "Handle the 313 WHOISOPERATOR."
   (if (string-match "^[^ ]+ \\([^ ]+\\) :\\(.*\\)" rest)
       (let ((who (matching-substring rest 1))
@@ -171,7 +171,7 @@ This is called if no specific handler exists"
     (irchat-w-insert irchat-300-buffer "IRCHAT: Strange 313 reply")))
 
 
-(defun irchat-handle-316-msg (prefix rest)
+(defun irchat-handle-316-msg (parsed-sender parsed-msg prefix rest)
   "Handle the 316 WHOISCHANOP."
   (if (string-match "^\\([^ ]+\\) :\\(.*\\)" rest)
       (let ((who (matching-substring rest 1))
@@ -189,7 +189,7 @@ This is called if no specific handler exists"
       (irchat-w-insert irchat-300-buffer "IRCHAT: Strange 316 reply"))))
 
 
-(defun irchat-handle-319-msg (prefix rest)
+(defun irchat-handle-319-msg (parsed-sender parsed-msg prefix rest)
   "Handle the 319 reply (what channels user is on)."
   (if (string-match "^\\([^ ]+\\) \\([^ ]+\\) :\\(.*\\)" rest)
       (let ((who (matching-substring rest 2))
@@ -200,7 +200,7 @@ This is called if no specific handler exists"
 				     irchat-info-prefix isonchannels))))))
 
 
-(defun irchat-handle-314-msg (prefix rest)
+(defun irchat-handle-314-msg (parsed-sender parsed-msg prefix rest)
   "Handle the 314 WHOWASUSER."
   (if (string-match "[^ ]+ \\([^ ]+\\) \\([^ ]+\\) \\([^ ]+\\) \\([^ ]+\\) :\\(.*\\)" rest)
       (let ((nick (matching-substring rest 1))
@@ -220,7 +220,7 @@ This is called if no specific handler exists"
     (message "IRCHAT: Strange 314 reply"))
   )
 
-(defun irchat-handle-315-msg (prefix rest)
+(defun irchat-handle-315-msg (parsed-sender parsed-msg prefix rest)
   "Handle the 315 ENDOFWHO."
   nil)
 
@@ -249,7 +249,7 @@ This is called if no specific handler exists"
     r)) 
 
  
-(defun irchat-handle-317-msg (prefix rest) 
+(defun irchat-handle-317-msg (parsed-sender parsed-msg prefix rest) 
   "Handle the 317 WHOISIDLE." 
   (let ((s nil)
 	(l nil))
@@ -294,19 +294,19 @@ This is called if no specific handler exists"
       (message "IRCHAT: Strange 317 reply")))) 
 
 
-(defun irchat-handle-318-msg (prefix rest)
+(defun irchat-handle-318-msg (parsed-sender parsed-msg prefix rest)
   "Handle the 318 ENDOFWHOIS."
   nil)
 
 
-(defun irchat-handle-321-msg (prefix rest)
+(defun irchat-handle-321-msg (parsed-sender parsed-msg prefix rest)
   "Handle the 321 LISTSTART. (first of names)"
   (irchat-w-insert irchat-300-buffer
    (format "%s%-10s%6s        %s\n"
 	   irchat-info-prefix "Channel" "Users" "Topic")))
 
 
-(defun irchat-handle-322-msg (prefix rest)
+(defun irchat-handle-322-msg (parsed-sender parsed-msg prefix rest)
   "Handle the 322 LIST.(from NAMES)."
   (if (string-match "^\\([^ ]+\\) \\([^ ]+\\) \\([^ ]+\\) :\\(.*\\)" rest)
       (let ((chnl (matching-substring rest 2))
@@ -330,12 +330,12 @@ This is called if no specific handler exists"
     (message "IRCHAT: Strange 322 reply")))
 
 
-(defun irchat-handle-323-msg (prefix rest) 
+(defun irchat-handle-323-msg (parsed-sender parsed-msg prefix rest) 
   "Handle the 323 RPL_LISTEND. (end of names)"
   nil)
 
 
-(defun irchat-handle-324-msg (prefix rest)
+(defun irchat-handle-324-msg (parsed-sender parsed-msg prefix rest)
   "Handle the 324 CHANNELMODEIS."
   (if (string-match "[^ ]* \\([^ ]*\\) \\(.*\\)" rest)
       (let ((chnl (matching-substring rest 1))
@@ -346,7 +346,7 @@ This is called if no specific handler exists"
     (message (format "IRCHAT: Strange 324 reply '%s'" rest))))
 
 
-(defun irchat-handle-331-msg (prefix rest)
+(defun irchat-handle-331-msg (parsed-sender parsed-msg prefix rest)
   "Handle the 331 NOTOPIC"
   (if (string-match "[^ ]* \\([^ ]*\\) \\(.*\\)" rest)
       (let ((ichan (intern (matching-substring rest 1) irchat-obarray)))
@@ -356,7 +356,7 @@ This is called if no specific handler exists"
 				 irchat-info-prefix)))))
 
 
-(defun irchat-handle-332-msg (prefix rest)
+(defun irchat-handle-332-msg (parsed-sender parsed-msg prefix rest)
   "Handle the 332 TOPIC."
   (if (string-match "[^ ]* \\([^ ]*\\) +:\\(.*\\)" rest)
       (let ((ichan (intern (matching-substring rest 1) irchat-obarray))
@@ -367,7 +367,7 @@ This is called if no specific handler exists"
     (message "IRCHAT: Strange 332 message")))
 
 
-(defun irchat-handle-341-msg (prefix rest)
+(defun irchat-handle-341-msg (parsed-sender parsed-msg prefix rest)
   "Handle the 341 INVITING."
   (if (string-match "^\\([^ ]+\\) +\\([^ ]+\\) +\\([-#&0-9+][^ ]*\\)" rest)
       (let ((who (matching-substring rest 1))
@@ -379,7 +379,7 @@ This is called if no specific handler exists"
     (message "Strange 341 message")))
 
 
-(defun irchat-handle-351-msg (prefix rest)
+(defun irchat-handle-351-msg (parsed-sender parsed-msg prefix rest)
   "Handle the 351 VERSION."
   (if (string-match "[^ ]+ \\([^ ]+\\) :*\\([^ ]+\\)[ :]*\\(.*\\)" rest)
       (let ((version (matching-substring rest 1))
@@ -391,11 +391,11 @@ This is called if no specific handler exists"
     (message "IRCHAT: Strange 351 reply")))
 
 
-(defun irchat-handle-whoreply-msg (prefix rest)
+(defun irchat-handle-whoreply-msg (parsed-sender parsed-msg prefix rest)
   (irchat-handle-352-msg prefix rest))
 
 
-(defun irchat-handle-352-msg (prefix rest)
+(defun irchat-handle-352-msg (parsed-sender parsed-msg prefix rest)
   "Handle the 352 WHOREPLY."
   (if (string-match "\\([^ ]*\\) \\([^ ]+\\) \\([^ ]+\\) \\([^ ]+\\) \\([^ ]+\\) \\([^ ]+\\) :[0-9]* ?\\(.*\\)" rest)
       (let* ((chnl (matching-substring rest 1))
@@ -421,7 +421,7 @@ This is called if no specific handler exists"
     (message "IRCHAT: Strange 352 message")))
 
 
-(defun irchat-handle-namreply-msg (prefix rest)
+(defun irchat-handle-namreply-msg (parsed-sender parsed-msg prefix rest)
   (irchat-handle-353-msg prefix rest))
 
 (defun irchat-count-words-from-string (str)
@@ -437,7 +437,7 @@ This is called if no specific handler exists"
 	(setq i (- i 1))))
     words))
 
-(defun irchat-handle-346-msg (prefix rest)
+(defun irchat-handle-346-msg (parsed-sender parsed-msg prefix rest)
   "Handle the 346 invitation list."
   (if (string-match "[^ ]* \\([^ ]*\\) \\([^ ]*\\)" rest)
       (let ((chnl (matching-substring rest 1))
@@ -447,11 +447,11 @@ This is called if no specific handler exists"
 				 irchat-info-prefix regexp chnl)))
     (message "IRCHAT: Strange 346 message")))
 
-(defun irchat-handle-347-msg (prefix rest)
+(defun irchat-handle-347-msg (parsed-sender parsed-msg prefix rest)
   "Handle the 347 ???????."
   nil)
 
-(defun irchat-handle-348-msg (prefix rest)
+(defun irchat-handle-348-msg (parsed-sender parsed-msg prefix rest)
   "Handle the 348 ban exceptions."
   (if (string-match "[^ ]* \\([^ ]*\\) \\([^ ]*\\)" rest)
       (let ((chnl (matching-substring rest 1))
@@ -461,7 +461,7 @@ This is called if no specific handler exists"
 				 irchat-info-prefix regexp chnl)))
     (message "IRCHAT: Strange 348 message")))
 
-(defun irchat-handle-349-msg (prefix rest)
+(defun irchat-handle-349-msg (parsed-sender parsed-msg prefix rest)
   "Handle the 347 ???????."
   nil)
 
@@ -469,7 +469,7 @@ This is called if no specific handler exists"
 (defvar irchat-353-nameslist "" "names list reply string")
 (defvar irchat-353-namescount 0 "")
 
-(defun irchat-handle-353-msg (prefix rest)
+(defun irchat-handle-353-msg (parsed-sender parsed-msg prefix rest)
   "Handle the 353 (NAMREPLY) message.   If we are just polling the server,
 don't display anything."
   (if (string-match "[^ =*@]?[=*@] \\([^ ]*\\) :\\(.*\\)" rest)
@@ -486,7 +486,7 @@ don't display anything."
 	(irchat-update-thischannel chnl users))
     (message "IRCHAT: Strange 353 message")))
 
-(defun irchat-handle-361-msg (prefix rest)
+(defun irchat-handle-361-msg (parsed-sender parsed-msg prefix rest)
   "Handle the 361 KILLDONE."
   (if (string-match "[^ ]+ \\([^ ]+\\) +:\\(.*\\)" rest)
       (let ((who (matching-substring rest 1))
@@ -496,7 +496,7 @@ don't display anything."
 				 irchat-info-prefix who message)))
     (message "IRCHAT: Strange 361 reply")))
 
-(defun irchat-handle-364-msg (prefix rest)
+(defun irchat-handle-364-msg (parsed-sender parsed-msg prefix rest)
   (if (string-match "^\\([^ ]+\\) +\\([^ ]*\\) +[^ ]* +:\\(.*\\)" rest)
       (progn
 	(irchat-w-insert irchat-300-buffer 
@@ -507,12 +507,12 @@ don't display anything."
     (message "IRCHAT: Strange 364 message")))
 
 
-(defun irchat-handle-365-msg (prefix rest)
+(defun irchat-handle-365-msg (parsed-sender parsed-msg prefix rest)
   "Handle the 365 ENDOFLINKS."
   nil)
 
 
-(defun irchat-handle-366-msg (prefix rest)
+(defun irchat-handle-366-msg (parsed-sender parsed-msg prefix rest)
   "Handle the 366 ENDOFNAMES."
   (let ((level (- irchat-polling 1)))
     (setq irchat-polling (if (< level 0) 0 level))
@@ -532,7 +532,7 @@ don't display anything."
 	  irchat-353-nameschnl nil
 	  irchat-353-namescount 0)))
 
-(defun irchat-handle-367-msg (prefix rest)
+(defun irchat-handle-367-msg (parsed-sender parsed-msg prefix rest)
   "Handle the 367 BAN."
   (if (string-match "[^ ]* \\([^ ]*\\) \\([^ ]*\\)" rest)
       (let ((chnl (matching-substring rest 1))
@@ -543,17 +543,17 @@ don't display anything."
     (message "IRCHAT: Strange 367 message")))
 
 
-(defun irchat-handle-368-msg (prefix rest)
+(defun irchat-handle-368-msg (parsed-sender parsed-msg prefix rest)
   "Handle the 368 ???????."
   nil)
 
 
-(defun irchat-handle-369-msg (prefix rest)
+(defun irchat-handle-369-msg (parsed-sender parsed-msg prefix rest)
   "Handle the 369 WHOWAS."
   (setq irchat-recursing-whowas nil)
   nil)
 
-(defun irchat-handle-371-msg (prefix rest) 
+(defun irchat-handle-371-msg (parsed-sender parsed-msg prefix rest) 
   "Handle the 371 INFO."
   (if (string-match "^\\([^ ]+\\) +:?\\(.*\\)" rest)
       (let ((msg (matching-substring rest 2)))
@@ -562,7 +562,7 @@ don't display anything."
     (message "IRCHAT: Strange 371 message")))
 
 
-(defun irchat-handle-372-msg (prefix rest)
+(defun irchat-handle-372-msg (parsed-sender parsed-msg prefix rest)
   "Handle the 372 MOTD."
   (string-match "^\\([^ ]+\\) +:?\\(.*\\)" rest)
   (let ((msg (matching-substring rest 2)))
@@ -570,7 +570,7 @@ don't display anything."
     ))
 
 
-(defun irchat-handle-381-msg (prefix rest)
+(defun irchat-handle-381-msg (parsed-sender parsed-msg prefix rest)
   "Handle the 381 YOUREOPER. ."
   (if (string-match "^\\([^ ]+\\) +:\\(.*\\)" rest)
       (let ((message (matching-substring rest 2)))
@@ -579,7 +579,7 @@ don't display anything."
     (message "IRCHAT: Strange 381 reply")))
 
 
-(defun irchat-handle-382-msg (prefix rest) 
+(defun irchat-handle-382-msg (parsed-sender parsed-msg prefix rest) 
   "Handle the 382 REHASHING."
   (string-match "^\\([^ ]+\\) +:\\(.*\\)" rest)
   (let ((name (matching-substring rest 1))
@@ -588,7 +588,7 @@ don't display anything."
 		     (format "%s%s: %s\n" irchat-info-prefix name msg))))
 
 
-(defun irchat-handle-391-msg (prefix rest)
+(defun irchat-handle-391-msg (parsed-sender parsed-msg prefix rest)
   "Handle the 391 TIME."
   (if (string-match "^\\([^ ]+\\) +\\(.*\\)" rest)
       (let ((time (matching-substring rest 2)))

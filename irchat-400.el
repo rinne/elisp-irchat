@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-400.el,v 3.10 1997/11/11 14:49:29 tri Exp $
+;;;  $Id: irchat-400.el,v 3.11 2002/06/09 15:16:02 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -9,7 +9,7 @@
 ;;;
 ;;;  400 replies -- ERRORS
 ;;; 
-(defun irchat-handle-400-msgs (number prefix rest)
+(defun irchat-handle-400-msgs (number parsed-sender parsed-msg prefix rest)
   "Generic handler for 4?? messages. This is called if no specific handler exists"
   (if (string-match "[^ ]* \\([^ :]*\\) *\\([^ :]*\\) *:\\(.*\\)" rest)
       (let ((target1 (matching-substring rest 1))
@@ -37,7 +37,7 @@
     (message "IRCHAT: Strange %s reply" number)))
 
 
-(defun irchat-handle-401-msg (prefix rest) ;;; ERR_NOSUCHNICK
+(defun irchat-handle-401-msg (parsed-sender parsed-msg prefix rest) ;;; ERR_NOSUCHNICK
   (if (string-match "[^ ]+ \\([^ ]+\\) +:\\(.*\\)" rest)
       (let ((name (matching-substring rest 1))
 	    (error (matching-substring rest 2)))
@@ -46,14 +46,14 @@
     (message "IRCHAT: Strange 401 reply")))
 
 
-(defun irchat-handle-406-msg (prefix rest)
+(defun irchat-handle-406-msg (parsed-sender parsed-msg prefix rest)
   (if (string-match "[^ ]+ \\([^ ]+\\) +:\\(.*\\)" rest)
       (let ((nickorchan (matching-substring rest 1)))
 	(irchat-change-nick-of nickorchan nil)
 	(message "IRCHAT: No such user %s" nickorchan))))
 
 
-(defun irchat-handle-412-msg (prefix rest)
+(defun irchat-handle-412-msg (parsed-sender parsed-msg prefix rest)
   (message "IRCHAT: No text to send"))
 
 
@@ -65,7 +65,7 @@
       new)))
 
 
-(defun irchat-handle-432-msg (prefix rest) ;;; ERR_ERRONEUSNICKNAME
+(defun irchat-handle-432-msg (parsed-sender parsed-msg prefix rest) ;;; ERR_ERRONEUSNICKNAME
   "Handle the 432 reply (erroneus nickname)"
   (save-excursion
     (set-buffer irchat-Command-buffer)
@@ -84,7 +84,7 @@
 	       (substitute-command-keys "\\[irchat-Command-nickname]")))))
 	
 
-(defun irchat-handle-433-msg (prefix rest) ;;; ERR_NICKNAMEINUSE
+(defun irchat-handle-433-msg (parsed-sender parsed-msg prefix rest) ;;; ERR_NICKNAMEINUSE
   "Handle the 433 reply (nickname already in use)"
   (if (not (eq irchat-nick-accepted 'ok))
       (progn
@@ -109,7 +109,7 @@
 	 (substitute-command-keys "\\[irchat-Command-nickname]"))))))
 
 
-(defun irchat-handle-437-msg (prefix rest) ;;; ERR_XXX
+(defun irchat-handle-437-msg (parsed-sender parsed-msg prefix rest) ;;; ERR_XXX
   "Handle the 437 reply (nick/channel unavailable)"
   (if (not (eq irchat-nick-accepted 'ok))
       (progn
@@ -133,7 +133,7 @@
 	(message 
 	 "IRCHAT: Nickname/channel %s unavailable." wnick)))))
 
-(defun irchat-handle-482-msg (prefix rest)
+(defun irchat-handle-482-msg (parsed-sender parsed-msg prefix rest)
   (message "IRCHAT: You are not a channel operator"))
 
 ;;;

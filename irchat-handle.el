@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-handle.el,v 3.32 1998/11/04 10:54:33 tri Exp $
+;;;  $Id: irchat-handle.el,v 3.33 2002/06/09 15:16:02 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -8,7 +8,7 @@
 (eval-and-compile  
   (require 'irchat-filter))
 
-(defun irchat-handle-error-msg (prefix rest)
+(defun irchat-handle-error-msg (parsed-sender parsed-msg prefix rest)
   (message "IRC error: %s" rest))
 
 
@@ -20,7 +20,7 @@
       (format " (%s)" rest))))
 
 
-(defun irchat-handle-channel-msg (prefix rest)
+(defun irchat-handle-channel-msg (parsed-sender parsed-msg prefix rest)
   (let ((ispart (string= rest "0")))
     (if (string= prefix irchat-real-nickname)
 	(progn
@@ -42,7 +42,7 @@
     (irchat-change-nick-of prefix prefix)))
 
 
-(defun irchat-handle-nick-msg (prefix rest)
+(defun irchat-handle-nick-msg (parsed-sender parsed-msg prefix rest)
   (irchat-change-nick-of prefix rest)
   (put (intern rest irchat-obarray) 'chnl 
        (get (intern prefix irchat-obarray) 'chnl))
@@ -54,7 +54,7 @@
 			   irchat-change-prefix prefix rest)))
 
 
-(defun irchat-handle-notice-msg (prefix rest)
+(defun irchat-handle-notice-msg (parsed-sender parsed-msg prefix rest)
   (if (and irchat-shorten-kills
 	   (string-match 
 	    "Notice[: -]*Received KILL message for \\([^.]*\\)\\. From \\([^ ]*\\) Path: \\([^ ]*\\) ?\\(.*\\)"
@@ -164,7 +164,7 @@
 					 (matching-substring rest 2))))))))))
 
 
-(defun irchat-handle-ping-msg (prefix rest)
+(defun irchat-handle-ping-msg (parsed-sender parsed-msg prefix rest)
   (if (string-match "^\\([^ ][^ ]*\\)" rest)
       (irchat-send "PONG %s: %s" 
 		   irchat-real-nickname
@@ -174,11 +174,11 @@
   (irchat-maybe-poll))
 
 
-(defun irchat-handle-pong-msg (prefix rest)
+(defun irchat-handle-pong-msg (parsed-sender parsed-msg prefix rest)
   ())
 
 ;; Is this still needed?
-(defun irchat-handle-msg-msg (prefix rest)
+(defun irchat-handle-msg-msg (parsed-sender parsed-msg prefix rest)
   (irchat-nick-to-uah-append prefix irchat-userathost irchat-userathost-type)
   (if (or (and prefix
 	       (irchat-ignore-this-p prefix irchat-userathost)
@@ -205,7 +205,7 @@
 		     (format (irchat-format-string 3 nil) prefix (car oma))
 		     rest)))))))
 
-(defun irchat-handle-privmsg-msg (prefix rest)
+(defun irchat-handle-privmsg-msg (parsed-sender parsed-msg prefix rest)
   (irchat-nick-to-uah-append prefix irchat-userathost irchat-userathost-type)
   (if (and prefix
 	   (irchat-ignore-this-p prefix irchat-userathost)
@@ -348,7 +348,7 @@
 
 
 ;; NOTICE
-(defun irchat-handle-privmsglike-msg (prefix rest &optional msg-encrypted-p)
+(defun irchat-handle-privmsglike-msg (parsed-sender parsed-msg prefix rest &optional msg-encrypted-p)
   (if (and prefix
 	   (irchat-ignore-this-p prefix irchat-userathost)
 	   (irchat-msg-from-ignored prefix rest))
@@ -429,7 +429,7 @@
 					  prefix chnl) 
 					 temp))))))))))
 
-(defun irchat-handle-wall-msg (prefix rest)
+(defun irchat-handle-wall-msg (parsed-sender parsed-msg prefix rest)
   "Handle the WALL message."
   (irchat-w-insert irchat-D-buffer 
 		   (format "%s%s %s\n" 
@@ -437,7 +437,7 @@
 			   (if prefix (concat "from " prefix) "") rest)))
 
 
-(defun irchat-handle-wallops-msg (prefix rest)
+(defun irchat-handle-wallops-msg (parsed-sender parsed-msg prefix rest)
   "Handle the WALLOPS message."
   (if irchat-show-wallops
       (irchat-w-insert irchat-D-buffer 
@@ -456,7 +456,7 @@
     (set-buffer buf)))
 
 
-(defun irchat-handle-quit-msg (prefix rest)
+(defun irchat-handle-quit-msg (parsed-sender parsed-msg prefix rest)
   "Handle the QUIT message."
   (if (and (not irchat-ignore-changes)
 	   (or (not irchat-ignore-changes-from-ignored)
@@ -482,7 +482,7 @@
   (irchat-change-nick-of prefix nil))
 
 
-(defun irchat-handle-topic-msg (prefix rest)
+(defun irchat-handle-topic-msg (parsed-sender parsed-msg prefix rest)
   "Handle the TOPIC message."
   (if (string-match "\\([^ :]*\\)[: ]*\\(.*\\)" rest)
       (let ((chnl (matching-substring rest 1))
@@ -494,7 +494,7 @@
     (message "IRCHAT: Strange TOPIC")))
 
 
-(defun irchat-handle-mode-msg (prefix rest)
+(defun irchat-handle-mode-msg (parsed-sender parsed-msg prefix rest)
   "Handle the MODE message."
   (if (and (not irchat-ignore-changes)
 	   (or (not irchat-ignore-changes-from-ignored)
@@ -541,7 +541,7 @@
 	  (message "IRCHAT: Strange MODE")))))
 
 
-(defun irchat-handle-kick-msg (prefix rest)
+(defun irchat-handle-kick-msg (parsed-sender parsed-msg prefix rest)
   "Handle the KICK message."
   (if (string-match "^\\([^ ]*\\) \\([^ ]*\\) *:\\(.*$\\)" rest)
       (let ((match1 (matching-substring rest 1))
@@ -584,7 +584,7 @@
     (message "IRCHAT: Strange KICK.")))
 
 
-(defun irchat-handle-invite-msg (prefix rest)
+(defun irchat-handle-invite-msg (parsed-sender parsed-msg prefix rest)
   (if (string-match " :\\([^ ]+\\)" rest)
       (let ((chnl (matching-substring rest 1)))
 	(irchat-w-insert irchat-D-buffer 
@@ -594,7 +594,7 @@
     (message "IRCHAT: Strange INVITE")))
 
 
-(defun irchat-handle-kill-msg (prefix rest)
+(defun irchat-handle-kill-msg (parsed-sender parsed-msg prefix rest)
   (if (string-match "[^ ]+ +:\\(.*\\)" rest)
       (let ((path (matching-substring rest 1)))
 	(irchat-w-insert irchat-D-buffer 
@@ -606,7 +606,7 @@
   (irchat-set-crypt-indicator))
 
 
-(defun irchat-handle-join-msg (prefix rest) ; kmk 14101990, tri 03071997
+(defun irchat-handle-join-msg (parsed-sender parsed-msg prefix rest) ; kmk 14101990, tri 03071997
   (let* ((parse (irchat-parse-^G-channel-name rest))
 	 (flags (cdr parse))
 	 (rest (car parse)))
@@ -650,7 +650,7 @@
     (irchat-change-nick-of prefix prefix)))
 
 
-(defun irchat-handle-part-msg (prefix rest) ; kmk, 14101990
+(defun irchat-handle-part-msg (parsed-sender parsed-msg prefix rest) ; kmk, 14101990
   (if (string-match "\\([^ ]*\\)\ .*" rest)
       (setq rest (matching-substring rest 1))) ;; throw away user given info.
   (if (string= prefix irchat-real-nickname)
