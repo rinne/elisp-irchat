@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-main.el,v 1.3 1997/01/31 13:01:48 too Exp $
+;;;  $Id: irchat-main.el,v 1.4 1997/02/05 14:57:56 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -323,7 +323,7 @@ If the stream is opened, return T, otherwise return NIL."
 
 (defvar irchat-timers
   (list
-   (list nil (function irchat-Command-timestamp) irchat-timestamp-interval)
+;   (list nil (function irchat-Command-timestamp) irchat-timestamp-interval)
    (list nil (function irchat-Command-pollnames) irchat-pollnames-interval)
    (list nil (function irchat-Command-keepalive) irchat-keepalive-interval)
    (list nil (function irchat-check-buffers) irchat-checkbuffer-interval)
@@ -691,8 +691,8 @@ One is for entering commands and text, the other displays the IRC dialogue."
 	    (set-window-start (get-buffer-window obuf) oldwstart)
 	    (set-window-point (get-buffer-window obuf) oldwpoint)
 	    (goto-char oldwpoint)
-	    )))
-    nil))
+	    ))))
+  (irchat-Command-timestamp-if-interval-expired))
 
 
 (defun irchat-get-buffer-create (name)

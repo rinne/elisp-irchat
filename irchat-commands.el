@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-commands.el,v 1.3 1997/01/31 13:01:48 too Exp $
+;;;  $Id: irchat-commands.el,v 1.4 1997/02/05 14:57:56 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -42,6 +42,7 @@
   (mapcar (function (lambda (channel)
 		      (irchat-send "NAMES %s" (car channel))))
 	  irchat-channel-alist))
+
 
 (defun irchat-Command-find-timestamp ()
   (interactive)
@@ -85,6 +86,23 @@
 	    (substring s 11 16))))
 
 
+(defvar irchat-last-timestamp-time nil "Last time timestamp was inserted")
+
+
+(defun irchat-Command-timestamp-if-interval-expired ()
+  (interactive)
+  (if (and (numberp irchat-timestamp-interval)
+	   (> irchat-timestamp-interval 0)
+	   (or (null irchat-last-timestamp-time)
+	       (> (irchat-time-difference irchat-last-timestamp-time
+					  (current-time))
+		  irchat-timestamp-interval)))
+      (progn
+	(irchat-Command-timestamp)
+	t)
+    nil))
+
+
 (defun irchat-Command-timestamp ()
   (interactive)
   (let ((stamp (format "%s" (format irchat-timestamp-format
@@ -92,7 +110,9 @@
 					(apply irchat-format-time-function
 					       (list (current-time-string)))
 				      (current-time-string))))))
-    (irchat-Dialogue-insert stamp)))
+    (let ((irchat-timestamp-interval 0))
+      (irchat-Dialogue-insert stamp)))
+  (setq irchat-last-timestamp-time (current-time)))
 
 
 (defun irchat-Command-send-message (message)
@@ -627,8 +647,8 @@ be a string to send NICK upon entering."
 		  (irchat-send "QUIT :%s" quit-string))
 	      (irchat-send "QUIT :%s" (or irchat-signoff-msg ""))))
 	(irchat-clear-system)
-	(if irchat-timestamp-timer 
-	    (irchat-cancel-timer irchat-timestamp-timer))
+;	(if irchat-timestamp-timer 
+;	    (irchat-cancel-timer irchat-timestamp-timer))
 	(if irchat-names-timer 
 	    (irchat-cancel-timer irchat-names-timer))
 	(if irchat-use-full-window
