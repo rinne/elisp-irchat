@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-version.el,v 3.127 2002/06/06 12:06:42 tri Exp $
+;;;  $Id: irchat-version.el,v 3.128 2002/06/06 13:04:03 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -23,13 +23,16 @@
   "*Is this version an alpha version?")
 
 (defconst irchat-client-version-rcs-snap t
-  "*If a `current' release, what's the date?")
+  "*Is this just a snapshot from rcs?")
 
-(defconst irchat-client-version-release "$Date: 2002/06/06 12:06:42 $"
+(defconst irchat-client-version-release "$Date: 2002/06/06 13:04:03 $"
   "*Version release date")
 
 (defconst irchat-client-name "Irchat"
   "*Name of this program.")
+
+(defconst irchat-client-distribution "none"
+  "*What is the buld name of this distribution?")
 
 (defconst irchat-emacs-version (let ((e-v-s (if (boundp 'emacs-version) 
 						emacs-version
@@ -93,19 +96,12 @@
 		(irchat-client-version-alpha-p  "alpha")
 		(irchat-client-version-beta-p   "beta")
 		(t ""))
-	  (cond ((stringp irchat-client-version-rcs-snap)
-		 (concat "(" irchat-client-version-rcs-snap ")"))
-		(irchat-client-version-rcs-snap
-		 "(unknown date)")
-		(t
-		 (if (string-match ".*: \\([^ ]*\\) .*"
-				   irchat-client-version-release)
-		     (concat "("
-			     (substring irchat-client-version-release 
-					(match-beginning 1)
-					(match-end 1))
-			     ")")
-		   ""))))
+	  (if (string-match ".*: \\([^ ]*\\) .*"
+			    irchat-client-version-release)
+	      (concat "("
+		      (matching-substring irchat-client-version-release 1)
+		      ")")
+	    ""))
   "*The version of irchat you are using.")
 
 (defun irchat-version (&optional int)
@@ -116,6 +112,7 @@
   irchat-version)
 
 (provide 'irchat-version)
+
 ;;;
 ;;; eof
 ;;;

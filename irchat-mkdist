@@ -1,6 +1,6 @@
 #! /bin/sh
 #
-# $Id: irchat-mkdist,v 1.18 2002/06/06 11:58:59 tri Exp $
+# $Id: irchat-mkdist,v 1.19 2002/06/06 13:04:03 tri Exp $
 #
 # This file is part of irchat.  Command irchat-mkdist creates 
 # a snapshot of irchat current.  This file itself does not go 
@@ -69,10 +69,10 @@ fi
 
 if [ "x$ver_major" = "x" ] ; then
   cat irchat-version.el |
-  sed 's,defconst irchat-client-version-alpha-p [^ ][^ ]*,defconst irchat-client-version-alpha-p '"$ver_alpha_val"',;s,defconst irchat-client-version-beta-p [^ ][^ ]*,defconst irchat-client-version-beta-p '"$ver_beta_val"',;s,defconst irchat-client-version-rcs-snap [^ ][^ ]*,defconst irchat-client-version-rcs-snap nil,' > irchat-version.el.new
+  sed 's,defconst irchat-client-version-alpha-p [^ ][^ ]*,defconst irchat-client-version-alpha-p '"$ver_alpha_val"',;s,defconst irchat-client-version-beta-p [^ ][^ ]*,defconst irchat-client-version-beta-p '"$ver_beta_val"',;s,defconst irchat-client-version-rcs-snap [^ ][^ ]*,defconst irchat-client-version-rcs-snap nil,;s/defconst irchat-client-distribution [^ ][^ ]*/defconst irchat-client-distribution "'"$distname"'"/' > irchat-version.el.new
 else
   cat irchat-version.el |
-  sed 's,defconst irchat-client-version-alpha-p [^ ][^ ]*,defconst irchat-client-version-alpha-p '"$ver_alpha_val"',;s,defconst irchat-client-version-beta-p [^ ][^ ]*,defconst irchat-client-version-beta-p '"$ver_beta_val"',;s,defconst irchat-client-version-major "[^"]*",defconst irchat-client-version-major "'"$ver_major"'",;s,defconst irchat-client-version-minor "[^"]*",defconst irchat-client-version-minor "'"$ver_minor"'",;s,defconst irchat-client-version-rcs-snap [^ ][^ ]*,defconst irchat-client-version-rcs-snap nil,' > irchat-version.el.new
+  sed 's,defconst irchat-client-version-alpha-p [^ ][^ ]*,defconst irchat-client-version-alpha-p '"$ver_alpha_val"',;s,defconst irchat-client-version-beta-p [^ ][^ ]*,defconst irchat-client-version-beta-p '"$ver_beta_val"',;s,defconst irchat-client-version-major "[^"]*",defconst irchat-client-version-major "'"$ver_major"'",;s,defconst irchat-client-version-minor "[^"]*",defconst irchat-client-version-minor "'"$ver_minor"'",;s,defconst irchat-client-version-rcs-snap [^ ][^ ]*,defconst irchat-client-version-rcs-snap nil,;s/defconst irchat-client-distribution [^ ][^ ]*/defconst irchat-client-distribution "'"$distname"'"/' > irchat-version.el.new
 fi
 
 mkdir "$distname"
@@ -142,7 +142,7 @@ cvs commit -m 'Automatic commit on distribution generation.' irchat-version.el &
 cvs commit -m 'Automatic commit on distribution generation.' ChangeLog &&
 ( if test "x$tag" = "x" ; then true ; else cvs tag "$tag" . ; true ; fi ) &&
 ( cat irchat-version.el |
-  sed 's,defconst irchat-client-version-alpha-p [^ ][^ ]*,defconst irchat-client-version-alpha-p t,;s,defconst irchat-client-version-beta-p [^ ][^ ]*,defconst irchat-client-version-beta-p t,;s,defconst irchat-client-version-rcs-snap [^ ][^ ]*,defconst irchat-client-version-rcs-snap t,' > irchat-version.el.new &&
+  sed 's,defconst irchat-client-version-alpha-p [^ ][^ ]*,defconst irchat-client-version-alpha-p t,;s,defconst irchat-client-version-beta-p [^ ][^ ]*,defconst irchat-client-version-beta-p t,;s,defconst irchat-client-version-rcs-snap [^ ][^ ]*,defconst irchat-client-version-rcs-snap t,;s/defconst irchat-client-distribution [^ ][^ ]*/defconst irchat-client-distribution "none"/' > irchat-version.el.new &&
   rm -f irchat-version.el &&
   cat irchat-version.el.new >> irchat-version.el &&
   rm -f irchat-version.el.new
