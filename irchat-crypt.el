@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-crypt.el,v 3.9 1997/03/06 12:39:07 tri Exp $
+;;;  $Id: irchat-crypt.el,v 3.10 1997/03/14 14:37:37 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -112,7 +112,8 @@
 	    (cons (list addr-var print e-key d-key)
 		  (remassoc addr-var 
 			    irchat-default-idea-key-list)))
-      (message (format "Added a default key for \"%s\"." addr-var)))))
+      (message (format "Added a default key for \"%s\"." addr-var))
+      (irchat-set-crypt-indicator))))
 
 (defun irchat-make-encrypted-message (message key)
   "Build an encrypted message from MESSAGE with KEY"
