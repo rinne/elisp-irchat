@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-400.el,v 3.8 1997/11/11 14:43:18 tri Exp $
+;;;  $Id: irchat-400.el,v 3.9 1997/11/11 14:46:39 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -123,8 +123,9 @@
       (let ((onick irchat-old-nickname)
 	    (wnick "UNKNOWN (Could not figure out, contact developers)"))
 	(if (string-match "^\\([^ ]+\\) +\\([^ ]+\\) +:\\(.*\\)" rest)
-	    (setq onick (matching-substring rest 1)
-		  wnick (matching-substring rest 2))
+	    (progn
+	      (setq onick (matching-substring rest 1))
+	      (setq wnick (matching-substring rest 2)))
 	  (if (string-match "^ *\\([^ ]+\\) :.*" rest)
 	      (setq (matching-substring rest 1))))
 	(if (stringp onick)
