@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-commands.el,v 3.12 1997/03/12 12:58:42 jsl Exp $
+;;;  $Id: irchat-commands.el,v 3.13 1997/03/12 16:19:49 jtp Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -394,7 +394,8 @@ contents are updated future sessions."
 	    (buffer-read-only))
 	(set-buffer irchat-Dialogue-buffer)
 	(goto-char (point-max))
-	(irchat-w-insert irchat-D-buffer "*** Currently ignoring:")
+	(irchat-w-insert irchat-D-buffer
+			 (format "%sCurrently ignoring:" irchat-info-prefix))
 	(let ((mylist irchat-kill-nickname)
 	      (time (current-time)))
 	  (while mylist
@@ -418,8 +419,8 @@ contents are updated future sessions."
 	    (setq irchat-kill-nickname (remassoc (car elem)
 						 irchat-kill-nickname))
 	    (irchat-w-insert irchat-D-buffer
-			     (format "*** No longer ignoring: %s.\n"
-				     (car elem))))
+			     (format "%sNo longer ignoring: %s.\n"
+				     irchat-info-prefix (car elem))))
 	;; did not find, add to ignored ones
 	(let ((expire-time (if (> timeout 0)
 			       (irchat-time-add (current-time)
@@ -432,7 +433,8 @@ contents are updated future sessions."
 	  (if (not silent)
 	      (progn
 		(irchat-w-insert irchat-D-buffer
-				 (format "*** Ignoring %s" kill-nickname-var))
+				 (format "%sIgnoring %s"
+					 irchat-info-prefix kill-nickname-var))
 		(irchat-w-insert irchat-D-buffer
 				 (if (> timeout 0)
 				     (format " for %d minutes.\n" timeout)
@@ -467,10 +469,13 @@ contents are updated future sessions."
 		   irchat-current-channel)
 		 message)
     (if private
-	(irchat-own-private-message (format "*** Action to %s: %s %s"
-				    irchat-privmsg-partner irchat-real-nickname
-				    message))
-      (irchat-own-message (format "*** Action: %s %s" irchat-real-nickname
+	(irchat-own-private-message (format "%sAction to %s: %s %s"
+					    irchat-info-prefix
+					    irchat-privmsg-partner
+					    irchat-real-nickname
+					    message))
+      (irchat-own-message (format "%sAction: %s %s"
+				  irchat-info-prefix irchat-real-nickname
 				  message)))))
 
 

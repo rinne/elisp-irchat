@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-000.el,v 3.1 1997/02/24 16:00:02 tri Exp $
+;;;  $Id: irchat-000.el,v 3.2 1997/03/12 16:20:21 jtp Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -17,13 +17,14 @@
 	    (msg (matching-substring rest 3)))
 	(cond ((string-equal target1 "")
 	       (irchat-w-insert irchat-000-buffer 
-				(format "*** %s\n" msg)))
+				(format "%s%s\n" irchat-info-prefix msg)))
 	      ((string-equal target2 "")
 	       (irchat-w-insert irchat-000-buffer 
-				(format "*** %s (%s)\n" msg target1)))
+				(format "%s%s (%s)\n"
+					irchat-info-prefix msg target1)))
 	      (t
 	       (irchat-w-insert irchat-000-buffer 
-				(format "*** %s %s (%s)\n" 
+				(format "%s%s %s (%s)\n" irchat-info-prefix
 					target1 msg target2)))))
     (message "IRCHAT: Strange %s reply" number)))
 
@@ -31,7 +32,8 @@
 (defun irchat-handle-004-msg (prefix rest)
   (if (string-match "[^ ]* \\(.*\\)" rest)
       (let ((msg (matching-substring rest 1)))
-	(irchat-w-insert irchat-000-buffer (format "*** %s\n" msg)))
+	(irchat-w-insert irchat-000-buffer
+			 (format "%s%s\n" irchat-info-prefix msg)))
     (message "IRCHAT: Strange 004 reply")))
 
 ;;;

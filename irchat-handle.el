@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-handle.el,v 3.9 1997/03/06 12:39:07 tri Exp $
+;;;  $Id: irchat-handle.el,v 3.10 1997/03/12 16:19:27 jtp Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright in(eval-wfo
 
@@ -470,7 +470,8 @@
   (if (string-match " :\\([^ ]+\\)" rest)
       (let ((chnl (matching-substring rest 1)))
 	(irchat-w-insert irchat-D-buffer 
-			 (format "*** %s invites you to channel %s\n" prefix chnl))
+			 (format "%s%s invites you to channel %s\n"
+				 irchat-info-prefix prefix chnl))
 	(setq irchat-invited-channel chnl))
     (message "IRCHAT: Strange INVITE")))
 
@@ -479,8 +480,8 @@
   (if (string-match "[^ ]+ +:\\(.*\\)" rest)
       (let ((path (matching-substring rest 1)))
 	(irchat-w-insert irchat-D-buffer 
-			 (format "*** IRCHAT: You were killed by %s. Path: %s. RIP\n" 
-				 prefix path)))
+			 (format "%sIRCHAT: You were killed by %s. Path: %s. RIP\n" 
+				 irchat-info-prefix prefix path)))
     (message "IRCHAT: strange KILL"))
   (setq irchat-channel-indicator "No channel")
   (irchat-set-crypt-indicator))

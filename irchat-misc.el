@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-misc.el,v 3.8 1997/03/12 14:37:07 tri Exp $
+;;;  $Id: irchat-misc.el,v 3.9 1997/03/12 16:19:20 jtp Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -22,9 +22,9 @@
 		    irchat-save-vars-is-dirty t)
 	      (if (= (car (cdr (cdr (cdr (car mylist))))) 0)
 		  (irchat-w-insert irchat-D-buffer
-				   (format
-				    "*** Ignore timeout for %s expired.\n"
-				    (car (car mylist)))))))
+				   (format "%sIgnore timeout for %s expired.\n"
+					   irchat-info-prefix
+					   (car (car mylist)))))))
 	(setq mylist (cdr mylist)))))
   (if (and (fboundp 'irchat-custom-ignore-this-p)
 	   (irchat-custom-ignore-this-p nick uah))

@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-cta.el,v 3.3 1997/02/27 10:19:14 jsl Exp $
+;;;  $Id: irchat-cta.el,v 3.4 1997/03/12 16:19:43 jtp Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -57,8 +57,11 @@
 
 (defun irchat-ctl-a-action-msg (from chnl rest)
   (if (string-ci-equal chnl irchat-current-channel)
-      (irchat-w-insert irchat-D-buffer (format "*** Action: %s %s\n" from rest))
-    (irchat-w-insert irchat-D-buffer (format "*** Action to %s: %s %s\n" chnl from rest))))
+      (irchat-w-insert irchat-D-buffer
+		       (format "%sAction: %s %s\n" irchat-info-prefix from rest))
+    (irchat-w-insert irchat-D-buffer
+		     (format "%sAction to %s: %s %s\n"
+			     irchat-info-prefix chnl from rest))))
 
 
 (defun irchat-ctl-a-msg (from chnl rest)

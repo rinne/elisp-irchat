@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-dcc.el,v 3.2 1997/02/26 16:05:59 too Exp $
+;;;  $Id: irchat-dcc.el,v 3.3 1997/03/12 16:19:35 jtp Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 ;;;
@@ -14,7 +14,8 @@
 (defvar irchat-dcc-receive-direct t)
 
 (defun irchat-ctl-a-dcc-msg (from chnl rest)
-  (irchat-w-insert irchat-D-buffer (format "*** DCC from %s: %s\n" from rest))
+  (irchat-w-insert irchat-D-buffer (format "%sDCC from %s: %s\n"
+					   irchat-info-prefix from rest))
   ;; old versions of ircii 2.2.1, do not send file length on DCC request.
   ;; so irchat can not do DCC with them. Sorry. ircii 2.2.9 does it on 
   ;; correctly. Why do people change protocol inside one minor version?
@@ -31,7 +32,7 @@
 	(if irchat-dcc-receive-direct
 	    (progn 
 	      (irchat-w-insert irchat-D-buffer 
-			       (format "*** DCC autoreceive\n"))
+			       (format "%sDCC autoreceive\n" irchat-info-prefix))
 	      (irchat-Command-dcc-receive))))))
 
 
@@ -69,8 +70,8 @@
 	   (irchat-send "PRIVMSG %s :DCC SEND %s %s %s %s"
 			irchat-privmsg-partner filename machine port size)
 	   (irchat-own-message
-	    (format "*** Sending file %s (%s bytes) to %s"
-		    filename size irchat-privmsg-partner))))))
+	    (format "%sSending file %s (%s bytes) to %s"
+		    irchat-info-prefix filename size irchat-privmsg-partner))))))
 
 
 (defun irchat-Command-dcc-receive (&optional number)
@@ -84,8 +85,8 @@
 	      (port (nth 2 dcc-object))
 	      (size (nth 3 dcc-object))
 	      (default (nth 4 dcc-object)))
-	  (irchat-own-message
-	   (format "*** Getting file %s (%s bytes)" default size))
+	  (irchat-own-message (format "%sGetting file %s (%s bytes)"
+				      irchat-info-prefix default size))
 	  (let ((filename (expand-file-name default irchat-dcc-directory)))
 	    (set-process-filter
 	     (start-process irchat-dcc-program nil irchat-dcc-program 
@@ -109,8 +110,8 @@
 	    dcc-list (cdr dcc-list))
       (let ((filename (cdr (cdr (cdr (cdr dcc-object)))))
 	    (size (car (cdr (cdr (cdr dcc-object))))))
-	(irchat-own-message
-	 (format "*** DCC file %s (%s bytes)" filename size))))))
+	(irchat-own-message (format "%sDCC file %s (%s bytes)"
+				    irchat-info-prefix filename size))))))
 
 
 (defun irchat-dcc-compare-hostnames (h1 h2)

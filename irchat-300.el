@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-300.el,v 3.1 1997/02/24 16:00:02 tri Exp $
+;;;  $Id: irchat-300.el,v 3.2 1997/03/12 16:20:09 jtp Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -22,14 +22,15 @@ This is called if no specific handler exists"
 	    (msg (matching-substring rest 3)))
 	(cond ((string-equal target1 "")
 	       (irchat-w-insert irchat-300-buffer 
-				(format "*** %s\n" msg)))
+				(format "%s%s\n" irchat-info-prefix msg)))
 	      ((string-equal target2 "")
 	       (irchat-w-insert irchat-300-buffer 
-				(format "*** %s (%s)\n" msg target1)))
+				(format "%s%s (%s)\n"
+					irchat-info-prefix msg target1)))
 	      (t
 	       (irchat-w-insert irchat-300-buffer 
-				(format "*** %s %s (%s)\n" 
-					target1 msg target2))))
+				(format "%s%s %s (%s)\n" 
+					irchat-info-prefix target1 msg target2))))
 	)
     (message "IRCHAT: Strange %s reply" number)))
 
@@ -42,8 +43,8 @@ This is called if no specific handler exists"
 	(if (not irchat-recursing-whois)
 	    (irchat-w-insert irchat-300-buffer 
 	     (format 
-	      "*** %s is marked as being AWAY, but left the message:\n%s\n" 
-	      who iswhat))))
+	      "%s%s is marked as being AWAY, but left the message:\n%s\n"
+	      irchat-info-prefix who iswhat))))
     (irchat-w-insert irchat-300-buffer "IRCHAT: Strange 301 reply")))
 
 
@@ -59,14 +60,10 @@ This is called if no specific handler exists"
 		       (format "%sNick %s is %s [%s, %s]\n"
 			       irchat-info-prefix
 			       nick who 
-			       (concat 
-				(if (string= oper "")
-				    "Not ")
-				"Operator")
-			       (concat 
-				(if (string= away "+")
-				    "Not ")
-				"AWAY")))
+			       (concat (if (string= oper "") "Not ")
+				       "Operator")
+			       (concat (if (string= away "+") "Not ")
+				       "AWAY")))
       (setq rest (concat " :" (substring rest (match-end 4) nil))))))
 
 
@@ -93,8 +90,8 @@ This is called if no specific handler exists"
 	(if (string-match "[^:]:\\(.*\\)" rest)
 	    (let ((msg (matching-substring rest 1)))
 	      (irchat-w-insert irchat-300-buffer 
-			       (format "*** %s (%s)\n" 
-				       msg 
+			       (format "%s%s (%s)\n" 
+				       irchat-info-prefix msg 
 				       (if irchat-format-time-function
 					   (apply irchat-format-time-function
 						  (list (current-time-string)))
@@ -108,11 +105,12 @@ This is called if no specific handler exists"
   (if (string-match "[^:]:\\(.*\\)" rest)
       (let ((msg (matching-substring rest 1)))
 	(irchat-w-insert irchat-300-buffer 
-			 (format "*** %s (%s)\n" 
-				 msg (if irchat-format-time-function
-					   (apply irchat-format-time-function
-						  (list (current-time-string)))
-					 (current-time-string)))))
+			 (format "%s%s (%s)\n"
+				 irchat-info-prefix msg
+				 (if irchat-format-time-function
+				     (apply irchat-format-time-function
+					    (list (current-time-string)))
+				   (current-time-string)))))
     (irchat-w-insert irchat-300-buffer "IRCHAT: Strange 306 reply\n")))
 
 
@@ -264,7 +262,8 @@ This is called if no specific handler exists"
 	    (progn
 	      (put (intern chnl irchat-obarray) 'topic topic)
 	      (irchat-w-insert (irchat-pick-buffer chnl)
-			       (format "%-10s%6s  %s\n"
+			       (format "%s%-10s%6s  %s\n"
+				       irchat-info-prefix
 				       (if (string= chnl "*") "Priv"
 					 chnl)
 				       users
@@ -283,7 +282,8 @@ This is called if no specific handler exists"
       (let ((chnl (matching-substring rest 1))
 	    (str (matching-substring rest 2)))
 	(irchat-w-insert (irchat-pick-buffer chnl)
-			 (format "*** Mode for %s is %s\n" chnl str)))
+			 (format "%sMode for %s is %s\n"
+				 irchat-info-prefix chnl str)))
     (message (format "IRCHAT: Strange 324 reply '%s'" rest))))
 
 
@@ -292,7 +292,9 @@ This is called if no specific handler exists"
   (if (string-match "[^ ]* \\([^ ]*\\) \\(.*\\)" rest)
       (let ((ichan (intern (matching-substring rest 1) irchat-obarray)))
 	(put ichan 'topic nil)
- 	(irchat-w-insert irchat-300-buffer "*** IRCHAT: No topic is set\n"))))
+ 	(irchat-w-insert irchat-300-buffer
+			 (format "%sIRCHAT: No topic is set\n"
+				 irchat-info-prefix)))))
 
 
 (defun irchat-handle-332-msg (prefix rest)
@@ -301,7 +303,8 @@ This is called if no specific handler exists"
       (let ((ichan (intern (matching-substring rest 1) irchat-obarray))
  	    (topic (matching-substring rest 2)))
  	(put ichan 'topic topic)
- 	(irchat-w-insert irchat-300-buffer (format "*** Topic: %s\n" topic)))
+ 	(irchat-w-insert irchat-300-buffer
+			 (format "%sTopic: %s\n" irchat-info-prefix topic)))
     (message "IRCHAT: Strange 332 message")))
 
 
@@ -312,8 +315,8 @@ This is called if no specific handler exists"
 	    (nick (matching-substring rest 2))
 	    (chnl (matching-substring rest 3)))
 	(irchat-w-insert (irchat-pick-buffer chnl)
-			 (format "*** Inviting user %s to channel %s\n"
-				 nick chnl)))
+			 (format "%sInviting user %s to channel %s\n"
+				 irchat-info-prefix nick chnl)))
     (message "Strange 341 message")))
 
 
@@ -323,8 +326,9 @@ This is called if no specific handler exists"
       (let ((version (matching-substring rest 1))
 	    (machine (matching-substring rest 2))
 	    (comments (matching-substring rest 3)))
-	(irchat-w-insert irchat-300-buffer (format "*** Machine %s is running IRC version %s (%s)\n"
-			machine version comments)))
+	(irchat-w-insert irchat-300-buffer
+			 (format "%sMachine %s is running IRC version %s (%s)\n"
+				 irchat-info-prefix machine version comments)))
     (message "IRCHAT: Strange 351 reply")))
 
 
@@ -344,7 +348,8 @@ This is called if no specific handler exists"
 	     (chan-buffer (irchat-pick-buffer chnl)))
 
 	(irchat-w-insert chan-buffer
-			 (format "%3s %10s %9s %-29s%s\n"
+			 (format "%s%3s %10s %9s %-29s%s\n"
+				 irchat-info-prefix
 				 oper ;; Kaizzu 06/03/90
 				 (if (string= chnl "*") "Priv" ; *WORK* needed
 				   (if (string= chnl "0")
@@ -400,17 +405,16 @@ don't display anything."
       (let ((who (matching-substring rest 1))
 	    (message (matching-substring rest 2)))
 	(irchat-w-insert irchat-300-buffer 
-	 (format "You just KILLED %s. %s\n"
-		 who
-		 message)))
+			 (format "%sYou just KILLED %s. %s\n"
+				 irchat-info-prefix who message)))
     (message "IRCHAT: Strange 361 reply")))
-
 
 (defun irchat-handle-364-msg (prefix rest)
   (if (string-match "^\\([^ ]+\\) +\\([^ ]*\\) +[^ ]* +:\\(.*\\)" rest)
       (progn
 	(irchat-w-insert irchat-300-buffer 
-			 (format "%-30s%s\n"
+			 (format "%s%-30s%s\n"
+				 irchat-info-prefix
 				 (matching-substring rest 2)
 				 (matching-substring rest 3))))
     (message "IRCHAT: Strange 364 message")))
@@ -426,7 +430,8 @@ don't display anything."
   (let ((level (- irchat-polling 1)))
     (setq irchat-polling (if (< level 0) 0 level))
     (irchat-w-insert (irchat-pick-buffer irchat-353-nameschnl)
-		     (format "%9s: (%d user%s): %s\n" 
+		     (format "%s%9s: (%d user%s): %s\n"
+			     irchat-info-prefix
 			     (if (string= irchat-353-nameschnl "*") 
 				 "Priv" 
 			       irchat-353-nameschnl)
@@ -446,8 +451,8 @@ don't display anything."
       (let ((chnl (matching-substring rest 1))
 	    (regexp (matching-substring rest 2)))
 	(irchat-w-insert (irchat-pick-buffer chnl)
-			 (format "*** %s has been banned on %s\n"
-				 regexp chnl)))
+			 (format "%s%s has been banned on %s\n"
+				 irchat-info-prefix regexp chnl)))
     (message "IRCHAT: Strange 367 message")))
 
 
@@ -465,7 +470,8 @@ don't display anything."
   "Handle the 371 INFO."
   (if (string-match "^\\([^ ]+\\) +:?\\(.*\\)" rest)
       (let ((msg (matching-substring rest 2)))
-	(irchat-w-insert irchat-300-buffer (format "*** %s\n" msg)))
+	(irchat-w-insert irchat-300-buffer
+			 (format "%s%s\n" irchat-info-prefix msg)))
     (message "IRCHAT: Strange 371 message")))
 
 
@@ -473,7 +479,7 @@ don't display anything."
   "Handle the 372 MOTD."
   (string-match "^\\([^ ]+\\) +:?\\(.*\\)" rest)
   (let ((msg (matching-substring rest 2)))
-    (irchat-w-insert irchat-300-buffer (format "*** %s\n" msg))
+    (irchat-w-insert irchat-300-buffer (format "%s%s\n" irchat-info-prefix msg))
     ))
 
 
@@ -481,7 +487,8 @@ don't display anything."
   "Handle the 381 YOUREOPER. ."
   (if (string-match "^\\([^ ]+\\) +:\\(.*\\)" rest)
       (let ((message (matching-substring rest 2)))
-	(irchat-w-insert irchat-300-buffer (format "OPER: %s\n" message)))
+	(irchat-w-insert irchat-300-buffer
+			 (format "%sOPER: %s\n" irchat-info-prefix message)))
     (message "IRCHAT: Strange 381 reply")))
 
 
@@ -490,7 +497,8 @@ don't display anything."
   (string-match "^\\([^ ]+\\) +:\\(.*\\)" rest)
   (let ((name (matching-substring rest 1))
 	(msg (matching-substring rest 2)))
-    (irchat-w-insert irchat-300-buffer (format "*** %s: %s\n" name msg))))
+    (irchat-w-insert irchat-300-buffer
+		     (format "%s%s: %s\n" irchat-info-prefix name msg))))
 
 
 (defun irchat-handle-391-msg (prefix rest)
@@ -498,7 +506,7 @@ don't display anything."
   (if (string-match "^\\([^ ]+\\) +\\(.*\\)" rest)
       (let ((time (matching-substring rest 2)))
 	(irchat-w-insert irchat-300-buffer 
-			 (format "*** Server time: %s\n" time)))
+			 (format "%sServer time: %s\n" irchat-info-prefix time)))
     (message "IRCHAT: Strange 391 message")))
 
 ;;;

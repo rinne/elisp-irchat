@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-200.el,v 3.1 1997/02/24 16:00:02 tri Exp $
+;;;  $Id: irchat-200.el,v 3.2 1997/03/12 16:20:15 jtp Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -16,14 +16,15 @@
 	    (msg (matching-substring rest 3)))
 	(cond ((string-equal target1 "")
 	       (irchat-w-insert irchat-200-buffer 
-				(format "*** %s\n" msg)))
+				(format "%s%s\n" irchat-info-prefix msg)))
 	      ((string-equal target2 "")
 	       (irchat-w-insert irchat-200-buffer 
-				(format "*** %s %s\n" target1 msg)))
+				(format "%s%s %s\n"
+					irchat-info-prefix target1 msg)))
 	      (t
 	       (irchat-w-insert irchat-200-buffer 
-				(format "*** %s %s (%s)\n" 
-					target1 msg target2)))))
+				(format "%s%s %s (%s)\n" 
+					irchat-info-prefix target1 msg target2)))))
     (message "IRCHAT: Strange %s reply" number)))
 
 
@@ -34,8 +35,8 @@
 	    (dest (matching-substring rest 2))
 	    (next (matching-substring rest 3)))
 	(irchat-w-insert irchat-200-buffer 
-			 (format "*** Link %s (%s) ==> %s (next %s)\n"
-				 prefix version dest next)))
+			 (format "%sLink %s (%s) ==> %s (next %s)\n"
+				 irchat-info-prefix prefix version dest next)))
     (message "IRCHAT: Strange 200 message")))
 
 
@@ -45,8 +46,8 @@
       (let ((class (matching-substring rest 1))
 	    (server (matching-substring rest 2)))
 	(irchat-w-insert irchat-200-buffer 
-			 (format "*** %s Trying to connect to %s (class %s)\n" 
-				 prefix server class)))
+			 (format "%s%s Trying to connect to %s (class %s)\n" 
+				 irchat-info-prefix prefix server class)))
     (message "IRCHAT: Strange 201 message")))
 
 
@@ -56,8 +57,8 @@
       (let ((class (matching-substring rest 1))
 	    (server (matching-substring rest 2)))
 	(irchat-w-insert irchat-200-buffer
-			 (format "*** %s Handshaking with %s (class: %s)\n" 
-				 prefix server class)))
+			 (format "%s%s Handshaking with %s (class: %s)\n" 
+				 irchat-info-prefix prefix server class)))
     (message "IRCHAT: Strange 202 message")))
 
 
@@ -68,8 +69,8 @@
 	    (class (matching-substring rest 3))
 	    (who (matching-substring rest 4)))
 	(irchat-w-insert irchat-200-buffer
-			 (format "*** %s Class[%s] ==> %s\n"
-				 status class who)))
+			 (format "%s%s Class[%s] ==> %s\n"
+				 irchat-info-prefix status class who)))
     (message "IRCHAT: Strange 203 message")))
 
 
@@ -80,8 +81,8 @@
 	    (class (matching-substring rest 3))
 	    (who (matching-substring rest 4)))
 	(irchat-w-insert irchat-200-buffer
-			 (format "*** %s Class[%s] ==> %s\n" 
-				 status class who)))
+			 (format "%s%s Class[%s] ==> %s\n" 
+				 irchat-info-prefix status class who)))
   (message "IRCHAT: Strange 204 message")))
 
 
@@ -92,7 +93,8 @@
 	    (hops (matching-substring rest 2))
 	    (where (matching-substring rest 3)))
 	(irchat-w-insert irchat-200-buffer
-			 (format "*** %s Class[%s] ==> %s\n" kind hops where)))
+			 (format "%s%s Class[%s] ==> %s\n"
+				 irchat-info-prefix kind hops where)))
     (message "IRCHAT: Strange 205 message")))
 
 
@@ -103,20 +105,21 @@
 	    (pars (matching-substring rest 2)))
 	(if (string-match "^[ :]*\\(.*\\)" pars)
 	    (irchat-w-insert irchat-200-buffer
-			     (format "*** Serv %s (%s) ==> %s\n" 
+			     (format "%sServ %s (%s) ==> %s\n" irchat-info-prefix
 				     prefix class (matching-substring pars 1)))
 	  (if (string-match 
 	       "[ :]*\\([0-9]*\\)*C \\([0-9]*\\)*S[ :]*\\(.*\\)"
 	       pars)
-	      (irchat-w-insert irchat-200-buffer (format
-		       "*** Serv %s (%s) ==> %s (%sC, %sS)\n"
-		       prefix class
-		       (matching-substring pars 3)
-		       (matching-substring pars 1)
-		       (matching-substring pars 2)))
+	      (irchat-w-insert irchat-200-buffer
+			       (format
+				"%sServ %s (%s) ==> %s (%sC, %sS)\n"
+				irchat-info-prefix prefix class
+				(matching-substring pars 3)
+				(matching-substring pars 1)
+				(matching-substring pars 2)))
 	    (irchat-w-insert irchat-200-buffer 
-			     (format "*** Serv %s (%s) ==> %s\n" 
-				     prefix class pars)))))
+			     (format "%sServ %s (%s) ==> %s\n" 
+				     irchat-info-prefix prefix class pars)))))
     (message "IRCHAT: Strange 206 message")))
 
 
@@ -126,15 +129,15 @@
       (let ((class (matching-substring rest 1))
 	    (service (matching-substring rest 2)))
 	(irchat-w-insert irchat-200-buffer (format
-		 "*** Service %s (class %s)\n" service class)))
+		 "%sService %s (class %s)\n" irchat-info-prefix service class)))
     (message "IRCHAT: Strange 207 message")))
 
 
 (defun irchat-handle-208-msg (prefix rest)
   "208 RPL_TRACENEWTYPE <newtype> 0 %s"
   (irchat-w-insert irchat-200-buffer 
-		   (format "*** %s: RPL_TRACENEWTYPE: Why this?\n"
-			   prefix))
+		   (format "%s%s: RPL_TRACENEWTYPE: Why this?\n"
+			   irchat-info-prefix prefix))
   nil)
 
 
@@ -144,8 +147,8 @@
       (let ((class (matching-substring rest 1))
 	    (entries (matching-substring rest 2)))
 	(irchat-w-insert irchat-200-buffer 
-			 (format "*** Class %s Entries linked: %s\n" 
-				 class entries)))
+			 (format "%sClass %s Entries linked: %s\n" 
+				 irchat-info-prefix class entries)))
     (message "IRCHAT: Strange 209 message")))
 
 
@@ -160,7 +163,7 @@
 	    (rcveb (matching-substring rest 7))
 	    (open (matching-substring rest 8)))
 	(irchat-w-insert irchat-200-buffer 
-	 (format "%-35s*** %s: %5s%7s%10s%7s%10s %s\n" link
+	 (format "%s%-35s %s: %5s%7s%10s%7s%10s %s\n" irchat-info-prefix link
 		 prefix sendq sendm sendb rcvem rcveb open)))
     (message "IRCHAT: Strance 211 message")))
 
@@ -171,8 +174,8 @@
       (let ((cmd (matching-substring rest 1))
 	    (times (matching-substring rest 2)))
 	(irchat-w-insert irchat-200-buffer 
-			 (format "%s has been used %s times after startup\n"
-				 cmd times)))
+			 (format "%s%s has been used %s times after startup\n"
+				 irchat-info-prefix cmd times)))
     (message "IRCHAT: Strange 212 message")))
 
 
@@ -186,8 +189,8 @@
 	    (port (matching-substring rest 5))
 	    (hmmm (matching-substring rest 6)))
 	(irchat-w-insert irchat-200-buffer 
-			 (format "%s:%s:%s:%s:%s:%s\n" 
-				 cn canon pass name port hmmm)))
+			 (format "%s%s:%s:%s:%s:%s:%s\n" 
+				 irchat-info-prefix cn canon pass name port hmmm)))
     (message "IRCHAT: Strange 213 message")))
 
 
@@ -201,8 +204,8 @@
 	    (port (matching-substring rest 5))
 	    (hmmm (matching-substring rest 6)))
 	(irchat-w-insert irchat-200-buffer 
-			 (format "%s:%s:%s:%s:%s:%s\n" 
-				 cn canon pass name port hmmm)))
+			 (format "%s%s:%s:%s:%s:%s:%s\n" 
+				 irchat-info-prefix cn canon pass name port hmmm)))
     (message "IRCHAT: Strange 214 message")))
 
 
@@ -213,8 +216,8 @@
             (passwd (matching-substring rest 2))
             (redomain (matching-substring rest 3)))
         (irchat-w-insert irchat-200-buffer 
-			 (format "*** I:%s:%s:%s\n" 
-				 domain passwd redomain)))
+			 (format "%sI:%s:%s:%s\n"
+				 irchat-info-prefix domain passwd redomain)))
     (message "IRCHAT: Strange 215 message")))
 	  
 
@@ -227,7 +230,8 @@
 	    (pass (matching-substring rest 2))
 	    (user (matching-substring rest 3)))
 	(irchat-w-insert irchat-200-buffer 
-			 (format "*** K:%s:%s:%s\n" host pass user)))
+			 (format "%sK:%s:%s:%s\n"
+				 irchat-info-prefix host pass user)))
     (message "IRCHAT: Strange 216 message")))
 
 
@@ -239,8 +243,8 @@
 	    (host (matching-substring rest 3))
 	    (stuff (matching-substring rest 4)))
 	(irchat-w-insert irchat-200-buffer 
-			 (format "*** Q:%s:%s:%s:%s\n"
-				 reason star host stuff)))
+			 (format "%sQ:%s:%s:%s:%s\n"
+				 irchat-info-prefix reason star host stuff)))
     (message "IRCHAT: Strange 217 message")))
 
 
@@ -253,8 +257,9 @@
 	    (confreq (matching-substring rest 3))
 	    (maxlinks (matching-substring rest 4)))
 	(irchat-w-insert irchat-200-buffer
-			 (format "*** Class %s: PingFreq %s, ConFreq %s, MaxLinks %s\n"
-				 class pingfreq confreq maxlinks)))
+			 (format "%sClass %s: PingFreq %s, ConFreq %s, MaxLinks %s\n"
+				 irchat-info-prefix class
+				 pingfreq confreq maxlinks)))
     (message "IRCHAT: Strange 218 message")))
 
     
@@ -268,7 +273,8 @@
   (if (string-match "[^ ]* \\(.*\\)" rest)
       (let ((str (matching-substring rest 1)))
 	(irchat-w-insert irchat-200-buffer
-			 (format "*** Mode for you is %s\n" str)))
+			 (format "%sMode for you is %s\n"
+				 irchat-info-prefix str)))
     (message (format "IRCHAT: Strange 324 reply '%s'" rest))))
 
 
@@ -304,7 +310,8 @@
   "241 RPL_STATSLLINE %c %s * %s %d %d"
   (if (string-match "[^ ]* \\(.*\\)" rest)
       (let ((msg (matching-substring rest 1)))
-	(irchat-w-insert irchat-200-buffer (format "*** %s\n" msg)))
+	(irchat-w-insert irchat-200-buffer
+			 (format "%s%s\n" irchat-info-prefix msg)))
     (message "IRCHAT: Strange 241 reply")))
 
 
@@ -312,7 +319,8 @@
   "242 RPL_STATSUPTIME :Server Up %d days, %d:%02d:%02d"
   (if (string-match "[^ ]* \\(.*\\)" rest)
       (let ((msg (matching-substring rest 1)))
-	(irchat-w-insert irchat-200-buffer (format "*** %s\n" msg)))
+	(irchat-w-insert irchat-200-buffer
+			 (format "%s%s\n" irchat-info-prefix msg)))
     (message "IRCHAT: Strange 242 reply")))
 
 
@@ -320,7 +328,8 @@
   "243 RPL_STATSOLINE %c %s * %s %d %d"
   (if (string-match "[^ ]* \\(.*\\)" rest)
       (let ((msg (matching-substring rest 1)))
-	(irchat-w-insert irchat-200-buffer (format "*** %s\n" msg)))
+	(irchat-w-insert irchat-200-buffer
+			 (format "%s%s\n" irchat-info-prefix msg)))
     (message "IRCHAT: Strange 243 reply")))
 
 
@@ -328,7 +337,8 @@
   "244 RPL_STATSHLINE %c %s * %s %d %d"
   (if (string-match "[^ ]* \\(.*\\)" rest)
       (let ((msg (matching-substring rest 1)))
-	(irchat-w-insert irchat-200-buffer (format "*** %s\n" msg)))
+	(irchat-w-insert irchat-200-buffer
+			 (format "%s%s\n" irchat-info-prefix msg)))
     (message "IRCHAT: Strange 244 reply")))
 
 
@@ -336,7 +346,8 @@
   "245 RPL_STATSSLINE %c %s * %s %d %d"
   (if (string-match "[^ ]* \\(.*\\)" rest)
       (let ((msg (matching-substring rest 1)))
-	(irchat-w-insert irchat-200-buffer (format "*** %s\n" msg)))
+	(irchat-w-insert irchat-200-buffer
+			 (format "%s%s\n" irchat-info-prefix msg)))
     (message "IRCHAT: Strange 245 reply")))
 
 ;;;
