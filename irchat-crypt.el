@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-crypt.el,v 3.4 1997/02/27 10:19:14 jsl Exp $
+;;;  $Id: irchat-crypt.el,v 3.5 1997/03/03 12:26:25 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -136,7 +136,7 @@
 							(match-end 3))))
 	    (fingerprint (substring message (match-beginning 4) (match-end 4)))
 	    (msg (substring message (match-beginning 5) (match-end 5))))
-	(list method version-major version-minor fingerprint msg)
+	; (list method version-major version-minor fingerprint msg)
 	(if (irchat-crypt-valid-version-p method version-major version-minor)
 	    (let ((key (irchat-get-idea-decryption-key fingerprint)))
 	      (if key
@@ -155,22 +155,27 @@
 						   (match-beginning 3)
 						   (match-end 3))))
 
-			      (list 'success nick time msg))
+			      (list 'success nick time msg fingerprint))
 			  (list
 			   'error nil nil
-			   "** Unable to decrypt: Invalid cleartext format!"))
+			   "** Unable to decrypt: Invalid cleartext format!"
+			   fingerprint))
 		      (list
 		       'error nil nil
-		       "** Unable to decrypt: Decryption failed!")))
+		       "** Unable to decrypt: Decryption failed!"
+		       fingerprint)))
 		(list
 		 'error nil nil
-		 "** Unable to decrypt: No key!")))
+		 "** Unable to decrypt: No key!"
+		 fingerprint)))
 	  (list
 	   'error nil nil
-	   "** Unable to decrypt: Unknown version!")))
+	   "** Unable to decrypt: Unknown version!"
+	   fingerprint)))
     (list
      'error nil nil
-     "** Unable to decrypt: Invalid message!")))
+     "** Unable to decrypt: Invalid message!"
+     nil)))
 
 
 (eval-and-compile (provide 'irchat-crypt))
