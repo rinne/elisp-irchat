@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn-msg.el,v 3.4 2002/06/04 23:54:05 tri Exp $
+;;;  $Id: irchat-msn-msg.el,v 3.5 2002/06/08 19:32:58 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -44,13 +44,21 @@
 					       ("EURO" . "\342\202\254") ;;; Kludge alert, there is no euro sign in latin1
 					      ))
 
+(defun irchat-msn-possible-utf8-combined-char (character)
+  (let ((c (cond ((and (fboundp 'char-to-int)
+		       (fboundp 'characterp)
+		       (characterp character))
+		  (char-to-int character))
+		 (t (+ 0 character)))))
+    (> c 127)))
+
 (defun irchat-msn-iso8859-1-to-utf8 (msg &optional reverse)
   (let ((m msg)
 	(r ""))
     (while (> (length m) 0)
       (let ((l irchat-msn-iso8859-1-to-utf8-table)
 	    (d nil))
-	(if (< (char-to-int (elt m 0 )) 128)
+	(if (irchat-msn-possible-utf8-combined-char (elt m 0))
 	    (setq l '()))
 	(while l
 	  (if (and (not (< (length m) 
