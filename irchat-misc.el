@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-misc.el,v 3.48 1998/11/12 11:30:36 tri Exp $
+;;;  $Id: irchat-misc.el,v 3.49 2001/10/10 22:23:10 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -728,7 +728,7 @@
 
 (defun irchat-crypt-support-p ()
   "Is crypto support included?"
-  (and (boundp irchat-crypt-support)
+  (and (boundp 'irchat-crypt-support)
        irchat-crypt-support))
 
 (defun irchat-format-string (num &optional encrypted)
