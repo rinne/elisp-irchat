@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-misc.el,v 3.17 1997/06/10 14:25:03 tri Exp $
+;;;  $Id: irchat-misc.el,v 3.18 1997/07/09 13:35:57 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -48,23 +48,38 @@
       killit)))
 
 
-(defun irchat-convert-^G-channel-name (chnl)
-  "Convert CHNL e.g. #42 -> #42 and #42^Go -> #42 (+o)"
+(defun irchat-parse-^G-channel-name (chnl)
+  "Parse CHNL to pair e.g. #42 -> (#42 . nil) and #42^Gov -> (#42 . +o +v)"
   (if (string-match "^\\([^ ][^ ]*\\)[\007 \t]\\(.*\\)$" chnl)
       (let* ((body (matching-substring chnl 1))
-	     (args (matching-substring chnl 2))
-	     (niceargs "")
-	     (l (length args))
-	     (i 0))
-	(while (< i l)
-	  (setq niceargs (concat niceargs
-				 (if (> (length niceargs) 0) " +" "+")
-				 (char-to-string (elt args i))))
-	  (setq i (+ i 1)))
-	(if (> (length niceargs) 0)
-	    (format "%s (%s)" body niceargs)
-	  body))
-    chnl))
+             (args (matching-substring chnl 2))
+             (niceargs "")
+             (l (length args))
+             (i 0))
+        (while (< i l)
+          (setq niceargs (concat niceargs
+                                 (if (> (length niceargs) 0) " +" "+")
+                                 (char-to-string (elt args i))))
+          (setq i (+ i 1)))
+        (if (> (length niceargs) 0)
+	    (cons body niceargs)
+          (cons body nil)))
+    (cons chnl nil)))
+
+
+(defun irchat-get-^G-channel-flags (chnl)
+  "Convert CHNL e.g. #42 -> nil and #42^Go -> +o"
+  (cdr (irchat-parse-^G-channel-name chnl)))
+
+
+(defun irchat-convert-^G-channel-name (chnl)
+  "Convert CHNL e.g. #42 -> #42 and #42^Go -> #42 (+o)"
+  (let* ((parse (irchat-parse-^G-channel-name chnl))
+	 (body (car parse))
+	 (flags (cdr parse)))
+    (if flags
+	(format "%s (%s)" body flags)
+      body)))
 
 
 (defun irchat-Dialogue-buffer-p (buffer)
