@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-misc.el,v 3.15 1997/06/10 10:44:36 tri Exp $
+;;;  $Id: irchat-misc.el,v 3.16 1997/06/10 14:17:53 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -46,6 +46,25 @@
                      (setq killit t))))
               irchat-kill-nickname)
       killit)))
+
+
+(defun irchat-convert-^G-channel-name (chnl)
+  "Convert CHNL e.g. #42 -> #42 and #42^Go -> #42 (+o)"
+  (if (string-match "^\\(.*\\)\007\\(.*\\)$" chnl)
+      (let* ((body (matching-substring chnl 1))
+	     (args (matching-substring chnl 2))
+	     (niceargs "")
+	     (l (length args))
+	     (i 0))
+	(while (< i l)
+	  (setq niceargs (concat niceargs
+				 (if (> (length niceargs) 0) " +" "+")
+				 (char-to-string (elt args i))))
+	  (setq i (+ i 1)))
+	(if (> (length niceargs) 0)
+	    (format "%s (%s)" body niceargs)
+	  body))
+    chnl))
 
 
 (defun irchat-Dialogue-buffer-p (buffer)
