@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-commands.el,v 1.5 1997/02/06 07:08:21 jtp Exp $
+;;;  $Id: irchat-commands.el,v 1.6 1997/02/15 17:12:47 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -87,11 +87,14 @@
 
 
 (defvar irchat-last-timestamp-time nil "Last time timestamp was inserted")
+(defvar irchat-last-timestamp-no-cons-p nil "Last timestamp was no-cons")
 
 
-(defun irchat-Command-timestamp-if-interval-expired ()
+(defun irchat-Command-timestamp-if-interval-expired (&optional no-cons)
   (interactive)
-  (if (and (numberp irchat-timestamp-interval)
+  (if (and (not (and no-cons
+		     irchat-last-timestamp-no-cons-p))
+	   (numberp irchat-timestamp-interval)
 	   (> irchat-timestamp-interval 0)
 	   (or (null irchat-last-timestamp-time)
 	       (> (irchat-time-difference irchat-last-timestamp-time
@@ -99,8 +102,7 @@
 		  irchat-timestamp-interval)))
       (progn
 	(irchat-Command-timestamp)
-	t)
-    nil))
+	(setq irchat-last-timestamp-no-cons-p no-cons))))
 
 
 (defun irchat-Command-timestamp ()
