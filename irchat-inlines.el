@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-inlines.el,v 3.1 1997/02/24 16:00:02 tri Exp $
+;;;  $Id: irchat-inlines.el,v 3.2 1997/02/26 17:04:03 too Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -9,60 +9,13 @@
 
 (eval-and-compile  (require 'irchat-globals)  (require 'irchat-vars))
 
-(defsubst irchat-scan-channels (chnl)
-  (setq irchat-channel-alist 
-	(if (assoc chnl irchat-channel-alist)
-	    irchat-channel-alist 
-	  (cons (list chnl) irchat-channel-alist))))
+
+(defsubst matching-substring (string arg)
+  (substring string (match-beginning arg) (match-end arg)))
 
 
-(defsubst irchat-user-on-this-channel (user chnl)
-  "return T if USER is on channel CHNL"
-  (let ((u (intern user irchat-obarray)))
-    (string-list-ci-memberp chnl (get u 'chnl))))
-
-
-(defsubst irchat-update-user (chnl user)
-  "Add CHNL to list of channels USER belongs to"
-  (if (not (string= user ""))
-      (let* ((u (if (string= (substring user 0 1) "@")
-                    (intern (substring user 1 (length user)) irchat-obarray)
-                  (intern user irchat-obarray)))
-             (chnls (get u 'chnl)))
-        (progn
-          (if (get u 'irchat-waited-for)
-              (irchat-greet-user user chnl))
-          (if (and irchat-greet-author 
-                   (string= user irchat-author-nickname))
-              (irchat-greet-author))
-
-	  (if (not (assoc (prin1-to-string u) irchat-nick-alist))
-	      (setq irchat-nick-alist (cons 
-				       (list (prin1-to-string u)) 
-				       irchat-nick-alist)))
-
-          (if (not (string-list-ci-memberp chnl chnls))
-              (put u 'chnl (nconc chnls (list chnl))))))))
-
-
-(defsubst irchat-add-to-channel (user chnl)
-  "Add users info to his chnl"
-  (irchat-update-user chnl user))
-
-
-(defsubst irchat-remove-from-thischannel (user chnl)
-  "Remove users info from his chnl"
-  (let ((u (intern user irchat-obarray)))
-    (put u 'chnl (string-list-ci-delete chnl (get u 'chnl)))))
-
-
-(defsubst irchat-update-thischannel (chnl origusers)
-  "Update our copy of users on channel chnl."
-  (let ((users origusers))
-    (while (string-match "^\\([^ ]*\\) \\(.*\\)" users)
-      (irchat-update-user chnl (matching-substring users 1))
-      (setq users (matching-substring users 2)))
-    (irchat-update-user chnl users)))
+(defsubst string-ci-equal (s1 s2)
+  (string-equal (upcase s1) (upcase s2)))
 
 
 (defsubst string-list-ci-memberp (thing list)
@@ -130,12 +83,62 @@
    lst))
 
 
-(defsubst matching-substring (string arg)
-  (substring string (match-beginning arg) (match-end arg)))
+;;;;;
+
+(defsubst irchat-scan-channels (chnl)
+  (setq irchat-channel-alist 
+	(if (assoc chnl irchat-channel-alist)
+	    irchat-channel-alist 
+	  (cons (list chnl) irchat-channel-alist))))
 
 
-(defsubst string-ci-equal (s1 s2)
-  (string-equal (upcase s1) (upcase s2)))
+(defsubst irchat-user-on-this-channel (user chnl)
+  "return T if USER is on channel CHNL"
+  (let ((u (intern user irchat-obarray)))
+    (string-list-ci-memberp chnl (get u 'chnl))))
+
+
+(defsubst irchat-update-user (chnl user)
+  "Add CHNL to list of channels USER belongs to"
+  (if (not (string= user ""))
+      (let* ((u (if (string= (substring user 0 1) "@")
+                    (intern (substring user 1 (length user)) irchat-obarray)
+                  (intern user irchat-obarray)))
+             (chnls (get u 'chnl)))
+        (progn
+          (if (get u 'irchat-waited-for)
+              (irchat-greet-user user chnl))
+          (if (and irchat-greet-author 
+                   (string= user irchat-author-nickname))
+              (irchat-greet-author))
+
+	  (if (not (assoc (prin1-to-string u) irchat-nick-alist))
+	      (setq irchat-nick-alist (cons 
+				       (list (prin1-to-string u)) 
+				       irchat-nick-alist)))
+
+          (if (not (string-list-ci-memberp chnl chnls))
+              (put u 'chnl (nconc chnls (list chnl))))))))
+
+
+(defsubst irchat-add-to-channel (user chnl)
+  "Add users info to his chnl"
+  (irchat-update-user chnl user))
+
+
+(defsubst irchat-remove-from-thischannel (user chnl)
+  "Remove users info from his chnl"
+  (let ((u (intern user irchat-obarray)))
+    (put u 'chnl (string-list-ci-delete chnl (get u 'chnl)))))
+
+
+(defsubst irchat-update-thischannel (chnl origusers)
+  "Update our copy of users on channel chnl."
+  (let ((users origusers))
+    (while (string-match "^\\([^ ]*\\) \\(.*\\)" users)
+      (irchat-update-user chnl (matching-substring users 1))
+      (setq users (matching-substring users 2)))
+    (irchat-update-user chnl users)))
 
 
 (defsubst irchat-next-line (&optional n)
