@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-commands.el,v 3.32 1998/01/27 16:38:49 tri Exp $
+;;;  $Id: irchat-commands.el,v 3.33 1998/05/24 10:40:19 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -982,6 +982,7 @@ be a string to send NICK upon entering."
 	  (y-or-n-p "Quit IRCHAT? "))
       (progn
 	(message "")
+	(irchat-send-delayed-reset)
 	(if (get-buffer-process irchat-server-buffer)
 	    (if (and (irchat-server-opened)
 		     quit-msg)
