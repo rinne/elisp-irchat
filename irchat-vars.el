@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-vars.el,v 1.8 1997/02/18 12:31:25 too Exp $
+;;;  $Id: irchat-vars.el,v 1.9 1997/02/21 12:55:24 too Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -86,7 +86,21 @@ killed again if automagic reconnect is too fast.")
 ;;;
 ;;;  DCC
 ;;;
-(defvar irchat-dcc-program "dcc"
+(defvar irchat-dcc-program
+;;; set dcc program as "dcc", "dcc.perl" or nil, depending which binary found.
+;;; current version takes the one which is earlier in path (if many).
+  (let* ((result nil) 
+	 (list exec-path)
+	 (path (car list)))
+    (while (and path (not result))
+      (setq path (file-name-as-directory path))
+      (if (file-executable-p (concat path "dcc")) (setq result "dcc")
+	(if (file-executable-p (concat path "dcc.perl")) (setq result "dcc.perl")
+	  ))
+      (setq list (cdr list)
+	    path (car list))
+      )
+    result)
   "*Name of the external dcc-program.")
 
 (defvar irchat-dcc-directory "~/tmp" 
