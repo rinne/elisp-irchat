@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-vars.el,v 3.34 1998/03/24 09:25:35 tri Exp $
+;;;  $Id: irchat-vars.el,v 3.35 1998/05/24 15:34:05 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -233,6 +233,12 @@ IRCHAT to suit old users of the irc-loser-client.")
 ;;;
 ;;;  Misc
 ;;;
+
+(defvar irchat-send-delayed-allow-duplicates nil
+  "Allow duplicate strings to be queued in send-delayed?")
+
+(defvar irchat-send-delayed-interval 3
+  "Seconds between delayed sends.")
 
 (defvar irchat-blink-parens nil
   "*Should we blink matching parenthesis in irchat command buffer?")
