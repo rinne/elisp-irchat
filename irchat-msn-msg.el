@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn-msg.el,v 3.3 2002/06/04 23:20:44 tri Exp $
+;;;  $Id: irchat-msn-msg.el,v 3.4 2002/06/04 23:54:05 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -97,8 +97,14 @@
 	  (let ((head (substring m 0 z))
 		(body (substring m (+ z 2) (length m)))
 		(headers '()))
-	    (if (string-equal "\n" body)
-		(setq body ""))
+	    (while (and (> (length body) 0)
+			(string-equal (substring body (- (length body) 1) (length body)) "\n"))
+	      (setq body (substring body 0 (- (length body) 1))))
+	    (while (and (> (length body) 0)
+			(string-equal (substring body 0 1) "\n"))
+	      (setq body (substring body 1 (length body))))
+	    (if (string-match "\n" body)
+		(setq body (replace-in-string (concat "\n" body) "\n" "\n    ")))
 	    (while (or (string-match "^\\(\\([^ \t]*\\):[ \t]*\\([^\n]*\\)\n\\)" head)
 		       (string-match "^\\(\\([^ \t]*\\):[ \t]*\\([^\n]*\\)\\)" head))
 	      (let ((n (matching-substring head 2))
