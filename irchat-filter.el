@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-filter.el,v 3.7 1998/05/24 11:39:33 tri Exp $
+;;;  $Id: irchat-filter.el,v 3.8 1998/06/25 12:15:45 jtp Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -20,7 +20,8 @@
     (if (or (and (symbolp hook)
 		 (fboundp hook))
 	    (and (listp hook)
-		 (eq (car hook) 'lambda)))
+		 (eq (car hook) 'lambda))
+	    (compiled-function-p hook))
 	(eval (list hook prefix rest-of-line))
       (if (listp hook)
 	  (let ((hooks hook)
