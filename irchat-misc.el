@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-misc.el,v 3.43 1998/08/07 18:38:41 tri Exp $
+;;;  $Id: irchat-misc.el,v 3.44 1998/08/07 19:11:32 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -676,6 +676,22 @@
 		(t
 		 (setq r (append r (list str)))
 		 (setq e t)))))
+    r))
+
+(defun irchat-concat-protocol-args (ipas &optional with-space skip)
+  "Concatenate protocol argument list IPAS optionally WITH-SPACE and SKIP." 
+  (let ((r ""))
+    (if (numberp skip)
+	(while (and (> skip 0) ipas)
+	  (setq ipas (cdr ipas))
+	  (setq skip (- skip 1)))
+      (error "fdoo"))
+    (while ipas
+      (progn
+	(setq r (concat r (car ipas)))
+	(setq ipas (cdr ipas))
+	(if (and ipas with-space)
+	    (setq r (concat r " ")))))
     r))
 
 (defun irchat-encode-coding-string (string &optional coding)
