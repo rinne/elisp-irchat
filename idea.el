@@ -4,7 +4,7 @@
 ;;;  IDEA encryption in elisp.  Cool, ha?
 ;;;  ----------------------------------------------------------------------
 ;;;  Created      : Thu Jun 29 08:11:25 1995 tri
-;;;  Last modified: Tue Oct  7 16:45:30 1997 tri
+;;;  Last modified: Sun Oct 12 17:45:08 1997 tri
 ;;;  ----------------------------------------------------------------------
 ;;;  Copyright © 1995-1997
 ;;;  Timo J. Rinne <tri@iki.fi>
@@ -18,7 +18,7 @@
 ;;;  irchat-copyright.el applies only if used with irchat IRC client.
 ;;;  Contact the author for additional copyright info.
 ;;;
-;;;  $Id: idea.el,v 3.8 1997/10/07 14:49:23 tri Exp $
+;;;  $Id: idea.el,v 3.9 1997/10/16 08:14:24 tri Exp $
 ;;;
 
 (eval-and-compile  
@@ -435,6 +435,15 @@
 	   (* x1 16)
 	   (* x2 256)
 	   (* x3 4096))
+      -1)))
+
+(defun idea-2hex-to-int (hex)
+  "Convert two character long HEXSTRING to int"
+  (let* ((x0 (idea-hex-char-to-int (elt hex 1)))
+	 (x1 (idea-hex-char-to-int (elt hex 0))))
+    (if (and (> x0 -1) (> x1 -1))
+	(+ x0
+	   (* x1 16))
       -1)))
 
 (defun idea-crypt-transform-block (data key)
