@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn-sub.el,v 3.7 2002/06/09 14:23:38 tri Exp $
+;;;  $Id: irchat-msn-sub.el,v 3.8 2002/06/09 14:40:28 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -198,8 +198,7 @@
 	       (if (not (< (length s) len))
 		   (let ((msg (substring s 0 len)))
 		     (delete-region (point-min) (+ (point-min) cmd-len len))
-		     (let ((process proc))
-		       (irchat-msn-sub-handle-MSG-message cmd-len pp-uid pp-name len msg))
+		     (irchat-msn-sub-handle-MSG-message proc cmd-len pp-uid pp-name len msg)
 		     t)
 		 nil))))
 	  ((and (not (or (string-match "^MSG [^ ][^ ]* [^ ]* [0-9][0-9]*\r\n" s)
@@ -225,9 +224,9 @@
 	  (t nil))))
 
 (defun irchat-msn-sub-handle-generic (process parsed msg)
-  t)
+  nil)
 
-(defun irchat-msn-sub-handle-MSG-message (cmd-len pp-uid pp-name len msg)
+(defun irchat-msn-sub-handle-MSG-message (process cmd-len pp-uid pp-name len msg)
   (let ((p (irchat-msn-sub-server-search-with-process process)))
     (if p
 	(let ((m (irchat-msn-parse-message msg)))
@@ -251,86 +250,78 @@
 
 (defun irchat-msn-sub-handle-BYE (process parsed msg)
   (let ((p (irchat-msn-sub-server-search-with-process process)))
-    (if p
-	(if (string-match "^BYE \\([^ ][^ ]*\\)" msg)
-	    (let ((pp-uid (matching-substring msg 1)))
-	      (irchat-w-insert irchat-MSN-buffer 
-			       (format "%s%s left %s.\n"
-				       irchat-msn-info-prefix 
-				       pp-uid
-				       (nth 1 p)))
-	      (irchat-msn-conversation-remove-user (nth 0 p) pp-uid)
-	      (setq p (irchat-msn-sub-server-search-with-process (nth 0 p)))
-	      (if (and p (> 1 (length (nth 6 p))))
-		  (irchat-msn-kill-conversation (nth 1 p))))
-	  t)
-      nil)))
+    (cond ((and p
+		(> (length parsed) 1))
+	   (let ((pp-uid (nth 1 parsed)))
+	     (irchat-w-insert irchat-MSN-buffer 
+			      (format "%s%s left %s.\n"
+				      irchat-msn-info-prefix 
+				      pp-uid
+				      (nth 1 p)))
+	     (irchat-msn-conversation-remove-user (nth 0 p) pp-uid)
+	     (setq p (irchat-msn-sub-server-search-with-process (nth 0 p)))
+	     (if (and p (> 1 (length (nth 6 p))))
+		 (irchat-msn-kill-conversation (nth 1 p)))))
+	  (t nil))))
 
 (defun irchat-msn-sub-handle-JOI (process parsed msg)
   (let ((p (irchat-msn-sub-server-search-with-process process)))
-    (if p
-	(if (string-match "^JOI \\([^ ][^ ]*\\) \\([^ ]*\\)" msg)
-	    (let ((s1 (matching-substring msg 1))
-		  (s2 (matching-substring msg 2)))
-	      (let ((pp-uid s1)
-		    (pp-name (irchat-msn-decode-name s2)))
-		(irchat-w-insert irchat-MSN-buffer 
-				 (format "%s%s <%s> joined %s.\n"
-					 irchat-msn-info-prefix 
-					 pp-name
-					 pp-uid
-					 (nth 1 p)))
-		(irchat-msn-conversation-add-user (nth 0 p) pp-uid)
-		(setq p (irchat-msn-sub-server-search-with-process process))
-		(let ((pending (if p (nth 7 p) nil)))
-		  (if pending
-		      (let ((m (irchat-msn-make-message (nth 1 pending))))
-			(irchat-msn-sub-server-remove-with-process (nth 0 p))
-			(setq irchat-msn-sub-servers (cons (irchat-set-nth 7 p nil)
-							   irchat-msn-sub-servers))
-			(irchat-w-insert irchat-MSN-MSG-buffer
-					 (concat 
-					  (format 
-					   (if (or (null (nth 2 pending))
-						   (string-equal (nth 1 pending)
-								 (nth 2 pending)))
-					       irchat-msn-format-string-out
-					     irchat-msn-format-string-out-e)
-					   (nth 0 pending))
-					  " "
-					  (if (null (nth 2 pending))
-					      (nth 1 pending)
-					    (nth 2 pending))
-					  "\n"))
-			(irchat-msn-send-sub-raw (nth 0 p)
-						 "MSG %d A %d\r\n%s"
-						 (irchat-msn-sub-server-seqno (nth 0 p))
-						 (length m)
-						 m)))))))
-      t)))
+    (cond ((and p
+		(> (length parsed) 2))
+	   (let ((pp-uid (nth 1 parsed))
+		 (pp-name (irchat-msn-decode-name (nth 2 parsed))))
+	     (irchat-w-insert irchat-MSN-buffer 
+			      (format "%s%s <%s> joined %s.\n"
+				      irchat-msn-info-prefix 
+				      pp-name
+				      pp-uid
+				      (nth 1 p)))
+	     (irchat-msn-conversation-add-user (nth 0 p) pp-uid)
+	     (setq p (irchat-msn-sub-server-search-with-process process))
+	     (let ((pending (if p (nth 7 p) nil)))
+	       (if pending
+		   (let ((m (irchat-msn-make-message (nth 1 pending))))
+		     (irchat-msn-sub-server-remove-with-process (nth 0 p))
+		     (setq irchat-msn-sub-servers (cons (irchat-set-nth 7 p nil)
+							irchat-msn-sub-servers))
+		     (irchat-w-insert irchat-MSN-MSG-buffer
+				      (concat 
+				       (format 
+					(if (or (null (nth 2 pending))
+						(string-equal (nth 1 pending)
+							      (nth 2 pending)))
+					    irchat-msn-format-string-out
+					  irchat-msn-format-string-out-e)
+					(nth 0 pending))
+				       " "
+				       (if (null (nth 2 pending))
+					   (nth 1 pending)
+					 (nth 2 pending))
+				       "\n"))
+		     (irchat-msn-send-sub-raw (nth 0 p)
+					      "MSG %d A %d\r\n%s"
+					      (irchat-msn-sub-server-seqno (nth 0 p))
+					      (length m)
+					      m))))))
+	  (t nil))))
 
 (defun irchat-msn-sub-handle-IRO (process parsed msg)
   (let ((p (irchat-msn-sub-server-search-with-process process)))
-    (if p
-	(if (string-match "^IRO \\([0-9][0-9]*\\) \\([0-9][0-9]*\\) \\([0-9][0-9]*\\) \\([^ ][^ ]*\\) \\([^ ]*\\)" msg)
-	    (let ((s1 (matching-substring msg 1))
-		  (s2 (matching-substring msg 2))
-		  (s3 (matching-substring msg 3))
-		  (s4 (matching-substring msg 4))
-		  (s5 (matching-substring msg 5)))
-	      (let ((num (string-to-int s2))
-		    (tot (string-to-int s3))
-		    (pp-uid s4)
-		    (pp-name (irchat-msn-decode-name s4)))
-		(irchat-msn-name-cache-add pp-uid pp-name)
-		(irchat-w-insert irchat-MSN-buffer 
-				 (format "%s%s <%s> joined %s.\n"
-					 irchat-msn-info-prefix 
-					 pp-name
-					 pp-uid
-					 (nth 1 p)))
-		(irchat-msn-conversation-add-user (nth 0 p) pp-uid))))
-      t)))
+    (cond ((and p
+		(> (length parsed) 5))
+	   (let ((num (string-to-int (nth 2 parsed)))
+		 (tot (string-to-int (nth 3 parsed)))
+		 (pp-uid (nth 4 parsed))
+		 (pp-name (nth 5 parsed)))
+	     (irchat-msn-name-cache-add pp-uid pp-name)
+	     (irchat-w-insert irchat-MSN-buffer 
+			      (format "%s%s <%s> joined %s.\n"
+				      irchat-msn-info-prefix 
+				      pp-name
+				      pp-uid
+				      (nth 1 p)))
+	     (irchat-msn-conversation-add-user (nth 0 p) pp-uid)))
+	  (t nil))))
 
 (defun irchat-msn-sub-handle-USR (process parsed msg)
   (let ((p (irchat-msn-sub-server-search-with-process process)))
