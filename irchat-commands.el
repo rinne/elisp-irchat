@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-commands.el,v 1.4 1997/02/05 14:57:56 tri Exp $
+;;;  $Id: irchat-commands.el,v 1.5 1997/02/06 07:08:21 jtp Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -937,8 +937,9 @@ be sent to the server.  For a list of messages, see irchat-Command-generic."
   (interactive)
   (let ((file (expand-file-name irchat-variables-file)))
     (if (file-exists-p file)
-	(progn
+	(let ((nick irchat-nickname))
 	  (load-file file)
+	  (setq irchat-nickname nick)
 	  (irchat-Command-reconfigure-windows)))))
 
 (defun irchat-Command-save-vars ()
