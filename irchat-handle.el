@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-handle.el,v 3.25 1997/10/28 11:20:12 tri Exp $
+;;;  $Id: irchat-handle.el,v 3.26 1998/01/23 08:09:41 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -530,7 +530,16 @@
 	(if (string= match2 irchat-real-nickname)
 	  (progn
 	    (irchat-w-insert (irchat-pick-buffer match1)
-			     (format "%sYou were kicked off channel %s by %s (%s).\n" irchat-change-prefix match1 prefix match3))
+			     (format 
+			      "%sYou were kicked off channel %s by %s%s.\n" 
+			      irchat-change-prefix 
+			      match1 
+			      prefix 
+			      (if (or (not match3)
+				      (string= "" match3)
+				      (string= prefix match3))
+				  ""
+				(concat " (" match3 ")"))))
 	    (setq 
 	     irchat-current-channels 
 	           (string-list-ci-delete match1 irchat-current-channels)
@@ -542,11 +551,16 @@
 	    (irchat-set-crypt-indicator)
 	    (irchat-remove-from-thischannel irchat-real-nickname match1))
 	  (irchat-w-insert irchat-D-buffer 
-			   (format "%s%s has kicked %s out%s\n" 
+			   (format "%s%s has kicked %s out%s%s\n" 
 				   irchat-change-prefix prefix match2
 				   (if (string= (or irchat-current-channel "") match1) 
 				       "" 
-				     (format " from channel %s" match1))))))
+				     (format " from channel %s" match1))
+				   (if (or (not match3)
+					   (string= "" match3)
+					   (string= prefix match3))
+				       ""
+				     (concat " (" match3 ")"))))))
     (message "IRCHAT: Strange KICK.")))
 
 
