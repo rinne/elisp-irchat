@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-crypt.el,v 3.14 1998/06/24 09:29:47 tri Exp $
+;;;  $Id: irchat-crypt.el,v 3.15 1998/06/24 09:46:19 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -196,7 +196,8 @@
   "Is METHOD, MAJOR, MINOR a valid encryption method?"
   (and (string= method "IDEA")
        (or (= major 1)
-	   (= major 2))
+	   (= major 2)
+	   (= major 3))
        (>= minor 0)))
 
 (defun irchat-encrypt-message (message address &optional no-clear-text)
