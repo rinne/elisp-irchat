@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-commands.el,v 3.21 1997/06/11 21:23:31 tri Exp $
+;;;  $Id: irchat-commands.el,v 3.22 1997/07/10 10:32:27 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -1158,7 +1158,8 @@ be sent to the server.  For a list of messages, see irchat-Command-generic."
     (set-marker output-marker nil)
     (save-excursion
       (set-buffer output-buffer)
-      (save-buffer))
+      (let ((backup-inhibited (if irchat-backup-irchat-vars nil t)))
+	(save-buffer)))
     (kill-buffer output-buffer))
   (setq irchat-save-vars-is-dirty nil))
 
