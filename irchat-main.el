@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-main.el,v 3.13 1997/03/14 14:22:57 tri Exp $
+;;;  $Id: irchat-main.el,v 3.14 1997/03/14 14:37:59 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -416,7 +416,9 @@ If already connected, just pop up the windows."
 		(lambda (timer)
 		  (if (nth 0 timer)
 		      (irchat-cancel-timer (nth 0 timer)))
-		  (irchat-start-timer (nth 1 timer) (nth 2 timer))))
+		  (list (irchat-start-timer (nth 1 timer) (nth 2 timer))
+			(nth 1 timer)
+			(nth 2 timer))))
 	       irchat-timers))
 
 	(irchat-maybe-poll)
