@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-random.el,v 1.1 1998/06/23 14:46:28 tri Exp $
+;;;  $Id: irchat-random.el,v 1.2 1998/06/24 23:08:31 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 ;;;
@@ -17,18 +17,66 @@
 					     (prin1-to-string 
 					      (current-time))
 					   "*")
+					 (format 
+					  "%c%c%c%c%c%c%c%c%c%c"
+					  (logand (random) 255)
+					  (logand (random) 255)
+					  (logand (random) 255)
+					  (logand (random) 255)
+					  (logand (random) 255)
+					  (logand (random) 255)
+					  (logand (random) 255)
+					  (logand (random) 255)
+					  (logand (random) 255)
+					  (logand (random) 255))
 					 (if (fboundp 'emacs-pid)
 					     (prin1-to-string 
 					      (emacs-pid))
 					   "*")
+					 (format 
+					  "%c%c%c%c%c%c%c%c%c%c"
+					  (logand (random) 255)
+					  (logand (random) 255)
+					  (logand (random) 255)
+					  (logand (random) 255)
+					  (logand (random) 255)
+					  (logand (random) 255)
+					  (logand (random) 255)
+					  (logand (random) 255)
+					  (logand (random) 255)
+					  (logand (random) 255))
 					 (if (fboundp 'user-login-name)
 					     (prin1-to-string 
 					      (user-login-name))
 					   "*")
+					 (format 
+					  "%c%c%c%c%c%c%c%c%c%c"
+					  (logand (random) 255)
+					  (logand (random) 255)
+					  (logand (random) 255)
+					  (logand (random) 255)
+					  (logand (random) 255)
+					  (logand (random) 255)
+					  (logand (random) 255)
+					  (logand (random) 255)
+					  (logand (random) 255)
+					  (logand (random) 255))
 					 (if (fboundp 'emacs-version)
 					     (prin1-to-string 
 					      (emacs-version))
-					   "*")))))
+					   "*")
+					 (format 
+					  "%c%c%c%c%c%c%c%c%c%c"
+					  (logand (random) 255)
+					  (logand (random) 255)
+					  (logand (random) 255)
+					  (logand (random) 255)
+					  (logand (random) 255)
+					  (logand (random) 255)
+					  (logand (random) 255)
+					  (logand (random) 255)
+					  (logand (random) 255)
+					  (logand (random) 255))))))
   (rc4-random irchat-random-state))
 
 (defun irchat-random-16 ()
