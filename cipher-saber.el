@@ -4,7 +4,7 @@
 ;;;  Cipher Saber encryption in elisp.  Cool, ha?
 ;;;  ----------------------------------------------------------------------
 ;;;  Created      : Tue Jul  7 18:55:02 1998 tri
-;;;  Last modified: Wed Jul  8 14:27:03 1998 tri
+;;;  Last modified: Wed Jul  8 15:00:08 1998 tri
 ;;;  ----------------------------------------------------------------------
 ;;;  Copyright © 1998
 ;;;  Timo J. Rinne <tri@iki.fi>
@@ -18,7 +18,7 @@
 ;;;  irchat-copyright.el applies only if used with irchat IRC client.
 ;;;  Contact the author for additional copyright info.
 ;;;
-;;;  $Id: cipher-saber.el,v 1.4 1998/07/08 11:28:55 tri Exp $
+;;;  $Id: cipher-saber.el,v 1.5 1998/07/08 12:00:16 tri Exp $
 ;;;
 
 (eval-and-compile  
@@ -53,10 +53,9 @@
   "Generate pseudo random string from emacs standard stuff with optional KEY."
   (let ((s (if (stringp key) key "")))
     (while (< (length s) 256)
-      (setq s (concat s 
-		      (char-to-string (if (fboundp 'tri-random) 
-					  (tri-random 256) 
-					(random 256))))))
+      (setq s (concat s (char-to-string (if (fboundp 'tri-random) 
+					    (tri-random 256) 
+					  (random 256))))))
     s))
 
 (defun cipher-saber-init-random-state ()
