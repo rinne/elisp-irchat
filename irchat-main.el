@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-main.el,v 1.6 1997/02/05 23:13:49 tri Exp $
+;;;  $Id: irchat-main.el,v 1.7 1997/02/18 05:46:06 kny Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -685,7 +685,7 @@ One is for entering commands and text, the other displays the IRC dialogue."
 	      (goto-char (point-max))
 	      (vertical-motion (- (+ 1 (if (not irchat-scroll-step)
 					   (/ (irchat-window-height win) 2)
-					 irchat-scroll-step))
+					 (1- irchat-scroll-step)))
 				  (irchat-window-height win))
 			       win)
 	      (set-window-start win (point))
