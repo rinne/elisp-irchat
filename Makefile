@@ -2,7 +2,7 @@
 #
 # Makefile for irchat
 #
-# $Id: Makefile,v 3.13 1998/06/23 14:28:28 tri Exp $
+# $Id: Makefile,v 3.14 1998/06/23 14:47:06 tri Exp $
 #
 
 #
@@ -49,6 +49,7 @@ XOBJS 	=                       \
 	rc4.elc			\
 	idea.elc		\
 	irchat-crypt.elc	\
+	irchat-random.elc	\
 	irchat-obsolete.elc
 
 OBJS	= 			\
