@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-commands.el,v 3.1 1997/02/24 16:00:02 tri Exp $
+;;;  $Id: irchat-commands.el,v 3.2 1997/02/25 20:27:14 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -116,6 +116,7 @@
 
 (defun irchat-Command-send-message (message &optional crypt-type)
   "Send MESSAGE to current chat partner of current channel."
+  (if (not irchat-crypt-mode-active) (setq crypt-type 'cleartext))
   (if (> (length message) 0)
       (let* ((addr (if (eq irchat-command-buffer-mode 'chat)
 		       irchat-current-chat-partner
@@ -195,12 +196,19 @@ current channel."
 
 (defun irchat-Command-enter-message-encrypted ()
   (interactive)
-  (irchat-enter-message 'encrypted))
+  (let ((irchat-crypt-mode-active t))
+    (irchat-enter-message 'encrypted)))
 
 
 (defun irchat-Command-enter-message-cleartext ()
   (interactive)
   (irchat-enter-message 'cleartext))
+
+
+(defun irchat-Command-enter-message-opposite-crypt-mode ()
+  (interactive)
+  (let ((irchat-crypt-mode-active (not irchat-crypt-mode-active)))
+    (irchat-enter-message nil)))
 
 
 (defun irchat-Dialogue-enter-message ()
@@ -679,6 +687,18 @@ be a string to send NICK upon entering."
       (scroll-up))
     (select-window (get-buffer-window obuffer t))
     (pop-to-buffer obuffer)))
+
+
+(defun irchat-Command-toggle-crypt ()
+  (interactive)
+  (if irchat-crypt-mode-active
+      (progn
+	(setq irchat-crypt-mode-active nil)
+	(setq irchat-crypt-indicator "-"))
+    (progn
+      (setq irchat-crypt-mode-active t)
+      (setq irchat-crypt-indicator "C")))
+  (switch-to-buffer (current-buffer)))
 
 
 (defun irchat-Command-freeze ()

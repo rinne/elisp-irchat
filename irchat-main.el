@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-main.el,v 3.2 1997/02/25 13:21:13 tri Exp $
+;;;  $Id: irchat-main.el,v 3.3 1997/02/25 20:27:14 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -100,7 +100,11 @@ carried out.")))))
     ("t" 	irchat-Command-find-timestamp)
     ("T" 	irchat-Command-timestamp)
     ("w" 	irchat-Command-who)
-    ("\C-m" 	irchat-Command-message))
+    ("\C-m" 	irchat-Command-message)
+;    ("%t"	irchat-Command-toggle-crypt)
+;    ("%d"	irchat-Command-set-default-key)
+;    ("%a"	irchat-Command-add-new-key)
+    )
   "Key definition table for Dialogue mode")
 
 
@@ -111,8 +115,8 @@ carried out.")))))
     ("\C-cG" 	irchat-Command-dcc-list)
     ("\C-m"  	irchat-Command-enter-message)
     ("\C-j"  	irchat-Command-enter-message)
-    ("\M-\C-m" 	irchat-Command-enter-message-cleartext)
-    ("\M-\C-j" 	irchat-Command-enter-message-cleartext)
+    ("\M-\C-m" 	irchat-Command-enter-message-opposite-crypt-mode)
+    ("\M-\C-j" 	irchat-Command-enter-message-opposite-crypt-mode)
     ("\C-cF" 	irchat-Command-send-file)
     ("\C-c\C-c" irchat-Client-query-prefix)
     ("\C-c\C-d" irchat-Command-debug)
@@ -161,6 +165,7 @@ carried out.")))))
     ("\C-c$" 	irchat-Command-eod-buffer)
     ("\C-c>" 	irchat-Command-push)
     ("\C-c<" 	irchat-Command-pop)
+    ("\C-c%t"	irchat-Command-toggle-crypt)
     ("\C-c%d"	irchat-Command-set-default-key)
     ("\C-c%a"	irchat-Command-add-new-key))
   "Key definition table for Command mode")
@@ -356,6 +361,7 @@ If already connected, just pop up the windows."
 	    (progn
 	      (setq irchat-freeze-indicator "-")
 	      (irchat-freeze-toggle (car irchat-D-buffer))))
+	(setq irchat-crypt-indicator (if irchat-crypt-mode-active "C" "-"))
 	(irchat-init-crypt)
 	(irchat-Dialogue-setup-buffer)
 	(irchat-Private-setup-buffer)
@@ -404,15 +410,21 @@ For a list of the generic commands type \\[irchat-Command-generic] ? RET.
 	irchat-privmsg-partner nil
 	irchat-private-indicator nil
 	irchat-away-indicator "-"
+	irchat-crypt-indicator (if irchat-crypt-mode-active "C" "-")
 	irchat-freeze-indicator "-"
 	irchat-ownfreeze-indicator "-"
 
 	mode-line-format
-	'("--- IRCHAT: Commands " irchat-private-indicator
-	  "{"irchat-channel-indicator "} "
-	  irchat-away-indicator irchat-freeze-indicator
-	  irchat-ownfreeze-indicator "- " 
-	  irchat-nickname "@" irchat-server " %-"))
+	'("--- IRCHAT: Commands "
+	  irchat-private-indicator
+	  "{" irchat-channel-indicator "} "
+	  irchat-away-indicator 
+	  irchat-crypt-indicator
+	  irchat-freeze-indicator
+	  irchat-ownfreeze-indicator 
+	  "- " 
+	  irchat-nickname "@" irchat-server 
+	  " %-"))
 
   (if (irchat-frozen (car irchat-D-buffer))
       (irchat-freeze-toggle (car irchat-D-buffer)))
@@ -438,9 +450,12 @@ Instead, these commands are available:
 
 	mode-line-format
 	'("--- IRCHAT: Dialogue " 
-	  "{"irchat-channel-indicator "} "
-	  irchat-away-indicator irchat-freeze-indicator
-	  irchat-ownfreeze-indicator "-" (-3 . "%p") "-%-"))
+	  "{" irchat-channel-indicator "} "
+	  irchat-away-indicator 
+	  irchat-crypt-indicator
+	  irchat-freeze-indicator
+	  irchat-ownfreeze-indicator 
+	  "-" (-3 . "%p") "-%-"))
 
   (use-local-map irchat-Dialogue-mode-map)
   (buffer-disable-undo (current-buffer))
@@ -536,7 +551,8 @@ One is for entering commands and text, the other displays the IRC dialogue."
   "Initialize CRYPT buffer."
   (or (get-buffer irchat-CRYPT-buffer)
       (save-excursion
-	(set-buffer (irchat-get-buffer-create irchat-CRYPT-buffer)))))
+	(set-buffer (irchat-get-buffer-create irchat-CRYPT-buffer))
+	(irchat-Dialogue-mode))))
 
 
 (defun irchat-clear-system ()
@@ -556,7 +572,6 @@ One is for entering commands and text, the other displays the IRC dialogue."
       (bury-buffer irchat-debug-buffer))
   (setq irchat-debug-buffer nil
 	irchat-channel-indicator "No channel"))
-
 
 
 (defun irchat-wait-for-response (regexp)

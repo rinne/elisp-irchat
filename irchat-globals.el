@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-globals.el,v 3.1 1997/02/24 16:00:02 tri Exp $
+;;;  $Id: irchat-globals.el,v 3.2 1997/02/25 20:27:14 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -111,6 +111,7 @@ a greeting telling what version of IRCHAT this is.")
 (defvar irchat-away-indicator "-")
 (defvar irchat-freeze-indicator "-")
 (defvar irchat-ownfreeze-indicator "-")
+(defvar irchat-crypt-indicator "-")
 
 ;; (defvar irchat-timestamp-timer nil)
 (defvar irchat-names-timer nil)
