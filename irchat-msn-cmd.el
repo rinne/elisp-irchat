@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn-cmd.el,v 3.5 2002/06/05 14:52:03 tri Exp $
+;;;  $Id: irchat-msn-cmd.el,v 3.6 2002/06/06 11:04:55 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -268,7 +268,13 @@
       (setq i (cdr i)))
     (let ((s (irchat-completing-default-read "Set status to: "
 					     a
-					     '(lambda (s) t) t nil)))
+					     '(lambda (s) t)
+					     t
+					     (if (and (stringp irchat-msn-my-online-mode) 
+						      (string-equal "Online" 
+								    irchat-msn-my-online-mode)) 
+						 "Away" 
+					       "Online"))))
       (if (> (length s) 1)
 	  (let ((x nil))
 	    (while m
@@ -309,6 +315,37 @@
 				"CAL %d %s"
 				(irchat-msn-sub-server-seqno (nth 0 p))
 				user)))))
+
+(defun irchat-Command-msn-list-discussions ()
+  (interactive)
+  (if (not (irchat-msn-server-opened))
+      (error "MSN Messenger connection is not open."))
+  (cond ((< (length irchat-msn-sub-servers) 1)
+	 (irchat-w-insert irchat-MSN-buffer 
+			  (format "%sNo active discussions.\n"
+				  irchat-msn-info-prefix)))
+	(t
+	 (let ((l irchat-msn-sub-servers))
+	   (irchat-w-insert irchat-MSN-buffer 
+			    (format "%s%d active discussion%s.\n"
+				    irchat-msn-info-prefix
+				    (length l)
+				    (if (> (length l) 1) "s" "")))
+	   (while l
+	     (let ((u (nth 6 (car l))))
+	       (irchat-w-insert irchat-MSN-buffer 
+				(format "%sDiscussion %s (%d guest%s).\n"
+					irchat-msn-info-prefix
+					(nth 1 (car l))
+					(length u)
+					(if (> (length u) 1) "s" "")))
+	       (while u
+		 (irchat-w-insert irchat-MSN-buffer 
+				  (format "    %s <%s>\n"
+					  (car u)
+					  (irchat-msn-name-cache-get (car u))))
+		 (setq u (cdr u)))
+	       (setq l (cdr l))))))))
 
 (eval-and-compile (provide 'irchat-msn-cmd))
 

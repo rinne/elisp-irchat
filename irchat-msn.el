@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn.el,v 3.5 2002/06/05 21:22:00 tri Exp $
+;;;  $Id: irchat-msn.el,v 3.6 2002/06/06 11:04:55 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -74,48 +74,48 @@
 (defun irchat-msn-start-server (&optional host service)
   "Open network stream to remote MSN server."
   (if (irchat-msn-server-opened)
-      t
-    (setq irchat-msn-online-list '())
-    (setq irchat-msn-forward-list '())
-    (setq irchat-msn-reverse-list '())
-    (setq irchat-msn-allow-list '())
-    (setq irchat-msn-block-list '())
-    (setq irchat-msn-lists-in-sync nil)
-    (setq irchat-msn-conversation-counter '(0))
-    (setq irchat-msn-sub-servers '())
-    (setq irchat-msn-messages-pending-sb '())
-    (setq irchat-msn-recipient-cache nil)
-    (setq irchat-msn-my-online-mode "Offline")
-    (irchat-set-msn-indicator)
-    (irchat-msn-name-cache-flush)
-    (setq irchat-msn-server-int nil)
-    (if host
-	(setq irchat-msn-server-int host))
-    (if (null irchat-msn-server-int)
-	(setq irchat-msn-server-int (irchat-msn-server)))
-    (if (null irchat-msn-server-int)
-	(setq irchat-msn-server-int
-	      (read-string "MSN Messenger server: " irchat-msn-server-int)))
-    (if (null irchat-msn-server)
-	(setq irchat-msn-server irchat-msn-server-int))
-    (if (null irchat-msn-uid)
-	(setq irchat-msn-uid (read-string "MSN Messenger UID: " 
-					  irchat-msn-uid)))
-    (if (eq irchat-msn-connection-phase 'xfr-received)
-	(message "Transfering MSN Messenger connection to server on %s..." irchat-msn-server-int)
-      (message "Connecting to MSN Messenger server on %s..." irchat-msn-server-int))
-    (setq irchat-msn-connection-phase nil)
-    (cond ((irchat-msn-open-server irchat-msn-server-int (if service service irchat-msn-service))
-	   (progn
-	     (message "")
-	     (setq irchat-msn-connection-phase 'ver-sent)))
-	  ((and (stringp irchat-msn-status-message-string)
-		(> (length irchat-msn-status-message-string) 0))
-	   ;; Show valuable message if available.
-	   (error irchat-msn-status-message-string))
-	  (t (error "Cannot open MSN Messenger server on %s" 
-		    irchat-msn-server)))))
-  
+      (irchat-Command-msn-quit))
+  (setq irchat-msn-online-list '())
+  (setq irchat-msn-forward-list '())
+  (setq irchat-msn-reverse-list '())
+  (setq irchat-msn-allow-list '())
+  (setq irchat-msn-block-list '())
+  (setq irchat-msn-lists-in-sync nil)
+  (setq irchat-msn-conversation-counter '(0))
+  (setq irchat-msn-sub-servers '())
+  (setq irchat-msn-messages-pending-sb '())
+  (setq irchat-msn-recipient-cache nil)
+  (setq irchat-msn-my-online-mode "Offline")
+  (irchat-set-msn-indicator)
+  (irchat-msn-name-cache-flush)
+  (setq irchat-msn-server-int nil)
+  (if host
+      (setq irchat-msn-server-int host))
+  (if (null irchat-msn-server-int)
+      (setq irchat-msn-server-int (irchat-msn-server)))
+  (if (null irchat-msn-server-int)
+      (setq irchat-msn-server-int
+	    (read-string "MSN Messenger server: " irchat-msn-server-int)))
+  (if (null irchat-msn-server)
+      (setq irchat-msn-server irchat-msn-server-int))
+  (if (null irchat-msn-uid)
+      (setq irchat-msn-uid (read-string "MSN Messenger UID: " 
+					irchat-msn-uid)))
+  (if (eq irchat-msn-connection-phase 'xfr-received)
+      (message "Transfering MSN Messenger connection to server on %s..." irchat-msn-server-int)
+    (message "Connecting to MSN Messenger server on %s..." irchat-msn-server-int))
+  (setq irchat-msn-connection-phase nil)
+  (cond ((irchat-msn-open-server irchat-msn-server-int (if service service irchat-msn-service))
+	 (progn
+	   (message "")
+	   (setq irchat-msn-connection-phase 'ver-sent)))
+	((and (stringp irchat-msn-status-message-string)
+	      (> (length irchat-msn-status-message-string) 0))
+	 ;; Show valuable message if available.
+	 (error irchat-msn-status-message-string))
+	(t (error "Cannot open MSN Messenger server on %s" 
+		  irchat-msn-server))))
+
 (defun irchat-msn-server-opened ()
   "Return server process status, T or NIL.  T if running."
   (let ((running (and irchat-msn-server-process
@@ -344,8 +344,11 @@
 		       irchat-msn-uid
 		       " "
 		       irchat-msn-my-online-mode
-		       (if (> (length irchat-msn-online-list) 0)
-			   (format " (%d)" (length irchat-msn-online-list))
+		       (if (or (> (length irchat-msn-online-list) 0)
+			       (> (length irchat-msn-forward-list) 0))
+			   (format " (%d/%d)" 
+				   (length irchat-msn-online-list)
+				   (length irchat-msn-forward-list))
 			 "")
 		       "}"))))
   irchat-msn-indicator)

@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn-sub.el,v 3.3 2002/06/05 21:22:00 tri Exp $
+;;;  $Id: irchat-msn-sub.el,v 3.4 2002/06/06 11:04:55 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -141,6 +141,13 @@
   (let ((p (irchat-msn-sub-server-remove-with-process proc)))
     (if p
 	(progn
+	  (if (nth 7 p)
+	      (irchat-w-insert irchat-MSN-buffer 
+			       (format "%sCan't send message "%s" to user %s <%s>\n"
+				       irchat-msn-error-prefix
+				       (if (nth 2 (nth 7 p)) (nth 2 (nth 7 p)) (nth 1 (nth 7 p)))
+				       (irchat-msn-name-cache-get (nth 0 (nth 7 p)))
+				       (nth 0 (nth 7 p)))))
 	  (kill-buffer (nth 4 p))
 	  (irchat-w-insert irchat-MSN-buffer 
 			   (format "%sConversation %s terminated.\n"

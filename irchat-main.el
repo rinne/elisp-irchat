@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-main.el,v 3.37 2002/06/05 12:00:52 tri Exp $
+;;;  $Id: irchat-main.el,v 3.38 2002/06/06 11:04:54 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -61,6 +61,7 @@ carried out.")))))
     ("b"        irchat-Command-msn-list-online)
     ("B"        irchat-Command-msn-list-lists)
     ("c" 	irchat-Command-client-clientinfo)
+    ("d"        irchat-Command-msn-list-discussions)
     ("g" 	irchat-Command-client-generic)
     ("p" 	irchat-Command-client-ping)
     ("x" 	irchat-Command-client-x-face)
@@ -168,6 +169,7 @@ carried out.")))))
     ("\C-cn" 	irchat-Command-nickname)
     ("\C-cp" 	irchat-Command-mta-private)
     ("\C-cq" 	irchat-Command-quit)
+    ("\C-cQ" 	irchat-Command-msn-quit)
     ("\C-cr" 	irchat-Command-reconfigure-windows)
     ("\C-ct" 	irchat-Command-topic)
     ("\C-cT" 	irchat-Command-timestamp)
