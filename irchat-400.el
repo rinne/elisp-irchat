@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-400.el,v 3.5 1997/03/19 17:08:51 tri Exp $
+;;;  $Id: irchat-400.el,v 3.6 1997/11/11 14:20:07 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -105,6 +105,31 @@
 			 "UNKNOWN (Could not figure out, contact developers)"))))
 	(message 
 	 "IRCHAT: Nickname %s already in use.  Choose a new one with %s."
+	 nick
+	 (substitute-command-keys "\\[irchat-Command-nickname]"))))))
+
+
+(defun irchat-handle-437-msg (prefix rest) ;;; ERR_XXX
+  "Handle the 437 reply (nick/channel unavailable)"
+  (if (not (eq irchat-nick-accepted 'ok))
+      (progn
+	(setq irchat-real-nickname (irchat-iterate-nick irchat-real-nickname))
+	(setq old-irchat-nickname irchat-real-nickname)
+	(irchat-send "NICK %s" irchat-real-nickname)
+	(setq irchat-nick-accepted 'sent))
+    (save-excursion
+      (set-buffer irchat-Command-buffer)
+      (beep)
+      (setq irchat-real-nickname irchat-old-nickname)
+      (let ((nick (cond ((string-match "^\\([^ ]+\\) +\\([^ ]+\\) +:\\(.*\\)" 
+				       rest)
+			 (matching-substring rest 2))
+			((string-match "^ *\\([^ ]+\\) :.*" rest)
+			 (matching-substring rest 1))
+			(t
+			 "UNKNOWN (Could not figure out, contact developers)"))))
+	(message 
+	 "IRCHAT: Nickname %s unavailable.  Choose a new one with %s."
 	 nick
 	 (substitute-command-keys "\\[irchat-Command-nickname]"))))))
 
