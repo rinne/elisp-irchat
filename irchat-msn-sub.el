@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn-sub.el,v 3.11 2002/09/02 20:28:19 tri Exp $
+;;;  $Id: irchat-msn-sub.el,v 3.12 2002/11/09 19:01:57 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -138,6 +138,7 @@
 
 (defun irchat-msn-sub-sentinel (proc status)
   "Sentinel function for Irchat MSN process."
+  (setq irchat-msn-partner nil)
   (let ((p (irchat-msn-sub-server-remove-with-process proc)))
     (if p
 	(progn
@@ -245,14 +246,26 @@
 		 (progn
 		   (setq irchat-msn-recipient-cache (if (> (length (nth 6 p)) 1) (nth 1 p) pp-uid))
 		   (irchat-msn-name-cache-add pp-uid pp-name)
-		   (irchat-w-insert irchat-MSN-MSG-buffer
-				    (concat 
-				     (if (> (length (nth 6 p)) 1)
-					 (format irchat-msn-format-string-in2 pp-uid (nth 1 p))
-				       (format irchat-msn-format-string-in pp-uid))
-				     " "
-				     (irchat-msn-iso8859-1-to-utf8 (cdr m) t)
-				     "\n"))))
+		   (let ((partner irchat-msn-partner))
+		     (setq irchat-msn-partner nil) ;; Avoid reqursion
+		     (irchat-w-insert irchat-MSN-MSG-buffer
+				      (concat 
+				       (if (> (length (nth 6 p)) 1)
+					   (format irchat-msn-format-string-in2 pp-uid (nth 1 p))
+					 (format irchat-msn-format-string-in pp-uid))
+				       " "
+				       (irchat-msn-iso8859-1-to-utf8 (cdr m) t)
+				       "\n"))
+		     (if partner
+			 (let ((cmsg (irchat-msn-iso8859-1-to-utf8
+				      (replace-in-string (cdr m) "\n" " ") t)))
+			   (if (string-equal (substring cmsg 0 1) "/")
+			       (progn
+				 (setq cmsg (substring cmsg 1 (length cmsg)))
+				 (irchat-send cmsg))
+			     (irchat-Command-send-message cmsg 'cleartext ""
+							  ""))))
+		     (setq irchat-msn-partner partner))))
 		((and m
 		      (> (length (cdr m)) 0)
 		      (irchat-msn-message-header-val "Content-type" m)
@@ -341,6 +354,8 @@
 				      pp-name
 				      pp-uid
 				      (nth 1 p)))
+	     (if (string-equal pp-uid irchat-msn-gwcontact)
+		 (setq irchat-msn-partner pp-uid))
 	     (irchat-msn-conversation-add-user (nth 0 p) pp-uid)))
 	  (t nil))))
 
@@ -364,6 +379,9 @@
     (irchat-msn-kill-conversation (nth 1 (car irchat-msn-sub-servers)) t)))
 
 (defun irchat-msn-kill-conversation (conversation &optional silent)
+  (if (and irchat-msn-partner
+	   (string-equal irchat-msn-partner irchat-msn-gwcontact))
+      (setq irchat-msn-partner nil))
   (let ((p (irchat-msn-sub-server-search-with-name conversation)))
     (if p
 	(progn

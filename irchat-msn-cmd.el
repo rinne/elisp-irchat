@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn-cmd.el,v 3.12 2002/06/23 18:58:29 tri Exp $
+;;;  $Id: irchat-msn-cmd.el,v 3.13 2002/11/09 19:01:57 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -176,17 +176,18 @@
 		(setq msg (irchat-encrypt-message msg recipient))))
 	  (let ((m (irchat-msn-make-message msg (not (string-equal msg cmsg)))))
 	    (setq irchat-msn-recipient-cache recipient)
-	    (irchat-w-insert irchat-MSN-MSG-buffer
-			     (concat 
-			      (format (if (string-equal msg cmsg)
-					  irchat-msn-format-string-out
-					irchat-msn-format-string-out-e)
-				      (if (> (length (nth 6 p)) 1)
-					  (nth 1 p)
-					(nth 0 (nth 6 p))))
-			      " "
-			      cmsg
-			      "\n"))
+	    (if (not irchat-msn-partner)
+		(irchat-w-insert irchat-MSN-MSG-buffer
+				 (concat 
+				  (format (if (string-equal msg cmsg)
+					      irchat-msn-format-string-out
+					    irchat-msn-format-string-out-e)
+					  (if (> (length (nth 6 p)) 1)
+					      (nth 1 p)
+					    (nth 0 (nth 6 p))))
+				  " "
+				  cmsg
+				  "\n")))
 	    (irchat-msn-send-sub-raw (nth 0 p)
 				     "MSG %d A %d\r\n%s"
 				     (irchat-msn-sub-server-seqno (nth 0 p))

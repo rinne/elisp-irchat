@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-main.el,v 3.43 2002/09/02 20:28:19 tri Exp $
+;;;  $Id: irchat-main.el,v 3.44 2002/11/09 19:01:57 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -792,6 +792,10 @@ One is for entering commands and text, the other displays the IRC dialogue."
 		       (irchat-Dialogue-buffer-p (current-buffer)))
 		  (beep t))
 	      (insert string)
+	      (if (and (irchat-Dialogue-buffer-p buffer)
+		       irchat-msn-partner
+		       (not (string-equal string "")))
+		  (irchat-Command-msn-send irchat-msn-partner string))
 	      (if (and irchat-use-smiley (fboundp 'smiley-region))
 		  (smiley-region spoint (point-max)))))
 	(goto-char spoint)

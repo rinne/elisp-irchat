@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn.el,v 3.12 2002/09/02 20:28:19 tri Exp $
+;;;  $Id: irchat-msn.el,v 3.13 2002/11/09 19:01:57 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -52,6 +52,8 @@
   "*A list of buffers where MSN messages and status info are sent.")
 (defvar irchat-MSN-MSG-buffer (list irchat-Dialogue-buffer irchat-Private-buffer)
   "*A list of buffers where MSN messages are sent.")
+(defvar irchat-msn-partner nil
+  "*Current MSN relay partner, do not set this.")
 
 ;;;
 ;;; Constants

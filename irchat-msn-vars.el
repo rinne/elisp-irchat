@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn-vars.el,v 3.7 2002/06/05 14:52:03 tri Exp $
+;;;  $Id: irchat-msn-vars.el,v 3.8 2002/11/09 19:01:57 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -65,6 +65,32 @@
   "*Format string for encrypted incoming message with two parameters.")
 (defvar irchat-msn-format-string-out2-e ">>%s:%s<<"
   "*Format string for encrypted outgoing message with two parameters.")
+
+;;;
+;;; Variables for Irchat Messenger gateway (kny@iki.fi)
+;;;
+;;; This extension provides a way to connect to your favourite
+;;; irchat session from any MSN Messenger client. You need
+;;; two MSN Messenger accounts for this service:
+;;; 1. Your primary MSN Messenger account
+;;; 2. A private secondary MSN Messenger account for the gateway service
+;;;
+;;; There are two ways to use this service:
+;;; 1. Primary MSN Messenger account used in irchat, secondary account
+;;;    used to contact your irchat session from any MSN Messenger client
+;;; 2. Secondary MSN Messenger account used in irchat, primary account
+;;;    used in any MSN Messenger client
+;;;
+;;; To initiate a MSN Messenger - Irchat relay you start a discussion
+;;; with the MSN Messenger account used within Irchat. All messages
+;;; are forwarded both ways. If you prefix your line with a "/" in the
+;;; MSN Messenger client, the rest of the line is sent directly to the
+;;; irc server. This can be used to send private messages, join and part
+;;; channels etc.
+;;;
+
+(defvar irchat-msn-gwcontact nil
+  "*Contact that is allowed to use the MSN relay (the MSN login name)")
 
 (eval-and-compile (provide 'irchat-msn-vars))
 
