@@ -74,4 +74,17 @@ Jaa ja nauti
 
 //tri
 
-$Id: README.CRYPT,v 1.3 1997/02/26 12:56:45 tri Exp $
+P.S. Mik‰li olet puusilm‰, etk‰ ymm‰rr‰ irchatin olevan viile‰mpi kuin
+     Jeesus, niin vaihtoehto ftp://www.cs.hut.fi/pub/irchat/irc_crypt/ 
+     saattaa kiinnostaa sinua.  Kryptokirjaston voi helposti tunkea 
+     mukaan muihin clientteih, jotka t‰ytt‰v‰t v‰hint‰‰n toisen ehdon
+     seuraavista.
+
+         1) Se on jotenkin ‰lyllisesti konfiguroitavissa.
+
+         2) Siihen saa sorsat.
+
+     Jos sinulla on ongelmia kyseisen kirjaston kanssa, niin ei voi 
+     auttaa, sori.
+
+$Id: README.CRYPT,v 1.4 1997/03/21 13:59:02 tri Exp $
