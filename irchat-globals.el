@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-globals.el,v 3.6 1997/03/29 18:30:13 jtp Exp $
+;;;  $Id: irchat-globals.el,v 3.7 1997/04/11 10:32:14 jtp Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -32,6 +32,12 @@
   (if (= irchat-emacs-version 19)
       (get-buffer-window buffer t)
     (get-buffer-window buffer)))
+
+(defun irchat-get-buffer-window-list (buf)
+  "Getting the window list for a buffer."
+  (if (string-match "XEmacs" emacs-version)
+      (windows-of-buffer buf)
+    (get-buffer-window-list buf nil t)))
 
 (defconst irchat-client-error-msg "Unrecognized command: '%s'"
   "*Error message given to anyone asking wrong CLIENT data.")
