@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-cta.el,v 1.2 1996/12/19 19:39:27 tri Exp $
+;;;  $Id: irchat-cta.el,v 1.3 1996/12/19 19:49:48 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -162,7 +162,7 @@
 (defun irchat-ctl-a-clientinfo-msg (from rest)
   (irchat-send 
    (format 
-    "NOTICE %s :CLIENTINFO :VERSION USERINFO CLIENTINFO HELP ERRMSG" from))
+    "NOTICE %s :CLIENTINFO :VERSION USERINFO CLIENTINFO X-FACE HELP ERRMSG" from))
   (message (format "CLIENT CLIENTINFO query from %s." from)))
 
 
