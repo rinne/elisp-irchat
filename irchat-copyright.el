@@ -1,14 +1,14 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-copyright.el,v 3.3 1997/07/09 13:46:04 tri Exp $
+;;;  $Id: irchat-copyright.el,v 3.4 2002/06/04 16:03:06 tri Exp $
 ;;;
 (defvar irchat-copyright "
-    $Id: irchat-copyright.el,v 3.3 1997/07/09 13:46:04 tri Exp $
+    $Id: irchat-copyright.el,v 3.4 2002/06/04 16:03:06 tri Exp $
     Internet Relay CHAT interface for GNU Emacs
 
     Copyright © 1989 Tor Lillqvist <tml@iki.fi>
 
-    Copyright © 1990-1997 Irchat Developer Team    (see below)
+    Copyright © 1990-2002 Irchat Developer Team    (see below)
  
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@
     there are numerous people who have given suggestions and
     improvements. If you think your name should be included here,
     give us a note...
+
 	   Markku Järvinen	<mta@iki.fi>
 	   Kai Keinänen		<kmk@iki.fi>
 	   Janne Liimatainen	<jsl@iki.fi>
@@ -40,18 +41,24 @@
     You can ftp the latest version from cs.hut.fi:/pub/irchat
 
     Current team is:
+	   Timo J. Rinne	<tri@iki.fi>
 	   Janne Liimatainen	<jsl@iki.fi>
 	   Tero T. Mononen     	<tmo@iki.fi>
 	   Kim Nyberg          	<kny@iki.fi>
            Tomi Ollila          <too@iki.fi>
 	   Jukka Partanen      	<jtp@iki.fi>
-	   Timo J. Rinne	<tri@iki.fi>
+
+    MSN Messenger protocol implementation by Timo J. Rinne <tri@iki.fi>.
 
     Bug reports and suggestions can be mailed to irchat-developers@cs.hut.fi.
 " "Basically GPL")
 
 ;;;
 ;;;  $Log: irchat-copyright.el,v $
+;;;  Revision 3.4  2002/06/04 16:03:06  tri
+;;;  	Couple of bindings to msn stuff.
+;;;  	Acknowledged MSNM code in the copyright notice.
+;;;
 ;;;  Revision 3.3  1997/07/09 13:46:04  tri
 ;;;  Made some small modifications.  Copyright notice of course
 ;;;  remains intact.
