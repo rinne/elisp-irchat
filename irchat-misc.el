@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-misc.el,v 3.13 1997/03/18 15:51:29 tri Exp $
+;;;  $Id: irchat-misc.el,v 3.14 1997/03/23 22:28:56 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -98,6 +98,18 @@
 (defun irchat-current-nickname ()
   "Our current nickname."
   irchat-real-nickname)
+
+
+(defun irchat-user-on-my-channels (user)
+  "Return the list of channels that user (and I) is on."
+  (let ((r '())
+	(l irchat-current-channels))
+    (while l
+      (if (irchat-user-on-this-channel user (car l))
+	  (setq r (cons (car l) r)))
+      (setq l (cdr l)))
+    r))
+
 
 (defun irchat-replace-in-string (str regexp newtext)
   (if (string-match "XEmacs" emacs-version)
