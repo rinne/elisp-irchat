@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-vars.el,v 3.3 1997/02/25 20:27:14 tri Exp $
+;;;  $Id: irchat-vars.el,v 3.4 1997/02/25 21:06:22 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -270,6 +270,8 @@ Default is what (system-name) returns.")
   "If t, ignore messages with invalid nick or timestamp.")  ;; not yet!
 (defvar irchat-crypt-mode-active t
   "If t, irchat encrypts all messages it has a default key for.")
+(defvar irchat-crypt-ignore-defected nil
+  "If t, ignore encrypted messages that cannot be opened.")
 
 ;;;
 ;;;  Conversions: Not used.
