@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-vars.el,v 3.5 1997/02/25 22:01:31 tri Exp $
+;;;  $Id: irchat-vars.el,v 3.6 1997/02/26 12:57:30 kny Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -17,15 +17,15 @@
 	      irchat-beep-on-bells))
   "*Variables whose values are saved via command irchat-Command-save-vars")
 
-(defvar irchat-command-window-height 5
+(defvar irchat-command-window-height 4
   "*How large should Command window be on startup.")
 
 (defvar irchat-use-full-window t
   "*If non-nil, IRCHAT will use whole emacs window. Annoying for GNUS-
 users, therefore added by nam.")
 
-(defvar irchat-want-traditional nil
-  "*Do we want Irchat to feel like IrcII.")
+(defvar irchat-want-traditional t
+  "*Do we want a nice-looking Irchat.")
 
 (defvar irchat-one-buffer-mode nil
   "*When non-nil, irchat will put up only a dialogue-buffer (on the
@@ -39,7 +39,7 @@ way is to put irchat variables on .emacs or file loaded from there.")
 ;;;
 ;;;  Where to connect
 ;;;
-(defvar irchat-server (or (getenv "IRCSERVER") "irc.eunet.fi")
+(defvar irchat-server (or (getenv "IRCSERVER") "ircd.eunet.fi")
   "*Name of the host running the IRC server. 
 Value initialized from the IRCSERVER environment variable if one is set")
 
@@ -60,7 +60,7 @@ Default is the environment variable IRCNICK, or your login name.")
   "*The channel to join automatically at startup.
 If nil, do not join any channel.")
 
-(defvar irchat-reconnect-automagic nil
+(defvar irchat-reconnect-automagic t
   "*Automatic reconnection, default is disabled")
 
 (defvar irchat-ask-for-nickname t
@@ -115,13 +115,13 @@ killed again if automagic reconnect is too fast.")
 (defvar irchat-myformat-string ">"
   "*Format for own messages.")
 
-(defvar irchat-format-string ">%s<"
+(defvar irchat-format-string "-> *%s*"
   "*Format string for private messages being sent.")
 
 (defvar irchat-format-string0 "-%s-"
   "*Format string for arriving NOTICE messages.")
 
-(defvar irchat-format-string1 "=%s="
+(defvar irchat-format-string1 "*%s*"
   "*Format string for arriving private messages.")
 
 (defvar irchat-format-string2 "<%s>"
@@ -133,19 +133,19 @@ killed again if automagic reconnect is too fast.")
 (defvar irchat-format-string4 "(%s)"
   "*Format string for arriving messages to other channel from outside the channel.")
 
-(defvar irchat-format-string5 "(%s:%s)"
+(defvar irchat-format-string5 ">%s:%s<"
   "*Format string for arriving messages to other channel from outside the channel.")
 
 (defvar irchat-myformat-string-e ">>"
   "*Format for own messages. (encrypted)")
 
-(defvar irchat-format-string-e ">>%s<<"
+(defvar irchat-format-string-e "-> **%s**"
   "*Format string for private messages being sent. (encrypted)")
 
 (defvar irchat-format-string0-e "--%s--"
   "*Format string for arriving NOTICE messages. (encrypted)")
 
-(defvar irchat-format-string1-e "==%s=="
+(defvar irchat-format-string1-e "**%s**"
   "*Format string for arriving private messages. (encrypted)")
 
 (defvar irchat-format-string2-e "<<%s>>"
@@ -157,10 +157,10 @@ killed again if automagic reconnect is too fast.")
 (defvar irchat-format-string4-e "((%s))"
   "*Format string for arriving messages to other channel from outside the channel. (encrypted)")
 
-(defvar irchat-format-string5-e "((%s:%s))"
+(defvar irchat-format-string5-e ">>%s:%s<<"
   "*Format string for arriving messages to other channel from outside the channel. (encrypted)")
 
-(defvar irchat-change-prefix ""
+(defvar irchat-change-prefix "*** Change: "
   "*String to add before any change msg, used for customisation of
 IRCHAT to suit old users of the irc-loser-client.")
 
@@ -195,7 +195,7 @@ IRCHAT to suit old users of the irc-loser-client.")
 ;;;  Misc
 ;;;
 
-(defvar irchat-blink-parens t
+(defvar irchat-blink-parens nil
   "*Should we blink matching parenthesis in irchat command buffer?")
 
 (defvar irchat-show-wallops t
@@ -217,7 +217,7 @@ the local server.")
 (defvar irchat-signoff-msg ""
   "*Default signoff message")
 
-(defvar irchat-beep-on-bells nil
+(defvar irchat-beep-on-bells 'always
   "*If non-nil, and the IRC Dialogue buffer is not selected in a window,
 an IRC message arriving containing a bell character, will cause you
 to be notified.
@@ -368,7 +368,7 @@ The last ignores all messages that contain the word `fuck`.
 (defvar irchat-debugmsg nil
   "*Message to front of debug info.")
 
-(defvar irchat-compress-changes nil
+(defvar irchat-compress-changes t
   "*Set to t if we want instant compressed messages in the old format.")
 (defvar irchat-compress-treshold 1
   "*Number of lines to search back for a previous matching join/part/quit/mode.")
@@ -380,7 +380,7 @@ The last ignores all messages that contain the word `fuck`.
 (defvar irchat-checkbuffer-interval (* 60 10)
   "*Interval between buffer-size checks.")
 
-(defvar irchat-private-window-height 5
+(defvar irchat-private-window-height 4
   "*How tall is the window for private messages when shown.")
 
 (defvar irchat-format-time-function (function irchat-compose-servertimestring)
