@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-main.el,v 3.4 1997/02/26 07:05:14 jtp Exp $
+;;;  $Id: irchat-main.el,v 3.5 1997/02/26 07:56:47 jtp Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -680,10 +680,10 @@ One is for entering commands and text, the other displays the IRC dialogue."
 	    (set-buffer nbuf)
 	    (irchat-Dialogue-mode)))
 
-      (if (get-buffer-window obuf)
+      (if (irchat-get-buffer-window obuf)
 	  (progn
-	    (setq oldwstart (window-start (get-buffer-window obuf))
-		  oldwpoint (window-point (get-buffer-window obuf)))))
+	    (setq oldwstart (window-start (irchat-get-buffer-window obuf))
+		  oldwpoint (window-point (irchat-get-buffer-window obuf)))))
       (setq bufintern (intern (format "%s" nbuf) irchat-obarray))
       (setq frozen (irchat-frozen nbuf))
       (set-buffer nbuf)
@@ -701,7 +701,7 @@ One is for entering commands and text, the other displays the IRC dialogue."
 	  (insert string))
       (setq buffer-read-only t)
       (goto-char spoint)
-      (let ((win (get-buffer-window (get-buffer buffer) t)))
+      (let ((win (irchat-get-buffer-window (get-buffer buffer))))
 	(if (and (not (not win))
 		 (not frozen)
 		 (not (pos-visible-in-window-p (point-max) win)))
@@ -715,10 +715,10 @@ One is for entering commands and text, the other displays the IRC dialogue."
 	      (set-window-start win (point))
 	      (goto-char (point-max)))))
       (set-buffer obuf)
-      (if (and frozen (get-buffer-window obuf) (equal obuf nbuf))
+      (if (and frozen (irchat-get-buffer-window obuf) (equal obuf nbuf))
 	  (progn
-	    (set-window-start (get-buffer-window obuf) oldwstart)
-	    (set-window-point (get-buffer-window obuf) oldwpoint)
+	    (set-window-start (irchat-get-buffer-window obuf) oldwstart)
+	    (set-window-point (irchat-get-buffer-window obuf) oldwpoint)
 	    (goto-char oldwpoint)
 	    )))))
 

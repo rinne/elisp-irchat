@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-commands.el,v 3.2 1997/02/25 20:27:14 tri Exp $
+;;;  $Id: irchat-commands.el,v 3.3 1997/02/26 07:56:15 jtp Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -665,12 +665,12 @@ be a string to send NICK upon entering."
   "Scroll Dialogue-buffer down from Command-buffer."
   (interactive)
   (let ((obuffer (current-buffer)) (owindow (selected-window)))
-    (select-window (get-buffer-window irchat-Dialogue-buffer t))
+    (select-window (irchat-get-buffer-window irchat-Dialogue-buffer))
     (pop-to-buffer irchat-Dialogue-buffer)
     (if (pos-visible-in-window-p (point-min))
 	(message "Beginning of buffer")
       (scroll-down))
-    (select-window (get-buffer-window obuffer t))
+    (select-window (irchat-get-buffer-window obuffer))
     (pop-to-buffer obuffer)))
 
 
@@ -678,14 +678,14 @@ be a string to send NICK upon entering."
   "Scroll Dialogue-buffer up from Command-buffer."
   (interactive)
   (let ((obuffer (current-buffer)))
-    (select-window (get-buffer-window irchat-Dialogue-buffer t))
+    (select-window (irchat-get-buffer-window irchat-Dialogue-buffer))
     (pop-to-buffer irchat-Dialogue-buffer)
     (if (pos-visible-in-window-p (point-max))
 	(progn
 	  (goto-char (point-max))
 	  (recenter 1))
       (scroll-up))
-    (select-window (get-buffer-window obuffer t))
+    (select-window (irchat-get-buffer-window obuffer))
     (pop-to-buffer obuffer)))
 
 
@@ -1275,12 +1275,12 @@ mode, the current channel and current chat partner are not altered)"
 (defun irchat-Command-toggle-private ()
   (interactive)
   (let ((irchat-private-window 
-	 (get-buffer-window 
+	 (irchat-get-buffer-window 
 	  (car (list (nth (- (length irchat-P-buffer) 1) irchat-P-buffer))))))
     (if irchat-private-window
 	(if (interactive-p)
-	    (let* ((my-IN-win (get-buffer-window irchat-Command-buffer))
-		   (my-OUT-win (get-buffer-window irchat-Dialogue-buffer))
+	    (let* ((my-IN-win (irchat-get-buffer-window irchat-Command-buffer))
+		   (my-OUT-win (irchat-get-buffer-window irchat-Dialogue-buffer))
 		   (sw (selected-window))
 		   (INwh (window-height my-IN-win))
 		   (OUTwh (+ (window-height my-OUT-win)
@@ -1295,9 +1295,9 @@ mode, the current channel and current chat partner are not altered)"
 		    (select-window my-OUT-win)
 		    (shrink-window (- (window-height my-OUT-win) OUTwh))))
 	      (select-window sw)))
-      (if (get-buffer-window irchat-Dialogue-buffer)
+      (if (irchat-get-buffer-window irchat-Dialogue-buffer)
 	  (let ((sw (selected-window)))
-	    (select-window (get-buffer-window irchat-Dialogue-buffer))
+	    (select-window (irchat-get-buffer-window irchat-Dialogue-buffer))
 	    (condition-case err
 		(progn
 		  (split-window-vertically)
@@ -1307,14 +1307,14 @@ mode, the current channel and current chat partner are not altered)"
 			 (- irchat-private-window-height (window-height)))
 			(other-window 1)
 			(set-window-buffer 
-			 (get-buffer-window irchat-Dialogue-buffer)
+			 (irchat-get-buffer-window irchat-Dialogue-buffer)
 			 (irchat-get-buffer-create 
 			  (nth (- (length irchat-P-buffer) 1)
 			       irchat-P-buffer))))
 		    (shrink-window 
 		     (- (window-height) irchat-private-window-height))
 		    (set-window-buffer 
-		     (get-buffer-window irchat-Dialogue-buffer)
+		     (irchat-get-buffer-window irchat-Dialogue-buffer)
 		     (irchat-get-buffer-create
 		      (nth (- (length irchat-P-buffer) 1)
 			   irchat-P-buffer)))))
