@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-400.el,v 3.6 1997/11/11 14:20:07 tri Exp $
+;;;  $Id: irchat-400.el,v 3.7 1997/11/11 14:33:02 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -120,19 +120,17 @@
     (save-excursion
       (set-buffer irchat-Command-buffer)
       (beep)
-      (setq irchat-real-nickname irchat-old-nickname)
-      (let ((nick (cond ((string-match "^\\([^ ]+\\) +\\([^ ]+\\) +:\\(.*\\)" 
-				       rest)
-			 (matching-substring rest 2))
-			((string-match "^ *\\([^ ]+\\) :.*" rest)
-			 (matching-substring rest 1))
-			(t
-			 "UNKNOWN (Could not figure out, contact developers)"))))
+      (let ((onick irchat-old-nickname)
+	    (wnick "UNKNOWN (Could not figure out, contact developers)"))
+	(if (string-match "^\\([^ ]+\\) +\\([^ ]+\\) +:\\(.*\\)" rest)
+	    (setq onick (matching-substring rest 1)
+		  wnick (matching-substring rest 2))
+	  (if (string-match "^ *\\([^ ]+\\) :.*" rest)
+	      (setq (matching-substring rest 1))))
+	(if (stringp onick)
+	    (setq irchat-real-nickname onick))
 	(message 
-	 "IRCHAT: Nickname %s unavailable.  Choose a new one with %s."
-	 nick
-	 (substitute-command-keys "\\[irchat-Command-nickname]"))))))
-
+	 "IRCHAT: Nickname/channel %s unavailable." wnick)))))
 
 (defun irchat-handle-482-msg (prefix rest)
   (message "IRCHAT: You are not a channel operator"))
