@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-version.el,v 3.78 1998/05/26 09:46:49 tri Exp $
+;;;  $Id: irchat-version.el,v 3.79 1998/05/26 13:14:16 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -9,25 +9,49 @@
 ;;;
 
 (defconst irchat-client-version-major "3"
-  "Major version number. Major functional changes change this number.")
+  "*Major version number. Major functional changes change this number.")
 
 (defconst irchat-client-version-minor "04"
-  "Minor version number. Server Protocol changes and bug fixes change this number.")
+  "*Minor version number. Server Protocol changes and bug fixes change this number.")
 
 (defconst irchat-client-version-beta-p t
-  "Is this version a beta version?")
+  "*Is this version a beta version?")
 
 (defconst irchat-client-version-alpha-p t
-  "Is this version an alpha version?")
+  "*Is this version an alpha version?")
 
 (defconst irchat-client-version-rcs-snap nil
-  "If a `current' release, what's the date?")
+  "*If a `current' release, what's the date?")
 
-(defconst irchat-client-version-release "$Date: 1998/05/26 09:46:49 $"
-  "version release date")
+(defconst irchat-client-version-release "$Date: 1998/05/26 13:14:16 $"
+  "*Version release date")
 
 (defconst irchat-client-name "Irchat"
   "*Name of this program.")
+
+(defconst irchat-emacs-version
+  (let ((e-v (emacs-version))
+	(case-fold-search t)
+	irchat-emacs-subtype
+	irchat-emacs-version-number)
+    (setq irchat-emacs-subtype
+	(cond ((string-match "xemacs" e-v) "XEmacs")
+	      ((string-match "lucid" e-v) "Lucid Emacs")
+	      ((string-match "epoch" e-v) "Epoch")
+	      ((or (string-match "gnu.emacs" e-v)
+		   (string-match "gnuemacs" e-v)) "GNU Emacs")
+	      ((string-match "mule" e-v) "Mule")
+	      ((string-match "emacs" e-v) "Emacs")
+	      (t "?????")))
+    (setq irchat-emacs-version-number
+	  (if (and (boundp 'emacs-major-version)
+		   (boundp 'emacs-minor-version))
+	      (format "%d.%d" emacs-major-version emacs-minor-version)
+	    (if (string-match "[1-9][0-9]*\.[0-9][0-9]*" e-v)
+		(substring e-v (match-beginning 0) (match-end 0))
+	      "##.##")))
+    (concat irchat-emacs-subtype " " irchat-emacs-version-number))
+  "*Version of Emacs running this Irchat")
 
 (defconst irchat-version
   (format "%s %s.%s%s %s" 
@@ -51,7 +75,7 @@
 					(match-end 1))
 			     ")")
 		   ""))))
-  "The version of irchat you are using.")
+  "*The version of irchat you are using.")
 
 (defun irchat-version (&optional int)
   "Irchat version identifier string."
