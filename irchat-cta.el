@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-cta.el,v 3.9 1998/05/26 14:06:10 tri Exp $
+;;;  $Id: irchat-cta.el,v 3.10 1998/06/25 07:35:19 jtp Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -361,8 +361,10 @@
 (defun irchat-client-version-notice (prefix rest)  
   (if rest
       (if (string-match "^\\([^:]*\\):\\(.*\\)" rest)
-	  (irchat-w-insert irchat-D-buffer (format irchat-client-message prefix 
-			  (matching-substring rest 1)))
+	  (irchat-w-insert irchat-D-buffer
+			   (format irchat-client-message prefix 
+				   (concat (matching-substring rest 1)
+					   (matching-substring rest 2))))
 	(irchat-w-insert irchat-D-buffer (format irchat-client-message prefix rest)))
     (message (format "Empty CLIENT version notice from \"%s\"." prefix))))
 
@@ -403,9 +405,10 @@
 (defun irchat-ctl-a-version-notice (prefix rest)  
   (if rest
       (if (string-match "^\\([^:]*\\):\\(.*\\)" rest)
-	  (irchat-w-insert irchat-D-buffer (format 
-					    irchat-client-message prefix 
-					    (matching-substring rest 1)))
+	  (irchat-w-insert irchat-D-buffer
+			   (format irchat-client-message prefix
+				   (concat (matching-substring rest 1)
+					   (matching-substring rest 2))))
 	(if (string-match "^\\([^ ]*\\) \\([^ ]*\\) \\([^ ]*\\) \\(.*\\)" rest)
 	    (irchat-w-insert irchat-D-buffer 
 			     (format irchat-client-message 
