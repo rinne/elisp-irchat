@@ -1,13 +1,13 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-caesar.el,v 1.1 1996/12/19 14:54:47 tri Exp $
+;;;  $Id: irchat-caesar.el,v 1.2 1997/02/18 12:31:25 too Exp $
 ;;;
 ;;; caesar-region written by phr@prep.ai.mit.edu  Nov 86
 ;;; Modified by tower@prep Nov 86
 ;;; Modified by umerin@flab.flab.Fujitsu.JUNET for ROT47.
 ;;; Modified by tri@iki.fi for irchat
 
-(provide 'irchat-caesar)
+(eval-and-compile (provide 'irchat-caesar))
 
 (defun irchat-caesar-region (&optional n)
   "Caesar rotation of region by N, default 13, for decrypting netnews.

@@ -1,16 +1,13 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-commands.el,v 1.6 1997/02/15 17:12:47 tri Exp $
+;;;  $Id: irchat-commands.el,v 1.7 1997/02/18 12:31:25 too Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
-(eval-when-compile 
-  (require 'irchat-globals)
-  (require 'irchat-vars)
-  (require 'irchat-inlines)
+(eval-when-compile (require 'irchat-inlines))
+(eval-and-compile  
   (require 'irchat-dcc)
   (require 'irchat-caesar))
-
 
 (defun irchat-Command-describe-briefly ()
   (message (substitute-command-keys "Type \\[describe-mode] for help")))

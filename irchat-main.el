@@ -1,16 +1,12 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-main.el,v 1.7 1997/02/18 05:46:06 kny Exp $
+;;;  $Id: irchat-main.el,v 1.8 1997/02/18 12:31:25 too Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
-(eval-when-compile
-  (require 'irchat-globals)  
-  (require 'irchat-vars)
-  (require 'irchat-inlines)
+(eval-when-compile (require 'irchat-inlines))
+(eval-and-compile  
   (require 'irchat-filter))
-
-(provide 'irchat)
 
 (if irchat-want-traditional
     (defvar irchat-command-window-on-top nil
@@ -819,6 +815,7 @@ One is for entering commands and text, the other displays the IRC dialogue."
     )
   )
 
+(eval-and-compile (provide 'irchat))
 ;;;
 ;;; eof
 ;;;

@@ -1,13 +1,10 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-000.el,v 1.1 1996/12/19 14:54:45 tri Exp $
+;;;  $Id: irchat-000.el,v 1.2 1997/02/18 12:31:25 too Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
-(eval-when-compile
-  (require 'irchat-globals)  
-  (require 'irchat-vars)
-  (require 'irchat-inlines))
+(eval-when-compile (require 'irchat-inlines))
 
 ;;;
 ;;;  000 replies -- what is the author of ircd thinking

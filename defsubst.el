@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: defsubst.el,v 1.1 1996/12/19 14:54:45 tri Exp $
+;;;  $Id: defsubst.el,v 1.2 1997/02/18 12:31:25 too Exp $
 ;;;
 ;;; This file is obsolete; the Emacs 19 byte compiler will do this and more.
 ;;; If you want a prerelease of the byte-compiler, send me mail.
@@ -16,8 +16,6 @@
 ;;; would always run interpreted (lose lose).
 ;;;
 ;;; Created by Jamie Zawinski <jwz@lucid.com>, 14-feb-91.
-
-(provide 'defsubst)
 
 (defmacro defsubst (name arglist &rest body)
   "Same syntax as DEFUN, except that a function call will not be generated
@@ -66,4 +64,4 @@ can't funcall it. But that's the price you have to pay for speed."
       (cons 'progn (mapcar 'byte-compile-file-form (cdr form)))
       (defsubst-original-byte-compile-file-form form)))
 
-(provide 'defsubst)
+(eval-and-compile (provide 'defsubst))

@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-dcc.el,v 1.1 1996/12/19 14:54:49 tri Exp $
+;;;  $Id: irchat-dcc.el,v 1.2 1997/02/18 12:31:25 too Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 ;;;
@@ -8,10 +8,7 @@
 ;;; Copyright 1994 Kim Nyberg <kny@tekla.fi>
 ;;; All Rights Reserved
 
-(eval-when-compile
-  (require 'irchat-globals)  
-  (require 'irchat-vars)
-  (require 'irchat-inlines))
+(eval-when-compile (require 'irchat-inlines))
 
 (defvar irchat-dcc-receive-list nil)
 (defvar irchat-dcc-receive-direct t)
@@ -137,7 +134,7 @@ same IP-address."
 	  domatch)
       (string-ci-equal h1 h2))))
       
-(provide 'irchat-dcc)
+(eval-and-compile (provide 'irchat-dcc))
 ;;;
 ;;; eof
 ;;;

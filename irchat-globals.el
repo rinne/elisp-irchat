@@ -1,10 +1,10 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-globals.el,v 1.4 1997/02/06 13:34:20 tri Exp $
+;;;  $Id: irchat-globals.el,v 1.5 1997/02/18 12:31:25 too Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
-(eval-when-compile
+(eval-and-compile
   (require 'irchat-version))
 
 ;;;
@@ -169,7 +169,7 @@ make-vector for more information. Here is a list of some small primes...
 (defconst irchat-query-client-x-face
   (concat "X-FACE" irchat-query-client-insert-to-generic))
 
-(provide 'irchat-globals)
+(eval-and-compile (provide 'irchat-globals))
 ;;;
 ;;;  eof
 ;;; 

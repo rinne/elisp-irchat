@@ -1,13 +1,11 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-misc.el,v 1.3 1997/02/05 14:57:56 tri Exp $
+;;;  $Id: irchat-misc.el,v 1.4 1997/02/18 12:31:25 too Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
-(eval-when-compile
-  (require 'irchat-globals)  
-  (require 'irchat-vars)
-  (require 'irchat-inlines)
+(eval-when-compile (require 'irchat-inlines))
+(eval-and-compile  
   (require 'irchat-filter))
 
 (defun irchat-ignore-this-p (nick uah)

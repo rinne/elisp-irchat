@@ -1,14 +1,13 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-inlines.el,v 1.1 1996/12/19 14:54:51 tri Exp $
+;;;  $Id: irchat-inlines.el,v 1.2 1997/02/18 12:31:25 too Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
 ;;; these must be loaded in the file that requires this since this
 ;;; won't work otherwise.
-;;;(eval-when-compile
-;;;  (require 'irchat-globals)
-;;;  (require 'irchat-vars))
+
+(eval-and-compile  (require 'irchat-globals)  (require 'irchat-vars))
 
 (defsubst irchat-scan-channels (chnl)
   (setq irchat-channel-alist 
@@ -141,7 +140,7 @@
   (save-excursion 
     (irchat-w-insert irchat-D-buffer (format "%s\n" msg))))
 
-(provide 'irchat-inlines)
+(eval-and-compile (provide 'irchat-inlines))
 
 ;;;
 ;;;  eof

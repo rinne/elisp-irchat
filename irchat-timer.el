@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-timer.el,v 1.1 1996/12/19 14:54:52 tri Exp $
+;;;  $Id: irchat-timer.el,v 1.2 1997/02/18 12:31:25 too Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -26,7 +26,7 @@
 	  (if interval
 	      (start-itimer "IRCHAT" function interval interval))))
     (progn
-;;      (eval-when-compile
+;;      (eval-and-compile
 ;;	(require 'timer))
       (defun irchat-cancel-timer (timer)
 	"Cancel timer."

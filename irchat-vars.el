@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-vars.el,v 1.7 1997/02/06 11:57:24 tmo Exp $
+;;;  $Id: irchat-vars.el,v 1.8 1997/02/18 12:31:25 too Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -359,7 +359,7 @@ would cause messages from and to channel #report to be displayed on
 buffer named *report-buffer* and all other messages are displayed on
 Dialogue-buffer.")
 
-(provide 'irchat-vars)
+(eval-and-compile (provide 'irchat-vars))
 ;;;
 ;;; eof
 ;;;

@@ -1,13 +1,11 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-handle.el,v 1.4 1997/02/06 12:02:58 tmo Exp $
+;;;  $Id: irchat-handle.el,v 1.6 1997/02/18 12:31:25 too Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright in(eval-wfo
 
-(eval-when-compile
-  (require 'irchat-globals)  
-  (require 'irchat-vars)
-  (require 'irchat-inlines)
+(eval-when-compile (require 'irchat-inlines))
+(eval-and-compile  
   (require 'irchat-filter))
 
 (defun irchat-handle-error-msg (prefix rest)
@@ -101,11 +99,13 @@
 	    (string-match "^\\([^ ]*\\) :\\(.*\\)" rest)
 	    (irchat-w-insert irchat-D-buffer 
 			     (format "%s%s\n"
-				     irchat-notice-prefix (matching-substring rest 2))))))))
+				     irchat-notice-prefix 
+				     (matching-substring rest 2))))))))
 
 
 (defun irchat-handle-ping-msg (prefix rest)
   (irchat-send "PONG yourself")
+  (irchat-Command-timestamp-if-interval-expired t)
   (irchat-maybe-poll))
 
 

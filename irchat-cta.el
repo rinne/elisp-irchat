@@ -1,13 +1,10 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-cta.el,v 1.3 1996/12/19 19:49:48 tri Exp $
+;;;  $Id: irchat-cta.el,v 1.4 1997/02/18 12:31:25 too Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
-(eval-when-compile
-  (require 'irchat-globals)  
-  (require 'irchat-vars)
-  (require 'irchat-inlines))
+(eval-when-compile (require 'irchat-inlines))
 
 ;;;
 ;;; decode and encode of binary data

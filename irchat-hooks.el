@@ -1,14 +1,12 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-hooks.el,v 1.1 1996/12/19 14:54:50 tri Exp $
+;;;  $Id: irchat-hooks.el,v 1.2 1997/02/18 12:31:25 too Exp $
 ;;;
 ;;;  Example hooks to customize irchat. These are copy-pasted from 2.2beta
 ;;;  and modified a bit. The might or might not work. The general idea is 
 ;;;  that if hook returns nil, the appropriate handler is called after the 
 ;;;  hook. Any other value returned causes further processing of message 
 ;;;  cancelled.
-
-(provide 'irchat-hooks)
 
 (defun string-memberp (thing list)
   "Dummy case insensitive function to check if string THING is a member of
@@ -194,6 +192,8 @@ LIST"
 (setq irchat-join-hook (function irchat-ownjoin-hook))
 (setq irchat-part-hook (function irchat-ownpart-hook))
 (setq irchat-quit-hook (function irchat-ownquit-hook))
+
+(eval-and-compile (provide 'irchat-hooks))
 
 ;;;
 ;;;  eof
