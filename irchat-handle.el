@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-handle.el,v 3.20 1997/10/16 08:13:02 tri Exp $
+;;;  $Id: irchat-handle.el,v 3.21 1997/10/19 15:49:10 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright in(eval-wfo
 
@@ -173,8 +173,36 @@
 (defun irchat-handle-pong-msg (prefix rest)
   ())
 
+;; Is this still needed?
+(defun irchat-handle-msg-msg (prefix rest)
+  (irchat-nick-to-uah-append prefix irchat-userathost)
+  (if (or (and prefix
+	       (irchat-ignore-this-p prefix irchat-userathost)
+	       (irchat-msg-from-ignored prefix rest))
+	  (and (not prefix)
+	       (string= "> " rest)))
+      nil
+    (if prefix 
+	(let ((oma (get (intern prefix irchat-obarray) 'chnl)))
+	  (if oma
+	      (while (or (string= "#" (substring (car oma) 0 1))
+			 (string= "&" (substring (car oma) 0 1)))
+		(setq oma (cdr oma)))
+	    (setq oma (list irchat-current-channel)))
+	  (if (string= (car oma) irchat-current-channel)
+	      (irchat-w-insert 
+	       irchat-D-buffer 
+	       (format "%s %s\n"
+		       (format irchat-format-string2 prefix)
+		       rest))
+	    (irchat-w-insert 
+	     irchat-D-buffer
+	     (format "%s %s\n"
+		     (format irchat-format-string3 prefix (car oma))
+		     rest)))))))
 
 (defun irchat-handle-privmsg-msg (prefix rest)
+  (irchat-nick-to-uah-append prefix irchat-userathost)
   (if (and prefix
 	   (irchat-ignore-this-p prefix irchat-userathost)
 	   (irchat-msg-from-ignored prefix rest))
@@ -331,6 +359,7 @@
 	   (irchat-ignore-this-p prefix irchat-userathost)
 	   (irchat-msg-from-ignored prefix rest))
       nil
+    (irchat-nick-to-uah-append prefix irchat-userathost)
     (string-match "^\\([^ ]+\\) :\\(.*\\)" rest)
     (let ((chnl (matching-substring rest 1))
 	  (temp (matching-substring rest 2))
