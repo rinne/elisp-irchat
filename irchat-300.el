@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-300.el,v 1.2 1997/01/31 13:01:48 too Exp $
+;;;  $Id: irchat-300.el,v 1.3 1997/02/06 11:49:36 tmo Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -366,8 +366,8 @@ This is called if no specific handler exists"
 (defun irchat-count-words-from-string (str)
   "count words from a string"
   (let* ((len (- (length str) 1)) ; string is from [0,len[
-	 (i len) (seen nil) (words (if (= len 0) 0 1)))
-    (while (not (= i 0))
+	 (i len) (seen nil) (words (if (< len 0) 0 1)))
+    (while (not (< i 0))
       (progn
 	(if (string= (char-to-string (aref str i)) " ")
 	    (if seen
