@@ -1,0 +1,623 @@
+Sun May  6 23:00:06 2001  Timo J. Rinne  <tri@iki.fi>
+
+	* Get full WHOIS reply also for users behind host mask.
+
+	* Made a release.
+
+Sun Dec  3 20:30:00 2000  Timo J. Rinne  <tri@iki.fi>
+
+	* Made a release of the previous snapshot.
+
+Sun Oct  3 13:15:22 1999  Timo J. Rinne  <tri@iki.fi>
+
+	* Fixed a minor incompatibility with xemacs-21.
+      	
+	* Made a snapshot.
+
+Tue Jul  7 20:15:47 1998  Timo J. Rinne  <tri@iki.fi>
+	
+	* Added cipher-saber.el to the distribution.
+	  It is not compiled into irchat.elc, because it's
+	  not (yet?) needed anywhere.
+
+Wed Jun 24 23:50:41 1998  Timo J. Rinne  <tri@iki.fi>
+
+	* Irchat crypto is cracked because of the poor ad-hoc
+	  key expansion method.  Versions 1 and 2 of key
+	  expansion should be considered totally insecure.
+	  (setq irchat-crypt-version-default 3) is the
+	  only way to go and it is now default.
+	  Old message formats are still understood and they
+	  can be used by setting variable irchat-crypt-version-default.
+	  This should not be done.
+
+	* Snapshot
+
+Tue May 26 12:55:46 1998  Timo J. Rinne  <tri@iki.fi>
+
+	* Modified irchat-mkdst to use new make targets.
+
+	* Modified reply to version query be somewhat shorter.
+	  Old format is left optionalt for orthodox-irchatters.
+	
+	* Snapshot.
+
+	* Modified irchat-mkdist so that it removes from all 
+	  distributed source files all lines delimited by lines 
+	  matching "^... BEGIN NODIST" and "^... END NODIST"
+	  inclusively.
+
+Mon May 25 11:00:00 1998  Timo J. Rinne  <tri@iki.fi>
+
+	* Snapshot.
+
+	* Also the first delayed send is always delayed for at least 
+	  one delayed send interval.
+
+	* Modified makefile so that legal targets are xxx, 
+	  xxx-compact or xxx-snap, where xxx can be gnuemacs 
+	  or xemacs.
+
+Sun May 24 15:13:24 1998  Timo J. Rinne  <tri@iki.fi>
+
+	* Delayed replies to ctcp queries.
+
+	* Snapshot.
+
+	* Made interval configurable.
+
+	* Made optional feature to allow or disallow identical strings to
+	  be queued.
+
+Tue Mar 24 11:27:45 1998  Timo J. Rinne  <tri@iki.fi>
+
+	* MULE support (thanks to KASHIMA, Hiroaki 
+	  <kashima@nd.net.fujitsu.co.jp>).
+
+	* Snapshot.
+
+
+Wed Jan 28 15:24:31 1998  Timo J. Rinne  <tri@iki.fi>
+
+	* Snapshot.
+	
+Fri Jan 23 10:11:50 1998  Timo J. Rinne  <tri@iki.fi>
+
+	* Added option for KICK reasons.
+
+	* Snapshot.
+	
+Fri Dec 12 09:02:12 1997  Timo J. Rinne  <tri@iki.fi>
+
+	* Release 3.03.
+
+	* It's now 3.04alpha.
+
+	* Snapshot (essentially 3.03 release).
+
+Thu Dec 11 08:01:10 1997  Timo J. Rinne  <tri@iki.fi>
+
+	* Message split now works better.  If variable
+	  irchat-message-split-^C-compat is non-nil, also old separator 
+	  is recongnized.
+
+	* Snapshot
+
+Mon Dec 01 08:31:01 1997  Timo J. Rinne  <tri@iki.fi>
+
+	* Snapshot
+
+Tue Nov 11 16:21:11 1997  Timo J. Rinne  <tri@iki.fi>
+
+	* Snapshot
+
+	* 437 handle. (nick/channel unavailable).
+
+Tue Oct 28 09:18:58 1997  Timo J. Rinne  <tri@iki.fi>
+
+	* Snapshot
+
+	* Added irchat-ignore-changes-from-ignored.  Defaults to nil, 
+	  that equals to the old behavior.
+
+Fri Oct 24 10:31:34 1997  Timo J. Rinne  <tri@iki.fi>
+
+	* Made a 3.01 release and promoted current version number 
+	  to 3.03alpha.
+
+Mon Oct 20 09:12:00 1997  Timo J. Rinne  <tri@iki.fi>
+
+	* Snapshot
+
+	* Obsoleted some irchat-kill... variables and functions.  They are
+	  still supported, but I hope we can nuke them some day.
+
+Sun Oct 19 19:02:07 1997  Timo J. Rinne  <tri@iki.fi>
+
+	* Snapshot
+
+	* Integrated global-kill stuff and uah-cache.
+
+Thu Oct 16 12:39:12 1997  Timo J. Rinne  <tri@iki.fi>
+
+	* Snapshot
+
+	* Added irchat-Command-kill-by-regexp to ignore messages
+	  matching a regexp.
+
+Tue Oct  7 18:03:45 1997  Timo J. Rinne  <tri@iki.fi>
+
+	* Snapshot
+
+	* Implemented new idea key expansion method.  It should be
+	  much safer that the old one.  Irchat (now) can automagically 
+	  decrypt messages encrypted with either method.  The method used
+	  in encryption can be set via variable irchat-crypt-version-default 
+	  (1 = old method (currently default), 2 = new method).
+	
+Mon Oct  6 16:45:59 1997  Timo J. Rinne  <tri@iki.fi>
+
+	* Snapshot
+
+	* Added splitting of `overlength' messages.
+
+Thu Oct  2 08:54:38 1997  Timo J. Rinne  <tri@iki.fi>
+
+	* Snapshot
+
+	* Irchat startup automatically removes virtual penis `___' from 
+	  the nickname on startup.  This can now be inhibited by setting
+	  variable irchat-autoremove-virtual-penis to nil.
+
+Thu Sep  4 15:25:18 1997  Timo J. Rinne  <tri@iki.fi>
+
+	* Added variable irchat-confirm-bell-on-channel-message that
+	  defaults to t.
+
+	* Snapshot
+
+Thu Jul 10 13:32:58 1997  Timo J. Rinne  <tri@iki.fi>
+
+	* irchat-vars.el (irchat-backup-irchat-vars): No backups made
+	  if variable irchat-backup-irchat-vars is not set to non-nil.
+
+	* Snapshot
+
+Wed Jul  9 17:01:34 1997  Timo J. Rinne  <tri@iki.fi>
+
+	* irchat-handle.el (irchat-handle-join-msg): It now handles things
+	  so that "compress-changes" works properly.
+
+	* Snapshot
+
+Tue Jun 17 13:04:06 1997  Timo J. Rinne  <tri@iki.fi>
+
+	* irchat-cta.el (irchat-ctl-a-version-msg): Added possibility to
+ 	  modify version id that is sent to VERSION queries.  See variable
+ 	  irchat-external-version-string.
+
+Thu Jun 12 00:23:42 1997  Timo J. Rinne  <tri@iki.fi>
+
+	* irchat-commands.el: Buffer `.irchat_vars' is killed after save 
+	  in irchat-Command-save-vars.  We don't want to have any sitting
+ 	  locks on that file.  It may make it a bit slower but at least
+ 	  everything is not necessarily screwed if there are more than one
+ 	  irchat running in the same machine.
+
+Wed Jun 11 11:14:27 1997  Timo J. Rinne  <tri@iki.fi>
+
+	* Snapshot
+
+Tue Jun 10 15:26:47 1997  Timo J. Rinne  <tri@iki.fi>
+
+	* irchat-handle.el (irchat-handle-join-msg): Modified to handle
+	  ^G crap in channel name properly.  I really don't know if
+	  this works properly or not since it cannot be easily tested.
+	  This modification is not in today's snapshot.
+
+	* Snapshot
+
+	* No more timestamps on ignored messages.  Insertions to
+	  dialoque buffer now trigger timestamp.  In some situations
+	  ping-message can also trigger timestamp, but that's old
+	  stuff.
+
+	* Beeps are now handled in irchat-w-insert.  This makes server
+	  join messages with channel names like "#42^Go" beep.  That's 
+	  bad, but now beep works properly with encrypted messages
+	  and stuff.  Those ^G-channels should be processed in join
+	  handle anyway, but not today.
+
+Mon May  5 16:00:32 1997  Timo J. Rinne  <tri@iki.fi>
+
+	* Version seems to be somewhat frozen.  I made a 3.01 release
+	  and promoted current version number to 3.02alpha.
+
+	* Snapshot.  Virtually identical to 3.01 release.
+	
+Mon Apr 14 09:15:10 1997  Jukka Partanen  <jtp@iki.fi>
+
+	* Snapshot.
+
+	* irchat-commands.el (irchat-Command-private-conversation): Don't
+	call irchat-Command-join if arg is nil or "".
+
+Fri Apr 11 13:39:00 1997  Jukka Partanen  <jtp@iki.fi>
+
+	* irchat-globals.el (irchat-get-buffer-window-list): Added this
+	function.
+
+	* irchat-main.el (irchat-w-insert): Changed to scroll all windows
+	the buffer is displayed in.
+
+Thu Apr  3 16:45:31 1997  Janne Liimatainen  <jsl@iki.fi>
+
+	* Snapshot.
+
+	* Added smiley.el support. New variable irchat-use-smiley.
+
+Thu Apr  3 16:34:16 1997  Timo J. Rinne  <tri@iki.fi>
+
+	* irchat-crypt.el (irchat-init-crypt): Can now be called
+	   multiple times.
+
+Sat Mar 29 20:31:44 1997  Jukka Partanen  <jtp@iki.fi>
+
+	* irchat-globals.el: Removed irchat-timestamp-timer and
+	  irchat-names-timer. All timers should be included in
+	  irchat-timers.
+
+	* irchat-commands.el (irchat-Command-quit): Cancel all timers in
+ 	  irchat-timers. Also removed some old timer junk.
+
+Mon Mar 24 00:29:54 1997  Timo J. Rinne  <tri@iki.fi>
+
+	* irchat-handle.el (irchat-handle-privmsglike-msg):
+	  irchat-suspicious-message-prefix or
+	  irchat-defected-message-prefix can be also in notices.
+
+Thu Mar 20 11:23:23 1997  Timo J. Rinne  <tri@iki.fi>
+
+	* irchat-handle.el (irchat-handle-notice-msg): Added
+	  irchat-notice-cleartext-hook.  Virtually identical behavior
+	  to irchat-privmsg-cleartext-hook.
+
+Wed Mar 19 19:13:33 1997  Timo J. Rinne  <tri@iki.fi>
+
+	* Implemented irchat-handle-432-msg (ERR_ERRONEUSNICKNAME).
+	  Wow, typo in protocol.  (should be erroneous)
+
+Tue Mar 18 13:55:33 1997  Timo J. Rinne  <tri@iki.fi>
+
+	* Added irchat-error-prefix in order to match Cletus' nitpicker
+	  artistic eye :).
+
+	* irchat-vars.el added irchat-suspicious-message-prefix and
+	  irchat-defected-message-prefix.  They are added into buffer 
+	  before messages.  Both default to "".
+
+	* irchat-misc.el (irchat-ignore-this-p): Fixed to understand also
+	  regexps in the nicks in kill-list.  Regexps have to be perfect
+	  matches however (i.e. _foo or foo_ is not ignored by entry
+	  "foo" but are ignored by entry ".*foo.*")
+
+Tue Mar 18 12:55:34 1997  Jukka Partanen  <jtp@iki.fi>
+
+	* irchat-vars.el irchat-filter.el: Fixed irchat-debugmsg
+	documentation and use in irchat-filter.
+
+	* irchat-commands.el (irchat-Command-debug): Be more sensible
+	about windows.
+
+Mon Mar 17 13:02:26 1997  Timo J. Rinne  <tri@iki.fi>
+
+	* Snapshot.
+	
+	* Fixed a stupid typo irchat-format-string3-p ->
+	  irchat-format-string3-e.
+
+Sun Mar 16 20:18:17 1997  Tomi Ollila  <too@iki.fi>
+
+	* irchat-dcc.el (irchat-Command-dcc-send): This function
+	  can now be called noninteractively also.
+
+Sun Mar 16 16:15:18 1997  Timo J. Rinne  <tri@iki.fi>
+
+	* Snapshot.
+
+	* irchat-globals.el (irchat-userathost-type): Variable now shows
+	  authentication level of userathost.  Can be 'ok 'not-verified
+	  'fake or 'invalid.  Current internet usually seems to give
+	  'not-verified.  Stupid "~" or "^" is removed automatically from
+	  irchat-userathost.  Are there any other possible prefixes?
+
+Fri Mar 14 17:43:33 1997  Timo J. Rinne  <tri@iki.fi>
+
+	* Fixed timer code in irchat-main.  It was total crap.  Now it's
+	  maybe a bit less crap.
+
+Fri Mar 14 00:47:39 1997  Timo J. Rinne  <tri@iki.fi>
+
+	* Snapshot.
+
+	* irchat-inlines.el (irchat-update-user): Fixed to understand +v
+	  users (+) as well as +o users (@). 
+
+	* irchat-main.el (irchat): irchat-timers list is now initialized
+	  here instead of in defvar.  In defvar it is now defaulted to nil.
+	  User can append something into it and here we append defaults
+	  to the list if it has not been done before.  Should work.
+	  BTW It's quite ultrastupid idea to store these `default' and
+	  `running' timer items in the same list and initialize them with
+	  some mapcar kludge.  Didn't touch it though.
+
+Thu Mar 13 22:40:02 1997  Timo J. Rinne  <tri@iki.fi>
+
+	* Added idle mechanism.  Idle is reseted (irchat-reset-idle) in
+	  irchat-send.  Keepalive calls (irchat-ping-if-idle) that sends
+	  PING (irchat-Command-ping) to server if connection has been idle
+	  for over 2 minutes.
+
+Thu Mar 13 XX:XX:XX 1997  Timo J. Rinne  <tri@iki.fi>
+
+	* AT SOME POINT HERE JTP ADDED SOME INFO-PREFIX STUFF BUT DID NOT
+	  THINK IT WAS WORTH CHANGE LOG ENTRY.  HE ALSO MADE SNAPSHOT.
+
+	* ALSO JSL MADE SOMETHING.  WRITE THESE ENTRIES!
+	
+Wed Mar 12 16:34:41 1997  Timo J. Rinne  <tri@iki.fi>
+
+	* irchat-misc.el (irchat-ignore-this-p): If function
+	  irchat-custom-ignore-this-p is defined it is called from
+	  irchat-ignore-this-p.  It gets nick and user-at-host strings 
+	  as arguments.  If irchat-custom-ignore-this-p returns non nil,
+	  the message is ignored, otherwise irchat-ignore-this-p 
+	  makes the decision.
+
+Mon Mar 10 15:57:31 1997  Timo J. Rinne  <tri@iki.fi>
+
+	* Made release 3.00.
+
+	* 3.00 has symbol irchat_300 in RCS.
+	
+	* Upgraded "current" release to 3.01 and made snapshot.
+	  3.01 (970310) is more or less identical to 3.00 release.
+
+Thu Mar  6 00:26:04 1997  Timo J. Rinne  <tri@iki.fi>
+
+	* irchat-misc.el (irchat-send): It now warns the user, if
+	  maximum length of protocol message is exceeded.
+	  Message is however sent and server is left to worry about
+	  what to do with it.  It usually gets truncated.
+
+	* Crypt indicator now really works.
+
+	* irchat-crypt-use-comint-on-passphrase changed to
+	  irchat-crypt-secure-passphrase-read and read-passwd
+	  is used instead of comint stuff.
+
+Wed Mar  5 15:40:20 1997  Timo J. Rinne  <tri@iki.fi>
+
+	* Set irchat-crypt-use-comint-on-passphrase if you want to use
+	  comint in passphrase read.
+
+Wed Mar  5 00:14:25 1997  Timo J. Rinne  <tri@iki.fi>
+
+	* irchat-commands.el:
+	  Fixed 'cleartext option in irchat-Command-message.
+
+Tue Mar  4 17:47:15 1997  Timo J. Rinne  <tri@iki.fi>
+
+	* Made snapshot containing recent changes.
+
+Tue Mar  4 15:37:06 1997  Timo J. Rinne  <tri@iki.fi>
+
+	* Notice messages are also decrypted.
+
+Mon Mar  3 20:22:20 1997  Timo J. Rinne  <tri@iki.fi>
+
+	* Default keys are now set to regexp rather than exact
+	  nickname or channel.  Key has to match as a whole,
+	  i.e. default key "foo" is not used for "foobar".
+	  Have to use "foo.*" instead.
+
+Mon Mar  3 16:26:21 1997  Timo J. Rinne  <tri@iki.fi>
+
+	* Function irchat-current-nickname returns current valid nickname.
+
+	* When irchat-privmsg-cleartext-hook is called, variables
+	  irchat-current-message-encrypted-p, 
+	  irchat-current-message-suspicious-p,
+	  irchat-current-message-fingerprint and
+	  irchat-current-message-timestamp are defined.
+
+	* Function irchat-decrypt-message now inserts the fingerprint
+	  of the encryption key into the return list.
+
+Thu Feb 27 14:16:23 1997  Timo J. Rinne  <tri@iki.fi>
+
+	* irchat-caesar.el supports now Japanese rot-47 only
+	  optionally.  Default is rot-13 only.
+
+	* Made snapshot containing previous fixes.
+
+Thu Feb 27 12:25:14 1997  Janne Liimatainen  <jsl@iki.fi>
+
+	* irchat-main.el remove tail from nickname in irchat-open-server
+
+	* fixed nickname bug. irchat-nickname is now irchat-real-nickname.
+	  Users should still only change irchat-nickname
+
+Thu Feb 27 03:54:28 1997  Timo J. Rinne  <tri@iki.fi>
+
+	* idea.el fixed.  Bug in remove-padding allowed hostile
+	  spammer to kill irchat.
+
+	* Released a snapshot containing the fix above.
+	
+Wed Feb 26 15:21:41 1997  Janne Liimatainen  <jsl@iki.fi>
+
+	* irchat-vars.el is saved periodical (after timestamps) and when
+	  quiting.
+
+	* Added timeout to ignores.
+
+Wed Feb 26 12:51:27 1997  Jukka Partanen  <jtp@iki.fi>
+
+	* Added irchat-Crypt-map and changed bindings.
+
+	* Made snapshot.
+
+	* irchat-commands.el, irchat-main.el: changed occurrences of
+	  get-buffer-window to irchat-get-buffer-window.
+
+	* irchat-main.el: Fixed scrolling bug in irchat-w-insert.
+
+Wed Feb 26 00:33:26 1997  Timo J. Rinne  <tri@iki.fi>
+
+	* irchat-mkdist: 
+	  You can now give the snapshot name as a parameter.       
+	  Default is date (e.g. 970225).  Give YYMMDDx (x = a, b, c...)
+	  if you are generating several snapshots in the same day.
+
+Tue Feb 25 23:47:30 1997  Timo J. Rinne  <tri@iki.fi>
+
+	* ignore-suspicious now works.
+
+	* Makefile is now GNUmakefile.
+
+	* Added target gnuemacs2 to makefile.
+
+	* Fixed one .el to .elc in the makefile.
+
+Tue Feb 25 23:27:31 1997  Timo J. Rinne  <tri@iki.fi>
+
+	* Made snapshot.
+
+	* Added toggle-crypt.  
+
+	* Added ignore-defected.
+
+	* README.CRYPT now in RCS.
+	
+Tue Feb 25 15:25:37 1997  Timo J. Rinne  <tri@iki.fi>
+
+	* Added *IRC CRYPT* buffer that contains apparently
+	  encrypted messages that we were not able to decrypt.
+
+Mon Feb 24 18:33:32 1997  Timo J. Rinne  <tri@iki.fi>
+
+	* Promoted version to 3.0.  All elisp files are now
+	  revision 3.1.
+
+  	* Encryption stuff is now integrated.  Test it.
+	  See ~jsl/irchat/README_CRYPT
+
+Fri Feb 21 14:56:15 1997  Tomi Ollila  <too@iki.fi>
+
+	* Released irchat-2.54
+
+	* irchat-vars.el: Added code to check whether there is a dcc
+	  program available and sets irchat-dcc-program according to that.
+
+Tue Feb 18 14:38:19 1997  Tomi Ollila  <too@iki.fi>
+
+	* Changed most (eval-when-compile..)'s to (eval-and-compile..)'s
+	  - now requires in already required files works
+	  - earlyer every file that required irchat-inlines had to
+	    require irchat-globals and irchat-vars earlyer.
+	  - --> removed those requires in all files that requires
+	    irchat-inlines.el
+	  - irchat-inlines.el is always (eval-when-compile ...)'d in order
+	    not to get (require 'irchat-inlines) to the target binary.
+	    However, in this case, the defsubsts defined in
+	    irchat-inlines.el doesn't work, at least when compiled irchat
+	    w/ xemacs-19.14. 
+	  - The main point of doing all this eval-*-compile changes was to
+	    make irchat compilable without requiring irchat-inlines.elc
+	    appear in the target binary. This failed this time... perhaps
+	    the `xemacs2' -target below could do this...
+	    
+        * Added (eval-and-compile ...) around (provide ...)'s too
+	  (needed when compiling target `xemacs2' (see below))
+
+	* Added a test target `xemacs2' to the Makefile. w/ this target
+	  make first catenates all .el files to irchat2.el and the
+	  compiles that. This generates a smaller *.elc -binary.
+
+Sun Feb 16 11:19:37 1997  Timo J. Rinne  <tri@iki.fi>
+
+	* Timestamp insertion is now also triggered from ping message.
+	  This means that if channel is idle for a long time you may have
+	  two (not more) timestamps on consecutive lines.
+
+Thu Jan 30 11:53:15 1997  Tero T. Mononen  <tmo@iki.fi>
+
+	* Changed 353- and 366-handlers to handle split namreply-answers. 
+	  The 353-handler collects data from server-replies and 366-handler 
+	  prints the result.
+
+	* Support regexps on ignores.
+
+	* New function irchat-Command-save-vars. This function uses variable
+	  irchat-saved-forms to list variables whose values it saves to file
+	  specified on irchat-variables-file.
+
+	* Did not change version number. This is still 2.54alpha.
+
+Thu Dec 19 18:09:45 1996  Timo J. Rinne  <tri@iki.fi>
+
+	* Added X-FACE query support.  Similar functionality to
+	  userinfo.  With upcoming X-Face support this message
+	  should be handled accordingly.  New variable
+	  irchat-client-x-face that is to hold X-Face data.
+
+	* Handles now PART messages from newer (2.9) servers (too)
+
+	* Doesn't get stuck when nicks collide in startup (jsl)
+
+	* Promoted version number to 2.54alpha.
+
+	* Added hooks for processing to be done after the message
+	  is handled.  These are called after hooks like
+	  e.g. irchat-after-join-hook og irchat-after-313-hook.
+
+	* Changed Makefile to require eitger gnuemacs or xemacs as
+	  parameter. 
+
+	* Message hooks (and after hooks) can now be either variables
+	  containing a function or list of functions.  The list is
+	  executed as long as functions return nil.  If all functions in
+	  list return nil the message is processesd further.
+
+	* Added irchat-info-prefix (jtp)
+
+Tue Sep 19 23:59:09 1995  Tomi Ollila  <too@iki.fi>
+
+        * Changed compilation order in Makefile so all files doesn't need
+          to be deleted after irchat.elc is produced.
+
+	* Wrote indentical `require's for all files that is `require'd in
+	  a required file, to the files that requires it, since it doesn't
+	  work otherwise (does `eval-when-compile' affect the behaviour ?)
+	  Confused? So am I. See the `require' -paths and you'll
+	  understand what I tried to say.
+
+	* Added one patch from mta to `irchat-w-insert'
+
+	* Separated handling of private notices from privmsgs
+	  (no more NOTICEs to *IRC Private* -buffer).
+
+	* Added variable irchat-awaymsg and code to return 
+	  away infromation after irchat reconnect has taken place
+
+	* Added *IRC Private* -buffer initialization code.
+
+
+Sat May 25 22:22:22 1995
+
+        * Irchat 2.52 released.
+
+Mon Jan 15 11:43:37 1995
+
+        * Irchat 2.49 released.
