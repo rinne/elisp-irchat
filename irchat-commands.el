@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-commands.el,v 3.19 1997/03/29 18:31:25 jtp Exp $
+;;;  $Id: irchat-commands.el,v 3.20 1997/04/14 06:14:55 jtp Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -1223,24 +1223,23 @@ mode, the current channel and current chat partner are not altered)"
 			    irchat-nick-alist '(lambda (s) t) nil)
 	   )))))
 
-  (progn
-    (setq irchat-command-buffer-mode (if (eq irchat-command-buffer-mode 'chat)
-					 'channel
-				       'chat))
-    (if arg
-	(irchat-Command-join arg))
-    (setq irchat-channel-indicator (if (eq irchat-command-buffer-mode 'chat)
-				       (if irchat-current-chat-partner
-					   (format "Chatting with %s" 
-						   irchat-current-chat-partner)
-					 "No partner")
-				     (if irchat-current-channel
-					 (format "Channel %s" 
-						 irchat-current-channel)
-				       "No channel")))
-    (irchat-set-crypt-indicator)
-    ;; refresh mode line
-    (set-buffer-modified-p (buffer-modified-p))))
+  (setq irchat-command-buffer-mode (if (eq irchat-command-buffer-mode 'chat)
+				       'channel
+				     'chat))
+  (if (and arg (not (string= arg "")))
+      (irchat-Command-join arg))
+  (setq irchat-channel-indicator (if (eq irchat-command-buffer-mode 'chat)
+				     (if irchat-current-chat-partner
+					 (format "Chatting with %s" 
+						 irchat-current-chat-partner)
+				       "No partner")
+				   (if irchat-current-channel
+				       (format "Channel %s" 
+					       irchat-current-channel)
+				     "No channel")))
+  (irchat-set-crypt-indicator)
+  ;; refresh mode line
+  (set-buffer-modified-p (buffer-modified-p)))
 
 
 (defun irchat-Command-push ()
