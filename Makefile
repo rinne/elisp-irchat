@@ -2,7 +2,7 @@
 #
 # Makefile for irchat
 #
-# $Id: Makefile,v 3.18 2002/06/04 15:12:51 tri Exp $
+# $Id: Makefile,v 3.19 2002/06/04 15:47:27 tri Exp $
 #
 
 #
@@ -57,6 +57,13 @@ XOBJS 	=                       \
 	irchat-uah-cache.elc	\
 	irchat-global-kill.elc	\
 	irchat-obsolete.elc	\
+	irchat-msn-vars.el	\
+	irchat-msn-handle.el	\
+	irchat-msn-proc.el	\
+	irchat-msn-cmd.el	\
+	irchat-msn-sub.el	\
+	irchat-msn-msg.el	\
+	irchat-msn.el		\
 	$(CRYPTO_OBJS)
 
 

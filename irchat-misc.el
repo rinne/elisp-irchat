@@ -1,8 +1,12 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-misc.el,v 3.49 2001/10/10 22:23:10 tri Exp $
+;;;  $Id: irchat-misc.el,v 3.50 2002/06/04 15:47:27 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
+
+;;;
+;;; MSN Messenger Client implementation by tri@iki.fi.
+;;;
 
 (eval-when-compile (require 'irchat-inlines))
 (eval-and-compile  
@@ -757,6 +761,11 @@
 		       irchat-format-string5-e
 		     irchat-format-string5))
 	(t "")))
+
+(defun irchat-set-nth (n list item)
+  (if (> n 0)
+      (cons (car list) (irchat-set-nth (- n 1) (cdr list) item))
+    (cons item (cdr list))))
 
 (eval-and-compile (provide 'irchat-misc))
 ;;;
