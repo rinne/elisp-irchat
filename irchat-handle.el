@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-handle.el,v 3.6 1997/02/27 10:19:14 jsl Exp $
+;;;  $Id: irchat-handle.el,v 3.7 1997/03/03 13:00:16 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright in(eval-wfo
 
@@ -124,6 +124,8 @@
     (let* ((msg-encrypted-p nil)
 	   (msg-suspicious-p nil)
 	   (msg-garbled-p nil)
+	   (msg-fingerprint nil)
+	   (msg-timestamp nil)
 	   (chnl (matching-substring rest 1))
 	   (temp (matching-substring rest 2))
 	   (case-fold-search t)
@@ -132,12 +134,15 @@
 		       (setq msg-encrypted-p nil)
 		       temp)
 		   (let* ((clear (irchat-decrypt-message temp))
-			  (stat (nth 0 clear))  ;; 'success or 'error
-			  (nick (nth 1 clear))  ;;  sender's nick (string)
-			  (time (nth 2 clear))  ;;  timestamp (hex-string)
-			  (msg (nth 3 clear))   ;;  cleartext msg (string)
+			  (stat (nth 0 clear))   ;; 'success or 'error
+			  (nick (nth 1 clear))   ;;  sender's nick (string)
+			  (time (nth 2 clear))   ;;  timestamp (hex-string)
+			  (msg (nth 3 clear))    ;;  cleartext msg (string)
+			  (fprint (nth 4 clear)) ;;  fingerprint (string)
 			  (warn ""))
 		     (setq msg-encrypted-p t)
+		     (setq msg-fingerprint fprint)
+		     (setq msg-timestamp time)
 		     ;;; Check timestamp and nick here
 		     (if (and (equal 'success stat)
 			      (not (irchat-hex-timestamp-valid 
@@ -174,11 +179,15 @@
 		 msg-suspicious-p
 		 irchat-crypt-ignore-suspicious)
 	    (irchat-msg-from-ignored prefix (concat chnl " :" temp))
-	  (if (irchat-run-message-hook-types 'irchat-privmsg-cleartext-hook
-					     prefix
-					     (concat chnl
-						     " :"
-						     temp))
+	  (if (let ((irchat-current-message-encrypted-p msg-encrypted-p)
+		    (irchat-current-message-suspicious-p msg-suspicious-p)
+		    (irchat-current-message-fingerprint msg-fingerprint)
+		    (irchat-current-message-timestamp msg-timestamp))
+		(irchat-run-message-hook-types 'irchat-privmsg-cleartext-hook
+					       prefix
+					       (concat chnl
+						       " :"
+						       temp)))
 	      nil
 	    (progn
 	      (if (string-match "\\(.*\\)" temp)
