@@ -4,7 +4,7 @@
 ;;;  IDEA encryption in elisp.  Cool, ha?
 ;;;  ----------------------------------------------------------------------
 ;;;  Created      : Thu Jun 29 08:11:25 1995 tri
-;;;  Last modified: Tue Jun 23 18:45:03 1998 tri
+;;;  Last modified: Wed Jun 24 12:42:59 1998 tri
 ;;;  ----------------------------------------------------------------------
 ;;;  Copyright © 1995-1998
 ;;;  Timo J. Rinne <tri@iki.fi>
@@ -18,7 +18,7 @@
 ;;;  irchat-copyright.el applies only if used with irchat IRC client.
 ;;;  Contact the author for additional copyright info.
 ;;;
-;;;  $Id: idea.el,v 3.11 1998/06/24 09:17:33 tri Exp $
+;;;  $Id: idea.el,v 3.12 1998/06/24 09:44:08 tri Exp $
 ;;;
 
 (eval-and-compile  
@@ -969,15 +969,7 @@
 	      nil
 	    (let ((ty (elt annotation 0))
 		  (de (elt annotation 1)))
-	      (if (and (= de ?:)
-		       (>= (idea-hex-char-to-int (elt annotation 2)) 0)
-		       (>= (idea-hex-char-to-int (elt annotation 3)) 0)
-		       (>= (idea-hex-char-to-int (elt annotation 4)) 0)
-		       (>= (idea-hex-char-to-int (elt annotation 5)) 0)
-		       (>= (idea-hex-char-to-int (elt annotation 6)) 0)
-		       (>= (idea-hex-char-to-int (elt annotation 7)) 0)
-		       (>= (idea-hex-char-to-int (elt annotation 8)) 0)
-		       (>= (idea-hex-char-to-int (elt annotation 9)) 0))
+	      (if (= de ?:)
 		  (if (or (= ty ?e)
 			  (= ty ?d))
 		      (substring annotation 2 (length annotation))
