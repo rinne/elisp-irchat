@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-commands.el,v 3.8 1997/03/04 22:13:46 tri Exp $
+;;;  $Id: irchat-commands.el,v 3.9 1997/03/05 08:57:04 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -562,8 +562,9 @@ into own-message-var"
     (irchat-send "PRIVMSG %s :%s" message-nick-var msg)
     (irchat-own-private-message 
      (format (format "%s %%s" (if (or msg-encrypted-p
-				      (not (string= own-message-var
-						    msg)))
+				      (and (not (null own-message-var))
+					   (not (string= own-message-var
+							 msg))))
 				  irchat-format-string-e
 				irchat-format-string))
 	     message-nick-var (if own-message-var
