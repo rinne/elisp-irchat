@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-misc.el,v 3.30 1997/12/01 08:04:49 tri Exp $
+;;;  $Id: irchat-misc.el,v 3.31 1997/12/11 06:00:57 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -147,39 +147,57 @@
   "Insert incoming message into dialog buffer(s)."
   (if (and (> (length message) 0)
 	   (string-match (concat "^" 
-				 (regexp-quote
-				  irchat-message-split-separator))
+				 "\\("
+				 (if irchat-message-split-^C-compat
+				     (concat (regexp-quote
+					      irchat-message-split-separator)
+					     "\\|"
+					     (regexp-quote ""))
+				   (regexp-quote
+				    irchat-message-split-separator))
+				 "\\)"
+				 "\\(.*\\)")
 			 message)
 	   (null force))
-      (if (> (length message) (length irchat-message-split-separator))
-	  (let ((m (concat "^"
-			   absolute-prefix
-			   (regexp-quote (format format-string
-						 sender
-						 channel))
-			   " .*\\("
-			   (regexp-quote irchat-message-split-separator)
-			   "\\)$"))
-		(d (concat absolute-prefix
-			   (format format-string 
-				   sender 
-				   channel)
-			   " ... "
-			   (substring message 
-				      (length irchat-message-split-separator)
-				      (length message))
-			   "\n"))
-		(o (concat (regexp-quote irchat-message-split-separator) 
-			   "$"))
-		(n (substring message 
-			      (length irchat-message-split-separator)
-			      (length message))))
-	    (irchat-w-replace buffer m d o n 32)))
+      (let* ((n (matching-substring message 2))
+	     (m (concat "^"
+			absolute-prefix
+			(regexp-quote (format format-string
+					      sender
+					      channel))
+			" .*\\("
+			(if irchat-message-split-^C-compat
+			    (concat (regexp-quote
+				     irchat-message-split-separator)
+				    "\\|"
+				    (regexp-quote ""))
+			  (regexp-quote
+			   irchat-message-split-separator))
+		       "\\)$"))
+	     (d (concat absolute-prefix
+			(format format-string 
+				sender 
+				channel)
+			" ... "
+			n
+			"\n"))
+	     (o (concat "\\("
+			(if irchat-message-split-^C-compat
+			    (concat (regexp-quote
+				     irchat-message-split-separator)
+				    "\\|"
+				    (regexp-quote ""))
+			  (regexp-quote
+			   irchat-message-split-separator))
+			"\\)"
+			"$")))
+	(irchat-w-replace buffer m d o n 24))
     (irchat-w-insert buffer (concat absolute-prefix
 				    (format format-string sender channel)
 				    " "
 				    message
 				    "\n"))))
+
 
 (defun irchat-Dialogue-buffer-p (buffer)
   "Is BUFFER the irchat-Dialogue-buffer or it's name?" 
