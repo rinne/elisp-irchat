@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-misc.el,v 3.38 1998/05/24 11:58:43 tri Exp $
+;;;  $Id: irchat-misc.el,v 3.39 1998/05/24 12:05:17 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -294,7 +294,7 @@
           (setq irchat-channel-filter "")))))
 
 ;;;
-;;; Delayed send.  Same as irchat send.  Sends one message per second
+;;; Delayed send.  Same as irchat send.  Sends one message per 3 seconds
 ;;; saves order between other delayed sends, but direct irchat-send
 ;;; calls can violate the order.  Use this to send replies for example
 ;;; to ctcp queries that don't need to be sent immediately and can
@@ -311,7 +311,7 @@
   (if irchat-send-delayed-timer
       nil
     (setq irchat-send-delayed-timer
-	  (irchat-start-timer 'irchat-commit-delayed-send 1))))
+	  (irchat-start-timer 'irchat-commit-delayed-send 3))))
 
 (defun irchat-send-delayed-reset ()
   "Wipe delayed sends.  This is done automagically in quit."
