@@ -4,7 +4,7 @@
 ;;;  IDEA encryption in elisp.  Cool, ha?
 ;;;  ----------------------------------------------------------------------
 ;;;  Created      : Thu Jun 29 08:11:25 1995 tri
-;;;  Last modified: Mon Feb 24 15:50:23 1997 tri
+;;;  Last modified: Tue Feb 25 23:27:49 1997 tri
 ;;;  ----------------------------------------------------------------------
 ;;;  Copyright © 1995-1997
 ;;;  Timo J. Rinne <tri@iki.fi>
@@ -18,7 +18,7 @@
 ;;;  irchat-copyright.el applies only if used with irchat IRC client.
 ;;;  Contact the author for additional copyright info.
 ;;;
-;;;  $Id: idea.el,v 3.1 1997/02/24 16:00:02 tri Exp $
+;;;  $Id: idea.el,v 3.2 1997/02/25 21:28:05 tri Exp $
 ;;;
 
 (eval-and-compile  
@@ -225,7 +225,7 @@
 	       (if (listp passphrase)
 		   passphrase
 		 (error "IDEA key can be built from string or keylist."))))
-	 (annotation (build-idea-key-annotation s1 "e"))
+	 (annotation (idea-build-key-annotation s1 "e"))
 	 (s2 (idea-shift-key-25bits-left s1))
 	 (s3 (idea-shift-key-25bits-left s2))
 	 (s4 (idea-shift-key-25bits-left s3))
@@ -256,7 +256,7 @@
 (defun idea-build-decryption-key (passphrase)
   "Build idea decryption context from string or keylist (list of 8 16bit ints)"
   (let* ((k (idea-build-encryption-key passphrase))
-	 (annotation (build-idea-key-annotation (list (nth 0 (nth 0 k))
+	 (annotation (idea-build-key-annotation (list (nth 0 (nth 0 k))
 						      (nth 1 (nth 0 k))
 						      (nth 2 (nth 0 k))
 						      (nth 3 (nth 0 k))
@@ -643,7 +643,7 @@
 	  (+ (- x ?A) 10)
 	-1))))
 
-(defun build-idea-key-annotation (key type)
+(defun idea-build-key-annotation (key type)
   "Build annotation table of KEY that is of TYPE \"e\" or \"\d\"."
   (let ((r (make-string 16 0)))
     (aset r 15 (idea-& (nth 0 key) 255))
