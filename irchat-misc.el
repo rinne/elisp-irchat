@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-misc.el,v 3.6 1997/03/06 16:49:44 tri Exp $
+;;;  $Id: irchat-misc.el,v 3.7 1997/03/12 12:58:42 jsl Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -20,20 +20,22 @@
 	      (setq irchat-kill-nickname (remassoc (car (car mylist))
 						   irchat-kill-nickname)
 		    irchat-save-vars-is-dirty t)
-	      (irchat-w-insert irchat-D-buffer
-			       (format "*** Ignore timeout for %s expired.\n"
-				       (car (car mylist))))))
+	      (if (= (car (cdr (cdr (cdr (car mylist))))) 0)
+		  (irchat-w-insert irchat-D-buffer
+				   (format
+				    "*** Ignore timeout for %s expired.\n"
+				    (car (car mylist)))))))
 	(setq mylist (cdr mylist)))))
-  (let ((killit nil))
+  (let ((killit nil)
+	(case-fold-search t))
     (mapcar (function 
 	     (lambda (kill)
-	       (if (string-match (car kill) nick)
-		   (setq killit t)))) irchat-kill-nickname)
-    (if (not killit)
-	(mapcar (function 
-		 (lambda (kill)
-		   (if (string-match (car kill) uah)
-		       (setq killit t)))) irchat-kill-nickname))
+	       (if (or (string-ci-equal (car kill) nick)
+		       (and (string-match (car kill) uah)
+			    (= (match-beginning 0) 0)
+			    (= (match-end 0) (length uah))))
+		   (setq killit t))))
+	    irchat-kill-nickname)
     killit))
 
 (defun irchat-own-message (message)
