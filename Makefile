@@ -2,7 +2,7 @@
 #
 # Makefile for irchat
 #
-# $Id: Makefile,v 3.4 1997/02/26 10:14:17 too Exp $
+# $Id: Makefile,v 3.5 1997/02/28 10:53:25 jtp Exp $
 #
 
 #
@@ -15,10 +15,9 @@
 # DEFSUBST_BIN=  defsubst.elc
 # DEFSUBST_LOAD= -l ./$(DEFSUBST_BIN)
 
-EMACSCMD= emacs
-EMACS	= $(EMACSCMD) -batch -q -l ./setpath.el
-TAR	= gtar
-
+EMACS    = emacs
+EMACSCMD = $(EMACS) -batch -q -l ./setpath.el
+TAR	 = gtar
 
 # object order is important so compilation may take in order.
 # if, for some strange reason, `irchat-inlines.elc' is needed, put
@@ -51,38 +50,38 @@ OBJS 	= \
 
 SRCS	= $(OBJS:.elc=.el)
 
-all:
-	echo "Usage: make (gnuemacs|xemacs)"
-	exit 1
+all:	irchat-build
 
 irchat-build: irchat.elc irchat.info
 
 gnuemacs:
-	$(MAKE) EMACSCMD=emacs irchat-build
+	$(MAKE) EMACS=emacs irchat-build
 
 xemacs:
-	$(MAKE) EMACSCMD=xemacs irchat-build
+	$(MAKE) EMACS=xemacs irchat-build
 
 xemacs2:
-	$(MAKE) EMACSCMD=xemacs irchat2.elc
+	$(MAKE) EMACS=xemacs irchat2.elc
 
 gnuemacs2:
-	$(MAKE) EMACSCMD=emacs irchat2.elc
+	$(MAKE) EMACS=emacs irchat2.elc
 
 #	cat $(SRCS) > irchat2.el
 #	xemacs -batch -q -l ./setpath.el -f batch-byte-compile $(DEFSUBST_SRC) irchat2.el
 
-%.elc: %.el
-	$(EMACS) -f batch-byte-compile $(DEFSUBST_SRC) $<
+.SUFFIXES: .el .elc
+
+.el.elc:
+	$(EMACSCMD) -f batch-byte-compile $(DEFSUBST_SRC) $<
 
 irchat.elc:	$(OBJS)
 	rm -f $@
 	cat $(OBJS) > $@
 
 
-### Currently here as a test entries..
+### Currently here as test entries..
 irchat2.elc:	irchat2.el
-	$(EMACS) -f batch-byte-compile $(DEFSUBST_SRC) irchat2.el
+	$(EMACSCMD) -f batch-byte-compile $(DEFSUBST_SRC) irchat2.el
 
 irchat2.el: $(SRCS)
 	cat $(SRCS) > irchat2.el
@@ -95,7 +94,7 @@ irchat2.el: $(SRCS)
 #	    i-authors.texi 				> irchat.texinfo
 
 irchat.info:	irchat.texinfo
-	-$(EMACS) -q irchat.texinfo -f texinfo-format-buffer -f save-buffer
+	-$(EMACSCMD) -q irchat.texinfo -f texinfo-format-buffer -f save-buffer
 
 clean: 
 	-rm -f $(OBJS)
