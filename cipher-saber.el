@@ -4,7 +4,7 @@
 ;;;  Cipher Saber encryption in elisp.  Cool, ha?
 ;;;  ----------------------------------------------------------------------
 ;;;  Created      : Tue Jul  7 18:55:02 1998 tri
-;;;  Last modified: Wed Jul  8 12:36:52 1998 tri
+;;;  Last modified: Wed Jul  8 12:53:24 1998 tri
 ;;;  ----------------------------------------------------------------------
 ;;;  Copyright © 1998
 ;;;  Timo J. Rinne <tri@iki.fi>
@@ -18,7 +18,7 @@
 ;;;  irchat-copyright.el applies only if used with irchat IRC client.
 ;;;  Contact the author for additional copyright info.
 ;;;
-;;;  $Id: cipher-saber.el,v 1.2 1998/07/08 09:38:40 tri Exp $
+;;;  $Id: cipher-saber.el,v 1.3 1998/07/08 09:53:32 tri Exp $
 ;;;
 
 (eval-and-compile  
@@ -64,7 +64,6 @@
   (rc4-random cipher-saber-random-state)
   (rc4-random cipher-saber-random-state)
   (let ((x (+ (rc4-random cipher-saber-random-state) 10)))
-    (message "%d" x)
     (while (> x 0)
       (rc4-random cipher-saber-random-state)
       (setq x (- x 1)))))
