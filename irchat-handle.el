@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-handle.el,v 3.21 1997/10/19 15:49:10 tri Exp $
+;;;  $Id: irchat-handle.el,v 3.22 1997/10/19 16:15:12 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright in(eval-wfo
 
@@ -602,6 +602,7 @@
 				   (if flags (format " [%s]" flags) "")
                                    irchat-userathost 
                                    rest))))
+    (irchat-nick-to-uah-append prefix irchat-userathost)
     (irchat-change-nick-of prefix prefix)))
 
 
