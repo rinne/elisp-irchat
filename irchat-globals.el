@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-globals.el,v 3.2 1997/02/25 20:27:14 tri Exp $
+;;;  $Id: irchat-globals.el,v 3.3 1997/02/26 13:13:28 jsl Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -96,6 +96,9 @@ a list containing a channel name.")
 (defvar irchat-greet-author nil
   "T until we notice that the author of IRCHAT is present, and send him
 a greeting telling what version of IRCHAT this is.")
+
+(defvar irchat-save-vars-is-dirty nil
+  "Non nil if irchat_vars.el is changed but not saved.")
 
 (defvar irchat-userathost ""
   "The user@host for the current line.")
