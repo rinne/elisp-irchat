@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn-handle.el,v 3.8 2002/06/08 11:37:10 tri Exp $
+;;;  $Id: irchat-msn-handle.el,v 3.9 2002/06/09 14:23:38 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -8,20 +8,20 @@
 ;;; MSN Messenger Client implementation by tri@iki.fi.
 ;;;
 
-(defun irchat-msn-handle-generic (msg)
+(defun irchat-msn-handle-generic (parsed msg)
   t)
 
 (defun irchat-msn-handle-MSG-message (cmd-len pp-uid pp-name len msg)
   t)
 
-(defun irchat-msn-handle-VER (msg)
+(defun irchat-msn-handle-VER (parsed msg)
   (if (eq irchat-msn-connection-phase 'ver-sent)
       (progn
 	(irchat-msn-send "INF %d" (irchat-msn-seqno))
 	(setq irchat-msn-connection-phase 'inf-sent))
     (irchat-msn-protocol-error)))
 
-(defun irchat-msn-handle-INF (msg)
+(defun irchat-msn-handle-INF (parsed msg)
   (if (eq irchat-msn-connection-phase 'inf-sent)
       (progn
 	(irchat-w-insert irchat-MSN-buffer 
@@ -33,15 +33,15 @@
 	(setq irchat-msn-connection-phase 'usr-sent))
     (irchat-msn-protocol-error)))
 
-(defun irchat-msn-handle-OUT (msg)
-  (let ((ml (irchat-msn-proto-msg-parse msg)))
-    (cond ((string-equal "OTH" (nth 1 ml))
+(defun irchat-msn-handle-OUT (parsed msg)
+  (if (> (length parsed) 1)
+    (cond ((string-equal "OTH" (nth 1 parsed))
 	   (progn
 	     (setq irchat-msn-server-closed-because-of-another-login t)
 	     (irchat-w-insert irchat-MSN-buffer 
 			      (format "%sMSN Messenger connection closed because of another login.\n"
 				      irchat-msn-info-prefix))))
-	  ((string-equal "SSD" (nth 1 ml))
+	  ((string-equal "SSD" (nth 1 parsed))
 	   (progn
 	     (irchat-w-insert irchat-MSN-buffer 
 			      (format "%sMSN Messenger connection closed server is going down.\n"
@@ -51,16 +51,14 @@
 	     (irchat-w-insert irchat-MSN-buffer 
 			      (format "%sMSN Messenger connection closed (reason=%s).\n"
 				      irchat-msn-info-prefix
-				      (nth 1 ml)))))))
+				      (nth 1 parsed)))))))
   (irchat-msn-close-server))
 
-(defun irchat-msn-handle-NLN (msg)
-  (if (string-match 
-       "^NLN \\([^ ][^ ]*\\) \\([^ ][^ ]*\\) \\([^ ]*\\)"
-       msg)
-      (let ((stat (matching-substring msg 1))
-	    (pp-uid (matching-substring msg 2))
-	    (pp-name (irchat-msn-decode-name (matching-substring msg 3))))
+(defun irchat-msn-handle-NLN (parsed msg)
+  (if (> (length parsed) 3)
+      (let ((stat (nth 1 parsed))
+	    (pp-uid (nth 2 parsed))
+	    (pp-name (irchat-msn-decode-name (nth 3 parsed))))
 	(let ((user (irchat-search-contact-list-with-name pp-uid
 							  irchat-msn-online-list)))
 	  (if (null user)
@@ -83,13 +81,11 @@
 				       (irchat-msn-status-string stat)))))))
   (irchat-set-msn-indicator))
 
-(defun irchat-msn-handle-ILN (msg)
-  (if (string-match 
-       "^ILN [0-9][0-9]* \\([^ ][^ ]*\\) \\([^ ][^ ]*\\) \\([^ ]*\\)"
-       msg)
-      (let ((stat (matching-substring msg 1))
-	    (pp-uid (matching-substring msg 2))
-	    (pp-name (irchat-msn-decode-name (matching-substring msg 3))))
+(defun irchat-msn-handle-ILN (parsed msg)
+  (if (> (length parsed) 4)
+      (let ((stat (nth 2 parsed))
+	    (pp-uid (nth 3 parsed))
+	    (pp-name (irchat-msn-decode-name (nth 4 parsed))))
 	(let ((user (irchat-search-contact-list-with-name pp-uid
 							  irchat-msn-online-list)))
 	  (if (null user)
@@ -112,11 +108,9 @@
 				       (irchat-msn-status-string stat)))))))
   (irchat-set-msn-indicator))
 
-(defun irchat-msn-handle-FLN (msg)
-  (if (string-match 
-       "^FLN \\([^ ][^ ]*\\)"
-       msg)
-      (let ((pp-uid (matching-substring msg 1)))
+(defun irchat-msn-handle-FLN (parsed msg)
+  (if (> (length parsed) 1)
+      (let ((pp-uid (nth 1 parsed)))
 	(setq irchat-msn-online-list (irchat-remove-from-contact-list-with-name pp-uid
 										irchat-msn-online-list))
 	(if irchat-msn-show-status-changes
@@ -127,12 +121,12 @@
 				     pp-uid)))))
   (irchat-set-msn-indicator))
 
-(defun irchat-msn-handle-USR (msg)
+(defun irchat-msn-handle-USR (parsed msg)
   (cond ((and (eq irchat-msn-connection-phase 'usr-sent)
-	      (string-match 
-	       "^USR [0-9][0-9]* MD5 S \\([0-9][0-9]*\\.[0-9][0-9]*\\)"
-	       msg))
-	 (let ((salt (matching-substring msg 1))
+	      (> (length parsed) 4)
+	      (string-equal "MD5" (nth 2 parsed))
+	      (string-equal "S" (nth 3 parsed)))
+	 (let ((salt (nth 4 parsed))
 	       (pass (cond ((not (null irchat-msn-password-cache))
 			    (let ((r irchat-msn-password-cache))
 			      (setq irchat-msn-password-cache nil)
@@ -148,9 +142,8 @@
 	   (irchat-msn-send "USR %d MD5 S %s" (irchat-msn-seqno) (md5 (concat salt pass)))))
 	((and (or (eq irchat-msn-connection-phase 'usr-sent)
 		  (eq irchat-msn-connection-phase 'usr-pass-sent))
-	      (string-match 
-	       "^USR [0-9][0-9]* OK \\(.*\\)"
-	       msg))
+	      (> (length parsed) 3)
+	      (string-equal "OK" (nth 2 parsed)))
 	 (setq irchat-msn-password-cache irchat-msn-last-password)
 	 (irchat-msn-send "CHG %d NLN" (irchat-msn-seqno))
 	 (setq irchat-msn-online-list '()) ;; Server sends online list after CHG
@@ -159,14 +152,14 @@
 	     (irchat-msn-send "CVR %d %s" (irchat-msn-seqno) irchat-msn-fake-client-version)))
        (t (irchat-msn-protocol-error))))
 
-(defun irchat-msn-handle-XFR (msg)
+(defun irchat-msn-handle-XFR (parsed msg)
   (cond ((and (eq irchat-msn-connection-phase 'usr-sent)
-	      (string-match 
-	       "^XFR [0-9][0-9]* NS \\([0-9][0-9.]*[0-9]\\):\\([1-9][0-9]*\\) [0-9][0-9]*"
-	       msg))
-	 (let ((host (matching-substring msg 1))
-	       (service (string-to-int (matching-substring msg 2))))
-	   (irchat-w-insert irchat-MSN-buffer 
+	      (> (length parsed) 4)
+	      (string-equal "NS" (nth 2 parsed))
+	      (string-match "^\\([0-9][0-9.]*[0-9]\\):\\([1-9][0-9]*\\)$" (nth 3 parsed)))
+	 (let ((host (matching-substring (nth 3 parsed) 1))
+	       (service (string-to-int (matching-substring (nth 3 parsed) 2))))
+	   (irchat-w-insert irchat-MSN-buffer
 			    (format "%sServer %s redirects the connection to %s.\n"
 				    irchat-msn-info-prefix
 				    irchat-msn-server-int
@@ -174,12 +167,13 @@
 	   (irchat-msn-close-server)
 	   (setq irchat-msn-connection-phase 'xfr-received)
 	   (irchat-msn-start-server host service)))
-	((string-match 
-	  "^XFR [0-9][0-9]* SB \\([0-9][0-9.]*[0-9]\\):\\([1-9][0-9]*\\) CKI \\([^ ][^ ]*\\)"
-	  msg)
-	 (let ((host (matching-substring msg 1))
-	       (hash (matching-substring msg 3))
-	       (service (string-to-int (matching-substring msg 2))))
+	((and (> (length parsed) 5)
+	      (string-equal "SB" (nth 2 parsed))
+	      (string-equal "CKI" (nth 4 parsed))
+	      (string-match "^\\([0-9][0-9.]*[0-9]\\):\\([1-9][0-9]*\\)$" (nth 3 parsed)))
+	 (let ((host (matching-substring (nth 3 parsed) 1))
+	       (service (string-to-int (matching-substring (nth 3 parsed) 2)))
+	       (hash (nth 5 parsed)))
 	   (if irchat-msn-messages-pending-sb
 	       (let ((pending (car irchat-msn-messages-pending-sb)))
 		 (setq irchat-msn-messages-pending-sb (cdr irchat-msn-messages-pending-sb))
@@ -187,7 +181,7 @@
 	     t)))
 	(t (irchat-msn-protocol-error))))
 
-(defun irchat-msn-handle-911 (msg)
+(defun irchat-msn-handle-911 (parsed msg)
   (cond ((eq irchat-msn-connection-phase 'usr-pass-sent)
 	 (progn
 	   (setq irchat-msn-connection-phase nil)
@@ -198,17 +192,15 @@
 	   (message "MSN: 911, Giving up!")
 	   (irchat-msn-close-server)))))
 
-(defun irchat-msn-handle-QRY (msg)
+(defun irchat-msn-handle-QRY (parsed msg)
   t)
 
-(defun irchat-msn-handle-CVR (msg)
+(defun irchat-msn-handle-CVR (parsed msg)
   t)
 
-(defun irchat-msn-handle-CHL (msg)
-  (if (string-match 
-       "^CHL [0-9][0-9]* \\([0-9][0-9]*\\)"
-       msg)
-      (let ((c1 (matching-substring msg 1))
+(defun irchat-msn-handle-CHL (parsed msg)
+  (if (> (length parsed) 2)
+      (let ((c1 (nth 2 parsed))
 	    (c2 irchat-msn-challenge-cookie))
 	(irchat-msn-send-raw "QRY %d %s 32\r\n%s"
 			     (irchat-msn-seqno)
@@ -216,7 +208,7 @@
 			     (md5 (concat c1 c2))))
     (irchat-msn-protocol-error)))
 
-(defun irchat-msn-handle-CHG (msg)
+(defun irchat-msn-handle-CHG (parsed msg)
   (cond ((eq irchat-msn-connection-phase 'chg-sent)
 	 (progn
 	   (setq irchat-msn-connection-phase 'online)
@@ -230,10 +222,8 @@
 					       (list (current-time-string))) 
 				      (current-time-string))))
 	   (irchat-msn-send "SYN %d 0" (irchat-msn-seqno))))
-	((string-match
-	  "^CHG [0-9][0-9]* \\([^ ][^ ]*\\)"
-	  msg)
-	 (let ((stat (matching-substring msg 1)))
+	((> (length parsed) 2)
+	 (let ((stat (nth 2 parsed)))
 	   (let ((statstr (irchat-msn-status-string stat)))
 	     (setq irchat-msn-my-online-mode statstr)
 	     (irchat-w-insert irchat-MSN-buffer 
@@ -243,114 +233,76 @@
 	(t t))
   (irchat-set-msn-indicator))
 
-(defun irchat-msn-handle-SYN (msg)
+(defun irchat-msn-handle-SYN (parsed msg)
   (setq irchat-msn-lists-in-sync nil))
 
-(defun irchat-msn-handle-LST (msg)
-  (cond ((string-match 
-	  "^LST [0-9][0-9]* FL \\([0-9][0-9]*\\) \\([0-9][0-9]*\\) \\([0-9][0-9]*\\) \\([^ ][^ ]*\\) \\([^ ]*\\) \\([0-9][0-9]*\\)"
-	  msg)
-	 (let ((s1 (matching-substring msg 1))
-	       (s2 (matching-substring msg 2))
-	       (s3 (matching-substring msg 3))
-	       (s4 (matching-substring msg 4))
-	       (s5 (matching-substring msg 5))
-	       (s6 (matching-substring msg 6)))
-	   (let ((lstver (string-to-int s1))
-		 (num (string-to-int s2))
-		 (tot (string-to-int s3))
-		 (pp-uid s4)
-		 (pp-name (irchat-msn-decode-name s5))
-		 (gid (string-to-int s6)))
-	     (if (eq num 1)
-		 (setq irchat-msn-forward-list '()))
-	     (setq irchat-msn-forward-list 
-		   (cons (list pp-uid pp-name gid nil)
-			 (irchat-remove-from-contact-list-with-name pp-uid
-								    irchat-msn-forward-list)))
-	     t)))
-	((string-match
-	  "^LST [0-9][0-9]* FL \\([0-9][0-9]*\\) 0 0"
-	  msg)
-	 (setq irchat-msn-forward-list '()))
-	((string-match 
-	  "^LST [0-9][0-9]* RL \\([0-9][0-9]*\\) \\([0-9][0-9]*\\) \\([0-9][0-9]*\\) \\([^ ][^ ]*\\) \\([^ ]*\\)"
-	  msg)
-	 (let ((lstver (string-to-int (matching-substring msg 1)))
-	       (num (string-to-int (matching-substring msg 2)))
-	       (tot (string-to-int (matching-substring msg 3)))
-	       (pp-uid (matching-substring msg 4))
-	       (pp-name (irchat-msn-decode-name (matching-substring msg 5)))
-	       (gid -1))
-	   (if (eq num 1)
-	       (setq irchat-msn-reverse-list '()))
-	   (setq irchat-msn-reverse-list 
-		 (cons (list pp-uid pp-name gid nil)
-		       (irchat-remove-from-contact-list-with-name pp-uid
-								  irchat-msn-reverse-list)))
-	   (if (eq num tot)
-	       (progn
-		 (setq irchat-msn-lists-in-sync t)
-		 (if irchat-msn-show-lists-in-startup
-		     (irchat-Command-msn-list-lists))))
-	   t))
-	((string-match
-	  "^LST [0-9][0-9]* RL \\([0-9][0-9]*\\) 0 0"
-	  msg)
-	 (progn
-	   (setq irchat-msn-reverse-list '())
-	   (setq irchat-msn-lists-in-sync t)
-	   (irchat-Command-msn-list-lists)))
-	((string-match 
-	  "^LST [0-9][0-9]* AL \\([0-9][0-9]*\\) \\([0-9][0-9]*\\) \\([0-9][0-9]*\\) \\([^ ][^ ]*\\) \\([^ ]*\\)"
-	  msg)
-	 (let ((lstver (string-to-int (matching-substring msg 1)))
-	       (num (string-to-int (matching-substring msg 2)))
-	       (tot (string-to-int (matching-substring msg 3)))
-	       (pp-uid (matching-substring msg 4))
-	       (pp-name (irchat-msn-decode-name (matching-substring msg 5)))
-	       (gid -1))
-	   (if (eq num 1)
-		 (setq irchat-msn-allow-list '()))
-	   (setq irchat-msn-allow-list 
-		 (cons (list pp-uid pp-name gid nil)
-		       (irchat-remove-from-contact-list-with-name pp-uid
-								  irchat-msn-allow-list)))
-	   t))
-	((string-match
-	  "^LST [0-9][0-9]* AL \\([0-9][0-9]*\\) 0 0"
-	  msg)
-	 (setq irchat-msn-allow-list '()))
-	((string-match 
-	  "^LST [0-9][0-9]* BL \\([0-9][0-9]*\\) \\([0-9][0-9]*\\) \\([0-9][0-9]*\\) \\([^ ][^ ]*\\) \\([^ ]*\\)"
-	  msg)
-	 (let ((lstver (string-to-int (matching-substring msg 1)))
-	       (num (string-to-int (matching-substring msg 2)))
-	       (tot (string-to-int (matching-substring msg 3)))
-	       (pp-uid (matching-substring msg 4))
-	       (pp-name (irchat-msn-decode-name (matching-substring msg 5)))
-	       (gid -1))
-	   (if (eq num 1)
-	       (setq irchat-msn-block-list '()))
-	   (setq irchat-msn-block-list 
-		 (cons (list pp-uid pp-name gid nil)
-		       (irchat-remove-from-contact-list-with-name pp-uid
-								  irchat-msn-block-list)))
-	   t))
-	((string-match
-	  "^LST [0-9][0-9]* BL \\([0-9][0-9]*\\) 0 0"
-	  msg)
-	 (setq irchat-msn-block-list '()))
+(defun irchat-msn-handle-LST (parsed msg)
+  (cond ((> (length parsed) 7)
+	 (let ((lstid (nth 2 parsed))
+	       (lstver (string-to-int (nth 3 parsed)))
+	       (num (string-to-int (nth 4 parsed)))
+	       (tot (string-to-int (nth 5 parsed)))
+	       (pp-uid (nth 6 parsed))
+	       (pp-name (irchat-msn-decode-name (nth 7 parsed)))
+	       (gid (if (nth 8 parsed) (string-to-int (nth 8 parsed)) -1)))
+	   (cond ((string-equal "FL" lstid)
+		  (progn
+		    (if (eq num 1)
+			(setq irchat-msn-forward-list '()))
+		    (setq irchat-msn-forward-list 
+			  (cons (list pp-uid pp-name gid nil)
+				(irchat-remove-from-contact-list-with-name pp-uid
+									   irchat-msn-forward-list)))
+		    t))
+		 ((string-equal "RL" lstid)
+		  (progn
+		    (if (eq num 1)
+			(setq irchat-msn-reverse-list '()))
+		    (setq irchat-msn-reverse-list 
+			  (cons (list pp-uid pp-name gid nil)
+				(irchat-remove-from-contact-list-with-name pp-uid
+									   irchat-msn-reverse-list)))
+		    t))
+		 ((string-equal "AL" lstid)
+		  (progn
+		    (if (eq num 1)
+			(setq irchat-msn-allow-list '()))
+		    (setq irchat-msn-allow-list 
+			  (cons (list pp-uid pp-name gid nil)
+				(irchat-remove-from-contact-list-with-name pp-uid
+									   irchat-msn-allow-list)))
+		    t))
+		 ((string-equal "BL" lstid)
+		  (progn
+		    (if (eq num 1)
+			(setq irchat-msn-block-list '()))
+		    (setq irchat-msn-block-list 
+			  (cons (list pp-uid pp-name gid nil)
+				(irchat-remove-from-contact-list-with-name pp-uid
+									   irchat-msn-block-list)))
+		    t))
+		 (t t))))
+	((and (> (length parsed) 5)
+	      (string-equal "0" (nth 4 parsed))
+	      (string-equal "0" (nth 5 parsed)))
+	 (cond ((string-equal "FL" (nth 2 parsed))
+		(setq irchat-msn-forward-list '()))
+	       ((string-equal "RL" (nth 2 parsed))
+		(setq irchat-msn-reverse-list '()))
+	       ((string-equal "AL" (nth 2 parsed))
+		(setq irchat-msn-allow-list '()))
+	       ((string-equal "BL" (nth 2 parsed))
+		(setq irchat-msn-block-list '()))
+	       (t t)))
 	(t t))
   (irchat-set-msn-indicator))
 
-(defun irchat-msn-handle-ADD (msg)
-  (cond	((string-match 
-	  "^ADD [0-9][0-9]* RL \\([0-9][0-9]*\\) \\([^ ][^ ]*\\) \\([^ ]*\\)"
-	  msg)
-	 (let ((lstver (string-to-int (matching-substring msg 1)))
-	       (pp-uid (matching-substring msg 2))
-	       (pp-name (irchat-msn-decode-name (matching-substring msg 3)))
+(defun irchat-msn-handle-ADD (parsed msg)
+  (cond ((and (> (length parsed) 5)
+	      (string-equal "RL" (nth 2 parsed)))
+	 (let ((lstver (string-to-int (nth 3 parsed)))
+	       (pp-uid (nth 4 parsed))
+	       (pp-name (irchat-msn-decode-name (nth 5 parsed)))
 	       (gid -1))
 	   (irchat-w-insert irchat-MSN-buffer 
 			    (format "%sUser %s <%s> adds you to to the contact list.\n"
@@ -373,136 +325,109 @@
 	       ;;; If auto-contact is on and if it's not blocked, add it to forward list.
 	       (irchat-msn-send "ADD %d FL %s %s 0" (irchat-msn-seqno) pp-uid pp-uid))
 	   t))
-	((string-match 
-	  "^ADD [0-9][0-9]* \\([^ ][^ ]*\\) \\([0-9][0-9]*\\) \\([^ ][^ ]*\\) \\([^ ]*\\)\\(.*\\)"
-	  msg)
-	 (let ((s1 (matching-substring msg 1))
-	       (s2 (matching-substring msg 2))
-	       (s3 (matching-substring msg 3))
-	       (s4 (matching-substring msg 4))
-	       (s5 (matching-substring msg 5)))
-	   (let ((ln (upcase s1))
-		 (lstver (string-to-int s2))
-		 (pp-uid s3)
-		 (pp-name s4)
-		 (rest s5))
-	     (let ((gid (if (string-match "^ \\([0-9][0-9]*\\)" rest)
-			    (string-to-int (matching-substring rest 1))
-			  -1)))
-	       (cond ((string-equal "FL" ln)
-		      (progn
-			(irchat-w-insert irchat-MSN-buffer
-					 (format "%sUser %s <%s> added to the contact list.\n"
-						 irchat-msn-info-prefix pp-name pp-uid))
-			(setq irchat-msn-forward-list 
-			      (cons (list pp-uid pp-name gid nil)
-				    (irchat-remove-from-contact-list-with-name pp-uid
-									       irchat-msn-forward-list)))
-			t))
-		     ((string-equal "AL" ln)
-		      (progn
-			(irchat-w-insert irchat-MSN-buffer
-					 (format "%sUser %s <%s> added to the allow list.\n"
-						 irchat-msn-info-prefix pp-name pp-uid))
-			(setq irchat-msn-allow-list 
-			      (cons (list pp-uid pp-name gid nil)
-				    (irchat-remove-from-contact-list-with-name pp-uid
-									       irchat-msn-allow-list)))
-			t))
-		     ((string-equal "BL" ln)
-		      (progn
-			(irchat-w-insert irchat-MSN-buffer
-					 (format "%sUser %s <%s> added to the block list.\n"
-						 irchat-msn-info-prefix pp-name pp-uid))
-			(setq irchat-msn-block-list 
-			      (cons (list pp-uid pp-name gid nil)
-				    (irchat-remove-from-contact-list-with-name pp-uid
-									       irchat-msn-block-list)))
-			t))
-		     (t
-		      t))))))
-	(t (irchat-msn-protocol-error))))
+	((> (length parsed) 5)
+	 (let ((lstid (nth 2 parsed))
+	       (lstver (nth 3 parsed))
+	       (pp-uid (nth 4 parsed))
+	       (pp-name (nth 5 parsed))
+	       (gid (if (nth 6 parsed) (string-to-int (nth 6 parsed)) -1)))
+	   (cond ((string-equal "FL" lstid)
+		  (progn
+		    (irchat-w-insert irchat-MSN-buffer
+				     (format "%sUser %s <%s> added to the contact list.\n"
+					     irchat-msn-info-prefix pp-name pp-uid))
+		    (setq irchat-msn-forward-list 
+			  (cons (list pp-uid pp-name gid nil)
+				(irchat-remove-from-contact-list-with-name pp-uid
+									   irchat-msn-forward-list)))
+		    t))
+		 ((string-equal "AL" lstid)
+		  (progn
+		    (irchat-w-insert irchat-MSN-buffer
+				     (format "%sUser %s <%s> added to the allow list.\n"
+					     irchat-msn-info-prefix pp-name pp-uid))
+		    (setq irchat-msn-allow-list 
+			  (cons (list pp-uid pp-name gid nil)
+				(irchat-remove-from-contact-list-with-name pp-uid
+									   irchat-msn-allow-list)))
+		    t))
+		 ((string-equal "BL" lstid)
+		  (progn
+		    (irchat-w-insert irchat-MSN-buffer
+				     (format "%sUser %s <%s> added to the block list.\n"
+					     irchat-msn-info-prefix pp-name pp-uid))
+		    (setq irchat-msn-block-list 
+			  (cons (list pp-uid pp-name gid nil)
+				(irchat-remove-from-contact-list-with-name pp-uid
+									   irchat-msn-block-list)))
+		    t))
+		 (t t))))
+	(t t)))
 
-(defun irchat-msn-handle-REM (msg)
-  (cond	((string-match 
-	  "^REM [0-9][0-9]* RL \\([0-9][0-9]*\\) \\([^ ][^ ]*\\)"
-	  msg)
-	 (let ((lstver (string-to-int (matching-substring msg 1)))
-	       (pp-uid (matching-substring msg 2)))
-	   (let ((pp-data (irchat-search-contact-list-with-name pp-uid
-								irchat-msn-reverse-list)))
-	     (let ((pp-name (if (null pp-data) "???" (nth 1 pp-data))))
-	       (irchat-w-insert irchat-MSN-buffer 
-				(format "%sUser %s <%s> removes you from the contact list.\n"
-					irchat-msn-info-prefix pp-name pp-uid))
-	       (setq irchat-msn-reverse-list (irchat-remove-from-contact-list-with-name 
-					      pp-uid
-					      irchat-msn-reverse-list))
-	       t))))
-	((string-match 
-	  "^REM [0-9][0-9]* FL \\([0-9][0-9]*\\) \\([^ ][^ ]*\\)"
-	  msg)
-	 (let ((lstver (string-to-int (matching-substring msg 1)))
-	       (pp-uid (matching-substring msg 2)))
-	   (let ((pp-data (irchat-search-contact-list-with-name pp-uid
-								irchat-msn-forward-list)))
-	     (let ((pp-name (if (null pp-data) "???" (nth 1 pp-data))))
-	       (irchat-w-insert irchat-MSN-buffer 
-				(format "%sUser %s <%s> removed from the contact list.\n"
-					irchat-msn-info-prefix pp-name pp-uid))
-	       (setq irchat-msn-forward-list (irchat-remove-from-contact-list-with-name 
-					      pp-uid
-					      irchat-msn-forward-list))
-	       t))))
-	((string-match 
-	  "^REM [0-9][0-9]* AL \\([0-9][0-9]*\\) \\([^ ][^ ]*\\)"
-	  msg)
-	 (let ((lstver (string-to-int (matching-substring msg 1)))
-	       (pp-uid (matching-substring msg 2)))
-	   (let ((pp-data (irchat-search-contact-list-with-name pp-uid
-								irchat-msn-allow-list)))
-	     (let ((pp-name (if (null pp-data) "???" (nth 1 pp-data))))
-	       (irchat-w-insert irchat-MSN-buffer 
-				(format "%sUser %s <%s> removed from the allow list.\n"
-					irchat-msn-info-prefix pp-name pp-uid))
-	       (setq irchat-msn-allow-list (irchat-remove-from-contact-list-with-name 
-					    pp-uid
-					    irchat-msn-allow-list))
-	       t))))
-	((string-match 
-	  "^REM [0-9][0-9]* BL \\([0-9][0-9]*\\) \\([^ ][^ ]*\\)"
-	  msg)
-	 (let ((lstver (string-to-int (matching-substring msg 1)))
-	       (pp-uid (matching-substring msg 2)))
-	   (let ((pp-data (irchat-search-contact-list-with-name pp-uid
-								irchat-msn-block-list)))
-	     (let ((pp-name (if (null pp-data) "???" (nth 1 pp-data))))
-	       (irchat-w-insert irchat-MSN-buffer 
-				(format "%sUser %s <%s> removed from the block list.\n"
-					irchat-msn-info-prefix pp-name pp-uid))
-	       (setq irchat-msn-allow-list (irchat-remove-from-contact-list-with-name 
-					    pp-uid
-					    irchat-msn-block-list))
-	       t))))
-	(t (irchat-msn-protocol-error))))
+(defun irchat-msn-handle-REM (parsed msg)
+  (cond ((> (length parsed) 4)
+	 (let ((lstid (nth 2 parsed))
+	       (lstver (nth 3 parsed))
+	       (pp-uid (nth 4 parsed)))
+	   (cond ((string-equal "FL" lstid)
+		  (let ((pp-data (irchat-search-contact-list-with-name pp-uid
+								       irchat-msn-forward-list))
+			(pp-name pp-uid))
+		    (if pp-data (setq pp-name (nth 1 pp-data)))
+		    (irchat-w-insert irchat-MSN-buffer 
+				     (format "%sUser %s <%s> removed from the contact list.\n"
+					     irchat-msn-info-prefix pp-name pp-uid))
+		    (setq irchat-msn-forward-list (irchat-remove-from-contact-list-with-name 
+						   pp-uid
+						   irchat-msn-forward-list))))
+		 ((string-equal "RL" lstid)
+		  (let ((pp-data (irchat-search-contact-list-with-name pp-uid
+								       irchat-msn-reverse-list))
+			(pp-name pp-uid))
+		    (if pp-data (setq pp-name (nth 1 pp-data)))
+		    (irchat-w-insert irchat-MSN-buffer 
+				     (format "%sUser %s <%s> removes you from his contact list.\n"
+					     irchat-msn-info-prefix pp-name pp-uid))
+		    (setq irchat-msn-reverse-list (irchat-remove-from-contact-list-with-name 
+						   pp-uid
+						   irchat-msn-reverse-list))))
+		 ((string-equal "AL" lstid)
+		  (let ((pp-data (irchat-search-contact-list-with-name pp-uid
+								       irchat-msn-allow-list))
+			(pp-name pp-uid))
+		    (if pp-data (setq pp-name (nth 1 pp-data)))
+		    (irchat-w-insert irchat-MSN-buffer 
+				     (format "%sUser %s <%s> removed from the allow list.\n"
+					     irchat-msn-info-prefix pp-name pp-uid))
+		    (setq irchat-msn-allow-list (irchat-remove-from-contact-list-with-name 
+						   pp-uid
+						   irchat-msn-allow-list))))
 
-(defun irchat-msn-handle-RNG (msg)
-  (cond	((string-match 
-	  "^RNG \\([0-9][0-9]*\\) \\([0-9][0-9.]*[0-9]\\):\\([1-9][0-9]*\\) CKI \\([^ ][^ ]*\\) \\([^ ][^ ]*\\) \\([^ ]*\\)"
-	  msg)
-	 (let ((s1 (matching-substring msg 1))
-	       (s2 (matching-substring msg 2))
-	       (s3 (matching-substring msg 3))
-	       (s4 (matching-substring msg 4))
-	       (s5 (matching-substring msg 5))
-	       (s6 (matching-substring msg 6)))
-	   (let ((sid s1)
-		 (host s2)
-		 (service (string-to-int s3))
-		 (hash s4)
-		 (pp-uid s5)
-		 (pp-name (irchat-msn-decode-name s6)))
-	     (irchat-msn-start-answering-sub-server host service (concat hash " " sid)))))
+		 ((string-equal "BL" lstid)
+		  (let ((pp-data (irchat-search-contact-list-with-name pp-uid
+								       irchat-msn-block-list))
+			(pp-name pp-uid))
+		    (if pp-data (setq pp-name (nth 1 pp-data)))
+		    (irchat-w-insert irchat-MSN-buffer 
+				     (format "%sUser %s <%s> removed from the block list.\n"
+					     irchat-msn-info-prefix pp-name pp-uid))
+		    (setq irchat-msn-block-list (irchat-remove-from-contact-list-with-name 
+						   pp-uid
+						   irchat-msn-block-list))))
+		 (t t))))
+	(t t)))
+
+(defun irchat-msn-handle-RNG (parsed msg)
+  (cond	((and (> (length parsed) 6)
+	      (string-equal "CKI" (nth 3 parsed))
+	      (string-match "\\([0-9][0-9.]*[0-9]\\):\\([1-9][0-9]*\\)" (nth 2 parsed)))
+	 (let ((host (matching-substring (nth 2 parsed) 1))
+	       (service (string-to-int (matching-substring (nth 2 parsed) 2)))
+	       (sid (nth 1 parsed))
+	       (hash (nth 4 parsed))
+	       (pp-uid (nth 5 parsed))
+	       (pp-name (irchat-msn-decode-name (nth 6 parsed))))
+	   (irchat-msn-start-answering-sub-server host service (concat hash " " sid))))
 	(t t)))
 
 (eval-and-compile (provide 'irchat-msn-handle))

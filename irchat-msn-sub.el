@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn-sub.el,v 3.6 2002/06/08 11:57:19 tri Exp $
+;;;  $Id: irchat-msn-sub.el,v 3.7 2002/06/09 14:23:38 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -216,14 +216,15 @@
 	       (progn
 		 (setq cmd "")
 		 (setq handler nil)))
-	     (let ((process proc))
-	       (if (and handler (fboundp handler))
-		   (apply handler (list msg))
-		 (irchat-msn-sub-handle-generic msg)))
+	     (let ((ml (irchat-msn-proto-msg-parse msg)))
+	       (if ml
+		   (if (and handler (fboundp handler))
+		       (apply handler (list proc ml msg))
+		     (irchat-msn-sub-handle-generic proc ml msg))))
 	     t))
 	  (t nil))))
 
-(defun irchat-msn-sub-handle-generic (msg)
+(defun irchat-msn-sub-handle-generic (process parsed msg)
   t)
 
 (defun irchat-msn-sub-handle-MSG-message (cmd-len pp-uid pp-name len msg)
@@ -248,7 +249,7 @@
 		    t))))
       t)))
 
-(defun irchat-msn-sub-handle-BYE (msg)
+(defun irchat-msn-sub-handle-BYE (process parsed msg)
   (let ((p (irchat-msn-sub-server-search-with-process process)))
     (if p
 	(if (string-match "^BYE \\([^ ][^ ]*\\)" msg)
@@ -265,7 +266,7 @@
 	  t)
       nil)))
 
-(defun irchat-msn-sub-handle-JOI (msg)
+(defun irchat-msn-sub-handle-JOI (process parsed msg)
   (let ((p (irchat-msn-sub-server-search-with-process process)))
     (if p
 	(if (string-match "^JOI \\([^ ][^ ]*\\) \\([^ ]*\\)" msg)
@@ -308,7 +309,7 @@
 						 m)))))))
       t)))
 
-(defun irchat-msn-sub-handle-IRO (msg)
+(defun irchat-msn-sub-handle-IRO (process parsed msg)
   (let ((p (irchat-msn-sub-server-search-with-process process)))
     (if p
 	(if (string-match "^IRO \\([0-9][0-9]*\\) \\([0-9][0-9]*\\) \\([0-9][0-9]*\\) \\([^ ][^ ]*\\) \\([^ ]*\\)" msg)
@@ -331,7 +332,7 @@
 		(irchat-msn-conversation-add-user (nth 0 p) pp-uid))))
       t)))
 
-(defun irchat-msn-sub-handle-USR (msg)
+(defun irchat-msn-sub-handle-USR (process parsed msg)
   (let ((p (irchat-msn-sub-server-search-with-process process)))
     (if p
 	(let ((pending (nth 7 p)))
@@ -343,7 +344,7 @@
 	    t))
       t)))
 
-(defun irchat-msn-sub-handle-CAL (msg)
+(defun irchat-msn-sub-handle-CAL (process parsed msg)
   t)
 
 (defun irchat-msn-kill-all-conversations ()

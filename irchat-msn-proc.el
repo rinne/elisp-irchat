@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn-proc.el,v 3.3 2002/06/06 14:36:23 tri Exp $
+;;;  $Id: irchat-msn-proc.el,v 3.4 2002/06/09 14:23:38 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -83,9 +83,11 @@
 	       (progn
 		 (setq cmd "")
 		 (setq handler nil)))
-	     (if (and handler (fboundp handler))
-		 (apply handler (list msg))
-	       (irchat-msn-handle-generic msg))
+	     (let ((ml (irchat-msn-proto-msg-parse msg)))
+	       (if ml
+		   (if (and handler (fboundp handler))
+		       (apply handler (list ml msg))
+		     (irchat-msn-handle-generic ml msg))))
 	     t))
 	  (t nil))))
 
