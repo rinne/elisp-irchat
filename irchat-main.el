@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-main.el,v 1.2 1996/12/19 19:39:27 tri Exp $
+;;;  $Id: irchat-main.el,v 1.3 1997/01/31 13:01:48 too Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -93,6 +93,7 @@ carried out.")))))
     ("i" 	irchat-Command-invite)
     ("j" 	irchat-Command-join)
     ("l" 	irchat-Command-load-vars)
+    ("s" 	irchat-Command-save-vars)
     ("m" 	irchat-Dialogue-enter-message)
     ("n" 	irchat-Command-names)
     ("o" 	other-window)
@@ -139,6 +140,7 @@ carried out.")))))
     ("\C-c\C-k" irchat-Command-kick)
     ("\C-cl" 	irchat-Command-list)
     ("\C-cL" 	irchat-Command-load-vars)
+    ("\C-cS" 	irchat-Command-save-vars)
     ("\C-cm" 	irchat-Command-message)
     ("\C-c\C-m" irchat-Command-modec)
     ("\C-cn" 	irchat-Command-nickname)

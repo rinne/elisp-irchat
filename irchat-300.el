@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-300.el,v 1.1 1996/12/19 14:54:46 tri Exp $
+;;;  $Id: irchat-300.el,v 1.2 1997/01/31 13:01:48 too Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -376,6 +376,9 @@ This is called if no specific handler exists"
 	(setq i (- i 1))))
     words))
 
+(defvar irchat-353-nameschnl nil "")
+(defvar irchat-353-nameslist "" "names list reply string")
+(defvar irchat-353-namescount 0 "")
 
 (defun irchat-handle-353-msg (prefix rest)
   "Handle the 353 (NAMREPLY) message.   If we are just polling the server,
@@ -386,19 +389,13 @@ don't display anything."
 	     (numusers (irchat-count-words-from-string users)))
 	(if (> irchat-polling 0)
 	    nil
-	  (irchat-w-insert (irchat-pick-buffer chnl)
-			   (format "%9s: (%d user%s): %s\n" 
-				   (if (string= chnl "*") "Priv" chnl)
-				   numusers 
-				   (cond 
-				    ((= numusers 0) "s")
-				    ((= numusers 1) "")
-				    (t "s"))
-				   users)))
+         (progn
+           (setq irchat-353-nameslist (concat irchat-353-nameslist users)
+                 irchat-353-nameschnl chnl
+                 irchat-353-namescount (+ irchat-353-namescount numusers))))
 	(irchat-scan-channels chnl)
 	(irchat-update-thischannel chnl users))
     (message "IRCHAT: Strange 353 message")))
-
 
 (defun irchat-handle-361-msg (prefix rest)
   "Handle the 361 KILLDONE."
@@ -430,8 +427,21 @@ don't display anything."
 (defun irchat-handle-366-msg (prefix rest)
   "Handle the 366 ENDOFNAMES."
   (let ((level (- irchat-polling 1)))
-    (setq irchat-polling (if (< level 0) 0 level))))
-
+    (setq irchat-polling (if (< level 0) 0 level))
+    (irchat-w-insert (irchat-pick-buffer irchat-353-nameschnl)
+		     (format "%9s: (%d user%s): %s\n" 
+			     (if (string= irchat-353-nameschnl "*") 
+				 "Priv" 
+			       irchat-353-nameschnl)
+			     irchat-353-namescount
+			     (cond 
+			      ((= irchat-353-namescount 0) "s")
+			      ((= irchat-353-namescount 1) "")
+			      (t "s"))
+			     irchat-353-nameslist))
+    (setq irchat-353-nameslist nil
+	  irchat-353-nameschnl nil
+	  irchat-353-namescount 0)))
 
 (defun irchat-handle-367-msg (prefix rest)
   "Handle the 367 BAN."

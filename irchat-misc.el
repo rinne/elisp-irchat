@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-misc.el,v 1.1 1996/12/19 14:54:51 tri Exp $
+;;;  $Id: irchat-misc.el,v 1.2 1997/01/31 13:01:48 too Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -10,49 +10,19 @@
   (require 'irchat-inlines)
   (require 'irchat-filter))
 
-;;; not used (see irchat-Privmsg-buffer definition too) //too
-;;;
-;;;(defun irchat-get-typed-buffer (type)
-;;;  (cond 
-;;;   ;; private messages and notices
-;;;   ((and (eq type irchat-privmsg)
-;;;	 irchat-Privmsg-buffer)
-;;;    (irchat-get-buffer-create irchat-Privmsg-buffer))
-;;;   ;; the rest goes to dialogue
-;;;   (t
-;;;    (get-buffer irchat-Dialogue-buffer))))
-;;;
-;;;
-;;;(defun irchat-insert (type &rest message)
-;;;  (let ((tgtbuffer (irchat-get-typed-buffer type))
-;;;	(oldbuffer (current-buffer)))
-;;;    (set-buffer tgtbuffer)
-;;;    (let (buffer-read-only)
-;;;      (and message 
-;;;	   (mapcar 
-;;;	    (function (lambda (part) 
-;;;			(irchat-w-insert (buffer-name) part)))
-;;;	    message)))
-;;;    (set-buffer oldbuffer)))
-;;;
-;;;
-;;;(defun irchat-newline (type &optional nlines)
-;;;  (let ((tgtbuffer (irchat-get-typed-buffer type))
-;;;	(oldbuffer (current-buffer)))
-;;;    (set-buffer tgtbuffer)
-;;;    (let (buffer-read-only)
-;;;      (newline nlines))
-;;;    (set-buffer oldbuffer)))
-;;; <///too>
+(defun irchat-ignore-this-p (nick uah)
+  (let ((killit nil))
+    (mapcar (function 
+	     (lambda (kill)
+	       (if (string-match kill nick)
+		   (setq killit t)))) irchat-kill-nickname)
+    (if (not killit)
+	(mapcar (function 
+		 (lambda (kill)
+		   (if (string-match kill uah)
+		       (setq killit t)))) irchat-kill-nickname))
+    killit))
 
-;;(defun irchat-own-message (message)
-;;  (let ((obuf (current-buffer)))
-;;    (set-buffer irchat-Dialogue-buffer)
-;;    (let (buffer-read-only)
-;;      (goto-char (point-max))
-;;      (irchat-handle-msg-msg nil message))
-;;    (set-window-point (irchat-get-buffer-window irchat-Dialogue-buffer)
-;;		      (point-max))))
 (defun irchat-own-message (message)
   (irchat-w-insert (irchat-pick-buffer irchat-current-channel)
 		   (format "%s\n" message))

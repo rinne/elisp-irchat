@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-filter.el,v 1.1 1996/12/19 14:54:49 tri Exp $
+;;;  $Id: irchat-filter.el,v 1.2 1997/01/31 13:01:48 too Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -15,7 +15,7 @@
 ;;;
 (defsubst irchat-handle-msg-msg (prefix rest)
   (if (or (and prefix
-	       (memq (intern prefix irchat-obarray) irchat-kill-nickname)
+	       (irchat-ignore-this-p prefix irchat-userathost)
 	       (irchat-msg-from-ignored prefix rest))
 	  (and (not prefix)
 	       (string= "> " rest)))

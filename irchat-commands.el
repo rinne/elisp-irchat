@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-commands.el,v 1.2 1996/12/19 19:39:27 tri Exp $
+;;;  $Id: irchat-commands.el,v 1.3 1997/01/31 13:01:48 too Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -278,31 +278,43 @@ with specified user."
 
 
 (defun irchat-Command-kill (kill-nickname-var)
-  "Ignore messages from this user.  If already ignoring him/her, toggle."
-  (interactive (let (kill-nickname-var (completion-ignore-case t))
+  "Ignore messages from this user. Username can be given as case insensitive
+regular expression of form \".*@.*\.sub.domain\". 
+If already ignoring him/her, toggle.
+If variable irchat-variables-file is defined and the file is writable, its
+contents are updated future sessions."
+  (interactive (let ((kill-nickname-var nil) 
+		     (completion-ignore-case t))
 		 (setq kill-nickname-var 
-		       (completing-read 
-			"Ignore nickname: " 
+		       (completing-read "Ignore nickname or regexp: " 
 			irchat-nick-alist
 			'(lambda (s) t) nil nil))
 		 (list kill-nickname-var)))
+  ;; empty, just list them
   (if (string= "" kill-nickname-var)
       (let ((buf (current-buffer))
 	    (buffer-read-only))
-	(irchat-w-insert irchat-D-buffer "*** Currently ignored people:")
+	(set-buffer irchat-Dialogue-buffer)
+	(goto-char (point-max))
+	(irchat-w-insert irchat-D-buffer "*** Currently ignoring:")
 	(let ((mylist irchat-kill-nickname))
 	  (while mylist
 	    (irchat-w-insert irchat-D-buffer (format " %s" (car mylist)))
 	    (setq mylist (cdr mylist))))
 	(irchat-w-insert irchat-D-buffer "\n")
-	(set-buffer buf)))
-  (if (memq (intern kill-nickname-var irchat-obarray) irchat-kill-nickname)
-      (setq irchat-kill-nickname 
-	    (delq (intern kill-nickname-var irchat-obarray) 
-		  irchat-kill-nickname))
-    (setq irchat-kill-nickname 
-	  (cons (intern kill-nickname-var irchat-obarray) 
-		irchat-kill-nickname))))
+	(set-buffer buf))
+    ;; else not empty, check if exists
+    (let ((done nil) (elem irchat-kill-nickname))
+      (while (and elem (not done))
+	(if (string-ci-equal (car elem) kill-nickname-var)
+	    (setq irchat-kill-nickname (delete (car elem) irchat-kill-nickname)
+		  done t)
+	  (setq elem (cdr elem))))
+      ;; did not find, add to ignored ones
+      (if (not done)
+	  (setq irchat-kill-nickname (cons kill-nickname-var
+					   irchat-kill-nickname)))
+      (irchat-Command-save-vars))))
 
 
 (defun irchat-Command-send-action (&optional private)
@@ -909,6 +921,54 @@ be sent to the server.  For a list of messages, see irchat-Command-generic."
 	  (load-file file)
 	  (irchat-Command-reconfigure-windows)))))
 
+(defun irchat-Command-save-vars ()
+  (interactive)
+  (let ((output-buffer (find-file-noselect
+                        (expand-file-name irchat-variables-file)))
+	output-marker)
+    (save-excursion
+      (set-buffer output-buffer)
+      (goto-char (point-min))
+      (if (re-search-forward "^;; Saved Settings *\n" nil 'move)
+          (let ((p (match-beginning 0)))
+            (goto-char p)
+            (or (re-search-forward "^;; End of Saved Settings *\\(\n\\|\\'\\)"
+				   nil t)
+                (error (format 
+			"can't find END of saved state in %s" 
+			irchat-variables-file)))
+	    (delete-region p (match-end 0)))
+        (goto-char (point-max))
+        (insert "\n"))
+      (setq output-marker (point-marker))
+      (let ((print-readably t) 
+	    (print-escape-newlines t)
+            (standard-output output-marker))
+        (princ ";; Saved Settings\n")
+        (mapcar (function 
+		 (lambda (var)
+		   (if (symbolp var)
+		       (prin1 (list 'setq var
+				    (let ((val (symbol-value var)))
+				      (if (memq val '(t nil))
+					  val
+					(list 'quote val)))))
+		     (setq var (eval var))
+		     (cond ((eq (car-safe var) 'progn)
+			    (while (setq var (cdr var))
+			      (prin1 (car var))
+			      (princ "\n")
+			      (if (cdr var) (princ "  "))))
+			   (var
+			    (prin1 "xx")(prin1 var))))
+		   (if var (princ "\n"))))
+                irchat-saved-forms)
+        (princ "\n")
+        (princ ";; End of Saved Settings\n")))
+    (set-marker output-marker nil)
+    (save-excursion
+      (set-buffer output-buffer)
+      (save-buffer))))
 
 (defun irchat-Command-reconfigure-windows ()
   (interactive)
