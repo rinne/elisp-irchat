@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-commands.el,v 3.29 1997/12/01 08:04:00 tri Exp $
+;;;  $Id: irchat-commands.el,v 3.30 1997/12/01 08:13:44 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -124,6 +124,7 @@
   "Send MESSAGE to current chat partner of current channel."
   (if (not irchat-crypt-mode-active) (setq crypt-type 'cleartext))
   (if (and (not do-not-split)
+	   (stringp irchat-message-split-separator)
 	   (> (length message) irchat-message-length-limit)
 	   (> irchat-message-length-limit 
 	      (* 2 (length irchat-message-split-separator))))
@@ -691,6 +692,7 @@ into own-message-var"
 		       crypt-type-var
 		       nil)))
   (if (and (not do-not-split)
+	   (stringp irchat-message-split-separator)
 	   (> (length message) irchat-message-length-limit)
 	   (> irchat-message-length-limit
 	      (* 2 (length irchat-message-split-separator))))
