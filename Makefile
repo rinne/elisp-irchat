@@ -2,7 +2,7 @@
 #
 # Makefile for irchat
 #
-# $Id: Makefile,v 3.3 1997/02/25 21:47:45 tri Exp $
+# $Id: Makefile,v 3.4 1997/02/26 10:14:17 too Exp $
 #
 
 #
@@ -67,7 +67,7 @@ xemacs2:
 	$(MAKE) EMACSCMD=xemacs irchat2.elc
 
 gnuemacs2:
-	$(MAKE) EMACSCMD=xemacs irchat2.elc
+	$(MAKE) EMACSCMD=emacs irchat2.elc
 
 #	cat $(SRCS) > irchat2.el
 #	xemacs -batch -q -l ./setpath.el -f batch-byte-compile $(DEFSUBST_SRC) irchat2.el
