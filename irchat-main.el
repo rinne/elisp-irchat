@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-main.el,v 3.17 1997/04/11 10:52:11 jtp Exp $
+;;;  $Id: irchat-main.el,v 3.18 1997/06/10 11:02:33 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -743,9 +743,16 @@ One is for entering commands and text, the other displays the IRC dialogue."
 	  (setq buffer-read-only nil))
       (if (not (irchat-is-message-ignored string nbuf))
 	  (progn
+	    (if (and (or (eq irchat-beep-on-bells 'always)
+			 (and irchat-beep-on-bells
+			      (null
+			       (irchat-get-buffer-window (current-buffer)))))
+		     (string-match "\007" string)
+		     (irchat-Dialogue-buffer-p (current-buffer)))
+		(beep t))
 	    (insert string)
 	    (if (and irchat-use-smiley (fboundp 'smiley-region))
-		(smiley-region spoint (point-max)))))		
+		(smiley-region spoint (point-max)))))
       (setq buffer-read-only t)
       (goto-char spoint)
       (let ((win-list (irchat-get-buffer-window-list (get-buffer buffer))))
