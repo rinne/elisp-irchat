@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-crypt.el,v 3.10 1997/03/14 14:37:37 tri Exp $
+;;;  $Id: irchat-crypt.el,v 3.11 1997/04/03 13:33:42 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -29,16 +29,17 @@
 
 (defun irchat-init-crypt ()
   "Initialize crypt variables"
-  (if (null irchat-known-idea-key-list)
-      (let ((lst irchat-crypt-known-keys))
-	(while lst
-	  (irchat-Command-add-new-key (car lst))
-	  (setq lst (cdr lst)))))
-  (if (null irchat-default-idea-key-list)
-      (let ((lst irchat-crypt-default-keys))
-	(while lst
-	  (irchat-Command-set-default-key (car (car lst)) (cdr (car lst)))
-	  (setq lst (cdr lst))))))
+  (let ((lst irchat-crypt-known-keys))
+    (while lst
+      (irchat-Command-add-new-key (car lst))
+      (setq lst (cdr lst))))
+  (setq irchat-crypt-known-keys '())
+  (let ((lst irchat-crypt-default-keys))
+    (while lst
+      (irchat-Command-set-default-key (car (car lst)) (cdr (car lst)))
+      (setq lst (cdr lst))))
+  (setq irchat-crypt-default-keys '())
+  t)
 
 (defun irchat-read-passphrase (&optional prompt)
   "PROMPT for passphrase.  Use secure keyboard if possible."
