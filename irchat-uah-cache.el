@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-uah-cache.el,v 1.6 1997/10/20 07:10:26 tri Exp $
+;;;  $Id: irchat-uah-cache.el,v 1.7 1997/10/20 07:10:51 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 ;;;
@@ -25,7 +25,7 @@
 
 (defun irchat-nick-to-uah-init ()
   (setq irchat-nick-to-uah-vector
-	(make-vector irchat-nick-to-uah-vector-length (list "" "" 'unknown)))
+	(make-vector irchat-nick-to-uah-vector-length (list "" "" 'invalid)))
   (setq irchat-nick-to-uah-pos 0))
 
 
