@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-timer.el,v 3.1 1997/02/24 16:00:02 tri Exp $
+;;;  $Id: irchat-timer.el,v 3.2 1998/05/26 10:35:00 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -15,7 +15,8 @@
       (defun  irchat-cancel-timer (timer)
 	"Timers are not supported under emacs 18."
 	nil))
-  (if (string-match ".*Lucid.*" (emacs-version))
+  (if (or (string-match ".*Lucid.*" (emacs-version))
+	  (string-match ".*XEmacs.*" (emacs-version)))
       (progn
 	(defun irchat-cancel-timer (timer)
 	  "Cancel timer."
