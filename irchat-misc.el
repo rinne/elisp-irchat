@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-misc.el,v 3.16 1997/06/10 14:17:53 tri Exp $
+;;;  $Id: irchat-misc.el,v 3.17 1997/06/10 14:25:03 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -50,7 +50,7 @@
 
 (defun irchat-convert-^G-channel-name (chnl)
   "Convert CHNL e.g. #42 -> #42 and #42^Go -> #42 (+o)"
-  (if (string-match "^\\(.*\\)\007\\(.*\\)$" chnl)
+  (if (string-match "^\\([^ ][^ ]*\\)[\007 \t]\\(.*\\)$" chnl)
       (let* ((body (matching-substring chnl 1))
 	     (args (matching-substring chnl 2))
 	     (niceargs "")
