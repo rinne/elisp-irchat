@@ -2,7 +2,7 @@
 #
 # Makefile for irchat
 #
-# $Id: Makefile,v 3.1 1997/02/24 16:00:02 tri Exp $
+# $Id: Makefile,v 3.2 1997/02/24 22:10:28 too Exp $
 #
 
 #
@@ -81,7 +81,7 @@ irchat.elc:	$(OBJS)
 irchat2.elc:	irchat2.el
 	$(EMACS) -f batch-byte-compile $(DEFSUBST_SRC) irchat2.el
 
-irchat2.el:	$(OBJS)
+irchat2.el: $(SRCS)
 	cat $(SRCS) > irchat2.el
 
 ###
