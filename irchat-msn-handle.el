@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn-handle.el,v 3.6 2002/06/06 11:06:54 tri Exp $
+;;;  $Id: irchat-msn-handle.el,v 3.7 2002/06/07 08:28:48 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -32,6 +32,23 @@
 			 irchat-msn-uid)
 	(setq irchat-msn-connection-phase 'usr-sent))
     (irchat-msn-protocol-error)))
+
+(defun irchat-msn-handle-OUT (msg)
+  (let ((ml (irchat-msn-proto-msg-parse msg)))
+    (cond ((string-equal "OTH" (nth 1 ml))
+	   (progn
+	     (setq irchat-msn-server-closed-because-of-another-login t)
+	     (irchat-w-insert irchat-MSN-buffer 
+			      (format "%sMSN Messenger connection closed because of another login.\n"
+				      irchat-msn-info-prefix))
+	     (irchat-msn-close-server)))
+	  (t
+	   (progn
+	     (irchat-w-insert irchat-MSN-buffer 
+			      (format "%sMSN Messenger connection closed (reason=%s).\n"
+				      irchat-msn-info-prefix
+				      (nth 1 ml)))
+	     (irchat-msn-close-server))))))
 
 (defun irchat-msn-handle-NLN (msg)
   (if (string-match 

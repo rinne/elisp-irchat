@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn.el,v 3.7 2002/06/06 14:27:29 tri Exp $
+;;;  $Id: irchat-msn.el,v 3.8 2002/06/07 08:28:48 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -18,6 +18,7 @@
 ;;;
 ;;; Internal variables
 ;;;
+(defvar irchat-msn-server-closed-because-of-another-login nil)
 (defvar irchat-msn-server-int nil)
 (defvar irchat-msn-seqno 0)
 (defvar irchat-msn-uid-password-int nil)
@@ -90,9 +91,10 @@
   (setq irchat-msn-messages-pending-sb '())
   (setq irchat-msn-recipient-cache nil)
   (setq irchat-msn-my-online-mode "Offline")
+  (setq irchat-msn-server-closed-because-of-another-login nil)
+  (setq irchat-msn-server-int nil)
   (irchat-set-msn-indicator)
   (irchat-msn-name-cache-flush)
-  (setq irchat-msn-server-int nil)
   (if host
       (setq irchat-msn-server-int host))
   (if (null irchat-msn-server-int)
@@ -388,6 +390,16 @@
 
 (defun irchat-msn-name-cache-flush ()
   (setq irchat-msn-name-cache '()))
+
+(defun irchat-msn-proto-msg-parse (msg)
+  "Parse string of form \"<cmd> <param1> <param2> ...\" to list (\"<cmd>\" \"<param1>\" \"<param2> ...\")"
+  (let ((m msg)
+	(r '()))
+    (while (or (string-match "^\\([^ ].*\\) \\([^ ]*\\)$" m)
+	       (string-match "^\\(\\)\\([^ ][^ ]*\\)$" m))
+      (setq r (cons (matching-substring m 2) r)
+	    m (matching-substring m 1)))
+    r))
 
 (eval-and-compile (provide 'irchat-msn))
 
