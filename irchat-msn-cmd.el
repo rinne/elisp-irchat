@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn-cmd.el,v 3.2 2002/06/04 19:27:31 tri Exp $
+;;;  $Id: irchat-msn-cmd.el,v 3.3 2002/06/04 20:13:55 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -160,7 +160,7 @@
     (if p
 	(progn
 	  (if (null msg)
-	      (setq msg (read-string "Message: ")))
+	      (setq msg (read-string (format "Message to %s: " recipient))))
 	  (let ((m (irchat-msn-make-message msg)))
 	    (setq irchat-msn-recipient-cache recipient)
 	    (irchat-w-insert irchat-MSN-buffer
