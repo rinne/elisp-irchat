@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-misc.el,v 3.11 1997/03/18 11:48:42 tri Exp $
+;;;  $Id: irchat-misc.el,v 3.12 1997/03/18 11:53:23 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -33,10 +33,12 @@
           (case-fold-search t))
       (mapcar (function 
                (lambda (kill)
-                 (if (or (and (string-match (upcase (car kill)) (upcase nick))
+                 (if (or (string-ci-equal (car kill) nick)
+			 (string-ci-equal (car kill) uah)
+			 (and (string-match (upcase (car kill)) (upcase nick))
                               (= (match-beginning 0) 0)
                               (= (match-end 0) (length nick)))
-                         (and (string-match (car kill) uah)
+                         (and (string-match (upcase (car kill)) (upcase uah))
                               (= (match-beginning 0) 0)
                               (= (match-end 0) (length uah))))
                      (setq killit t))))
