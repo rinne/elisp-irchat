@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-vars.el,v 3.21 1997/07/10 10:32:41 tri Exp $
+;;;  $Id: irchat-vars.el,v 3.22 1997/09/04 06:43:08 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -229,6 +229,9 @@ the local server.")
 
 (defvar irchat-signoff-msg ""
   "*Default signoff message")
+
+(defvar irchat-confirm-bell-on-channel-message t
+  "*If non-nil, confirmation is asked before bell is sent to the channel.")
 
 (defvar irchat-beep-on-bells 'always
   "*If non-nil, and the IRC Dialogue buffer is not selected in a window,
