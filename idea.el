@@ -4,7 +4,7 @@
 ;;;  IDEA encryption in elisp.  Cool, ha?
 ;;;  ----------------------------------------------------------------------
 ;;;  Created      : Thu Jun 29 08:11:25 1995 tri
-;;;  Last modified: Tue Feb 25 23:27:49 1997 tri
+;;;  Last modified: Wed Feb 26 14:07:40 1997 tri
 ;;;  ----------------------------------------------------------------------
 ;;;  Copyright © 1995-1997
 ;;;  Timo J. Rinne <tri@iki.fi>
@@ -18,7 +18,7 @@
 ;;;  irchat-copyright.el applies only if used with irchat IRC client.
 ;;;  Contact the author for additional copyright info.
 ;;;
-;;;  $Id: idea.el,v 3.2 1997/02/25 21:28:05 tri Exp $
+;;;  $Id: idea.el,v 3.3 1997/02/26 12:20:14 tri Exp $
 ;;;
 
 (eval-and-compile  
@@ -756,29 +756,38 @@
 	(t nil)))
 
 (defun idea-key-fingerprint (key)
-  "Is idea KEY encryption or decryption key?"
-  (if (listp key)
-      (let ((annotation (nth 9 key)))
-	(if (not (and (stringp annotation)
-		      (= (length annotation) 10)))
-	    nil
-	  (let ((ty (elt annotation 0))
-		(de (elt annotation 1)))
-	    (if (and (= de ?:)
-		     (>= (idea-hex-char-to-int (elt annotation 2)) 0)
-		     (>= (idea-hex-char-to-int (elt annotation 3)) 0)
-		     (>= (idea-hex-char-to-int (elt annotation 4)) 0)
-		     (>= (idea-hex-char-to-int (elt annotation 5)) 0)
-		     (>= (idea-hex-char-to-int (elt annotation 6)) 0)
-		     (>= (idea-hex-char-to-int (elt annotation 7)) 0)
-		     (>= (idea-hex-char-to-int (elt annotation 8)) 0)
-		     (>= (idea-hex-char-to-int (elt annotation 9)) 0))
-		(if (or (= ty ?e)
-			(= ty ?d))
-		    (substring annotation 2 10)
-		  nil)
-	      nil))))
-    nil))
+  "Get an IDEA-KEY fingerprint."
+  (let* ((my-key-type (idea-legal-key key))
+	 (my-key (cond ((equal 'key-complete-decryption my-key-type)
+			key)
+		       ((equal 'key-complete-encryption my-key-type)
+			key)
+		       ((or (equal 'key-string my-key-type)
+			   (equal 'key-intlist my-key-type))
+			(idea-build-encryption-key key))
+		       (t nil))))
+    (if my-key
+	(let ((annotation (nth 9 my-key)))
+	  (if (not (and (stringp annotation)
+			(= (length annotation) 10)))
+	      nil
+	    (let ((ty (elt annotation 0))
+		  (de (elt annotation 1)))
+	      (if (and (= de ?:)
+		       (>= (idea-hex-char-to-int (elt annotation 2)) 0)
+		       (>= (idea-hex-char-to-int (elt annotation 3)) 0)
+		       (>= (idea-hex-char-to-int (elt annotation 4)) 0)
+		       (>= (idea-hex-char-to-int (elt annotation 5)) 0)
+		       (>= (idea-hex-char-to-int (elt annotation 6)) 0)
+		       (>= (idea-hex-char-to-int (elt annotation 7)) 0)
+		       (>= (idea-hex-char-to-int (elt annotation 8)) 0)
+		       (>= (idea-hex-char-to-int (elt annotation 9)) 0))
+		  (if (or (= ty ?e)
+			  (= ty ?d))
+		      (substring annotation 2 10)
+		    nil)
+		nil))))
+      nil)))
 
 (defun idea-key-type (key)
   "Is idea KEY encryption or decryption key?"
