@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-vars.el,v 3.7 1997/02/26 13:28:28 kny Exp $
+;;;  $Id: irchat-vars.el,v 3.8 1997/02/26 14:45:31 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -28,7 +28,7 @@ users, therefore added by nam.")
   "*Do we want /commands.")
 
 (defvar irchat-command-window-on-top nil
-  "*If non-nil, the Command window will be put at the top of the screen.
+  "*If non-nil, the Command window will be put at the top of the screen.")
 
 (defvar irchat-one-buffer-mode nil
   "*When non-nil, irchat will put up only a dialogue-buffer (on the
