@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-vars.el,v 3.15 1997/03/18 10:06:02 jtp Exp $
+;;;  $Id: irchat-vars.el,v 3.16 1997/03/18 13:04:32 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -160,6 +160,12 @@ killed again if automagic reconnect is too fast.")
 
 (defvar irchat-format-string5-e ">>%s:%s<<"
   "*Format string for arriving messages to other channel from outside the channel. (encrypted)")
+
+(defvar irchat-defected-message-prefix ""
+  "Prefix to attach before the defected crypt message.")
+
+(defvar irchat-suspicious-message-prefix ""
+  "Prefix to attach before the suspicious crypt message.")
 
 (defvar irchat-change-prefix "*** Change: "
   "*String to add before any change msg, used for customisation of
