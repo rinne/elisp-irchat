@@ -1,3 +1,17 @@
+Wed Jun 05 10:12:42 2002  Timo J. Rinne <tri@iki.fi>
+
+	* Various improvements in msn code.
+		- Status line now shows MSN-Status (if any).
+		- Mode changes can be inhibited by a variable.
+		- We can send typing notifications (if variable
+		  is set), but we ignore incoming ones because
+		  they can't be trusted.
+		- And more!
+
+Wed Jun 05 09:46:53 2002  IRCHAT Distribution Generator <irchat@rinne.iki.fi>
+
+	* Generated release irchat-msn-enabled-alpha5.
+
 Wed Jun 05 00:02:08 2002  IRCHAT Distribution Generator <irchat@rinne.iki.fi>
 
 	* Generated release irchat-msn-enabled-alpha4.

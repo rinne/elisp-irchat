@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn-handle.el,v 3.3 2002/06/05 09:24:35 tri Exp $
+;;;  $Id: irchat-msn-handle.el,v 3.4 2002/06/05 12:00:52 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -52,12 +52,14 @@
 	  (setq irchat-msn-online-list (cons user
 					     (irchat-remove-from-contact-list-with-name pp-uid
 											irchat-msn-online-list)))
-	  (irchat-w-insert irchat-MSN-buffer 
-			   (format "%sUser %s <%s> status is %s.\n"
-				   irchat-msn-info-prefix
-				   pp-name
-				   pp-uid
-				   (irchat-msn-status-string stat)))))))
+	  (if irchat-msn-show-status-changes
+	      (irchat-w-insert irchat-MSN-buffer 
+			       (format "%sUser %s <%s> status is %s.\n"
+				       irchat-msn-info-prefix
+				       pp-name
+				       pp-uid
+				       (irchat-msn-status-string stat)))))))
+  (irchat-set-msn-indicator))
 
 (defun irchat-msn-handle-ILN (msg)
   (if (string-match 
@@ -78,12 +80,14 @@
 	  (setq irchat-msn-online-list (cons user
 					     (irchat-remove-from-contact-list-with-name pp-uid
 											irchat-msn-online-list)))
-	  (irchat-w-insert irchat-MSN-buffer 
-			   (format "%sUser %s <%s> status is %s.\n"
-				   irchat-msn-info-prefix
-				   pp-name
-				   pp-uid
-				   (irchat-msn-status-string stat)))))))
+	  (if irchat-msn-show-status-changes
+	      (irchat-w-insert irchat-MSN-buffer 
+			       (format "%sUser %s <%s> status is %s.\n"
+				       irchat-msn-info-prefix
+				       pp-name
+				       pp-uid
+				       (irchat-msn-status-string stat)))))))
+  (irchat-set-msn-indicator))
 
 (defun irchat-msn-handle-FLN (msg)
   (if (string-match 
@@ -92,10 +96,12 @@
       (let ((pp-uid (matching-substring msg 1)))
 	(setq irchat-msn-online-list (irchat-remove-from-contact-list-with-name pp-uid
 										irchat-msn-online-list))
-	(irchat-w-insert irchat-MSN-buffer 
-			 (format "%sUser %s goes Offline.\n"
-				 irchat-msn-info-prefix
-				 pp-uid)))))
+	(if irchat-msn-show-status-changes
+	    (irchat-w-insert irchat-MSN-buffer 
+			     (format "%sUser %s goes Offline.\n"
+				     irchat-msn-info-prefix
+				     pp-uid)))))
+  (irchat-set-msn-indicator))
 
 (defun irchat-msn-handle-USR (msg)
   (cond ((and (eq irchat-msn-connection-phase 'usr-sent)
@@ -190,6 +196,7 @@
   (cond ((eq irchat-msn-connection-phase 'chg-sent)
 	 (progn
 	   (setq irchat-msn-connection-phase 'online)
+	   (setq irchat-msn-my-online-mode "Online")
 	   (irchat-w-insert irchat-MSN-buffer 
 			    (format "%sConnected MSN Messenger Server %s on %s.\n"
 				    irchat-msn-info-prefix
@@ -203,11 +210,14 @@
 	  "^CHG [0-9][0-9]* \\([^ ][^ ]*\\)"
 	  msg)
 	 (let ((stat (matching-substring msg 1)))
-	   (irchat-w-insert irchat-MSN-buffer 
-			    (format "%sYour status changed to %s.\n"
-				    irchat-msn-info-prefix
-				    (irchat-msn-status-string stat)))))
-	(t t)))
+	   (let ((statstr (irchat-msn-status-string stat)))
+	     (setq irchat-msn-my-online-mode statstr)
+	     (irchat-w-insert irchat-MSN-buffer 
+			      (format "%sYour status changed to %s.\n"
+				      irchat-msn-info-prefix
+				      statstr)))))
+	(t t))
+  (irchat-set-msn-indicator))
 
 (defun irchat-msn-handle-SYN (msg)
   (setq irchat-msn-lists-in-sync nil))

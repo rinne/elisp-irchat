@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn-proc.el,v 3.1 2002/06/04 15:47:27 tri Exp $
+;;;  $Id: irchat-msn-proc.el,v 3.2 2002/06/05 12:00:52 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -37,7 +37,8 @@
   (irchat-msn-kill-all-conversations)
   (irchat-w-insert irchat-MSN-buffer 
 		   (format "%sMSN Messenger connection terminated.\n"
-			   irchat-msn-info-prefix)))
+			   irchat-msn-info-prefix))
+  (irchat-set-msn-indicator))
 
 (defun irchat-msn-handle-message ()
   "Called when we have at least one line of output from the MSN server."

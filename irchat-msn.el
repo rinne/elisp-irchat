@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn.el,v 3.3 2002/06/04 21:48:02 tri Exp $
+;;;  $Id: irchat-msn.el,v 3.4 2002/06/05 12:00:52 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -33,16 +33,18 @@
 (defvar irchat-msn-conversation-counter '(0))
 (defvar irchat-msn-sub-servers '())
 (defvar irchat-msn-messages-pending-sb '())
+(defvar irchat-msn-indicator "")
+(defvar irchat-msn-my-online-mode nil)
 (defvar irchat-msn-online-list '() 
-  "Users that are currently online")
+  "*Users in our forward list that are currently online")
 (defvar irchat-msn-forward-list '() 
-  "FL Forward List - Users on your contact list.  (FL)")
+  "*FL Forward List - Users on your contact list.  (FL)")
 (defvar irchat-msn-reverse-list '()
-  "RL Reverse List - Users who have you on their contact list.  (RL)")
+  "*RL Reverse List - Users who have you on their contact list.  (RL)")
 (defvar irchat-msn-allow-list '()
-  "AL Allow List - Users who are allowed to see your status.  (AL)")
+  "*AL Allow List - Users who are allowed to see your status.  (AL)")
 (defvar irchat-msn-block-list '()
-  "BL Block List - Users who are not allowed to see your status.  (BL)")
+  "*BL Block List - Users who are not allowed to see your status.  (BL)")
 (defvar irchat-MSN-buffer (list irchat-Dialogue-buffer)
   "*A list of buffers where MSN messages to me are sent.")
 
@@ -82,6 +84,8 @@
     (setq irchat-msn-sub-servers '())
     (setq irchat-msn-messages-pending-sb '())
     (setq irchat-msn-recipient-cache nil)
+    (setq irchat-msn-my-online-mode "Offline")
+    (irchat-set-msn-indicator)
     (setq irchat-msn-server-int nil)
     (if host
 	(setq irchat-msn-server-int host))
@@ -172,7 +176,8 @@
   (setq irchat-msn-server-process nil)
   (if irchat-server-buffer
       (kill-buffer irchat-msn-server-buffer))
-  (setq irchat-msn-server-buffer nil))
+  (setq irchat-msn-server-buffer nil)
+  (irchat-set-msn-indicator))
 
 (defun irchat-msn-send (&rest args)
   "Send the protocol string to the MSN server."
@@ -324,6 +329,24 @@
   (if (listp irchat-msn-server)
       (nth (random (length irchat-msn-server)) irchat-msn-server)
     irchat-msn-server))
+
+(defun irchat-set-msn-indicator ()
+  (cond ((and irchat-msn-uid
+	      (not (irchat-msn-server-opened)))
+	 (setq irchat-msn-indicator " {MSN: Offline} "))
+	((not (irchat-msn-server-opened))
+	 (setq irchat-msn-indicator ""))
+	(t
+	 (setq irchat-msn-indicator
+	       (concat "{MSN: "
+		       irchat-msn-uid
+		       " "
+		       irchat-msn-my-online-mode
+		       (if (> (length irchat-msn-online-list) 0)
+			   (format " (%d)" (length irchat-msn-online-list))
+			 "")
+		       "}"))))
+  irchat-msn-indicator)
 
 (eval-and-compile (provide 'irchat-msn))
 

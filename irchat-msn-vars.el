@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn-vars.el,v 3.5 2002/06/05 09:24:35 tri Exp $
+;;;  $Id: irchat-msn-vars.el,v 3.6 2002/06/05 12:00:52 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -25,6 +25,8 @@
   "*If non-nil, various MSN lists are dumped to screen on startup.")
 (defvar irchat-msn-send-typing-notifications nil
   "*If non-nil, send typing notification, while writing a message.")
+(defvar irchat-msn-show-status-changes t
+  "*If non-nil, show whenever your contact's status changes.")
 
 ;;;
 ;;; Fake version string to messenger server.  Don't change contents 

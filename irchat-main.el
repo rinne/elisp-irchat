@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-main.el,v 3.36 2002/06/04 19:27:31 tri Exp $
+;;;  $Id: irchat-main.el,v 3.37 2002/06/05 12:00:52 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -507,6 +507,7 @@ Instead, these commands are available:
 	  irchat-crypt-indicator
 	  irchat-freeze-indicator
 	  irchat-ownfreeze-indicator 
+	  irchat-msn-indicator
 	  "-" (-3 . "%p") "-%-"))
 
   (use-local-map irchat-Dialogue-mode-map)
