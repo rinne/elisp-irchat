@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-handle.el,v 3.17 1997/06/10 14:44:47 tri Exp $
+;;;  $Id: irchat-handle.el,v 3.18 1997/07/09 13:35:29 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright in(eval-wfo
 
@@ -516,47 +516,52 @@
   (if (string-match "[^ ]+ +:\\(.*\\)" rest)
       (let ((path (matching-substring rest 1)))
 	(irchat-w-insert irchat-D-buffer 
-			 (format "%sIRCHAT: You were killed by %s. Path: %s. RIP\n" 
-				 irchat-info-prefix prefix path)))
+			 (format
+			  "%sIRCHAT: You were killed by %s. Path: %s. RIP\n" 
+			  irchat-info-prefix prefix path)))
     (message "IRCHAT: strange KILL"))
   (setq irchat-channel-indicator "No channel")
   (irchat-set-crypt-indicator))
 
 
-(defun irchat-handle-join-msg (prefix rest) ; kmk, 14101990
-  (let ((chnl (irchat-convert-^G-channel-name rest))
-	(rest (if (string-match "\\([^ \t\007]*\\)\ .*" rest)
-		  (matching-substring rest 1)
-		rest)))
+(defun irchat-handle-join-msg (prefix rest) ; kmk 14101990, tri 03071997
+  (let* ((parse (irchat-parse-^G-channel-name rest))
+	 (flags (cdr parse))
+	 (rest (car parse)))
     (if (string= prefix irchat-real-nickname)
-	(progn
-	  (setq irchat-current-channel rest)
-	  (setq irchat-current-channels
-		(cons irchat-current-channel irchat-current-channels))
-	  (setq irchat-channel-indicator
-		(format "Channel %s" rest))
-	  (irchat-set-crypt-indicator))
+        (progn
+          (setq irchat-current-channel rest)
+          (setq irchat-current-channels
+                (cons irchat-current-channel irchat-current-channels))
+          (setq irchat-channel-indicator
+                (format "Channel %s" rest))
+          (irchat-set-crypt-indicator))
       (irchat-add-to-channel prefix rest))
     (if (not irchat-ignore-changes)
-	(if irchat-compress-changes
-	    (let* ((text (format " \\(has\\|have\\) joined channel %s" 
-				 (regexp-quote chnl)))
-		   (match (format "^%s.* .*%s$" 
-				  (regexp-quote irchat-change-prefix) text))
-		   (default (format "%s%s (%s) has joined channel %s\n" 
-				    irchat-change-prefix 
-				    prefix
-				    irchat-userathost 
-				    chnl)))
-	      (irchat-w-replace (irchat-pick-buffer rest) match default text
-				(format ", %s (%s) have joined channel %s" 
-					prefix irchat-userathost chnl)))
-	  (irchat-w-insert (irchat-pick-buffer rest) 
-			   (format "%s%s (%s) has joined channel %s\n" 
-				   irchat-change-prefix
-				   prefix
-				   irchat-userathost 
-				   chnl))))
+        (if irchat-compress-changes
+            (let* ((text (format " \\(has\\|have\\) joined channel %s" 
+                                 (regexp-quote rest)))
+                   (match (format "^%s.* .*%s$" 
+                                  (regexp-quote irchat-change-prefix) text))
+                   (default (format "%s%s%s (%s) has joined channel %s\n" 
+                                    irchat-change-prefix 
+                                    prefix
+				    (if flags (format " [%s]" flags) "")
+                                    irchat-userathost 
+                                    rest)))
+              (irchat-w-replace (irchat-pick-buffer rest) match default text
+                                (format ", %s%s (%s) have joined channel %s" 
+                                        prefix 
+					(if flags (format " [%s]" flags) "")
+					irchat-userathost 
+					rest)))
+          (irchat-w-insert (irchat-pick-buffer rest) 
+                           (format "%s%s%s (%s) has joined channel %s\n" 
+                                   irchat-change-prefix
+                                   prefix
+				   (if flags (format " [%s]" flags) "")
+                                   irchat-userathost 
+                                   rest))))
     (irchat-change-nick-of prefix prefix)))
 
 
