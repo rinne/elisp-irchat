@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-300.el,v 3.6.2.1 2002/04/22 15:11:09 tri Exp $
+;;;  $Id: irchat-300.el,v 3.6.2.2 2002/04/23 06:37:30 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -251,7 +251,6 @@ This is called if no specific handler exists"
  
 (defun irchat-handle-317-msg (prefix rest) 
   "Handle the 317 WHOISIDLE." 
-  (message rest) 
   (let ((s nil)) 
     (if (string-match "^[^ ]+ [^ ]+ \\(.*\\)" rest)   
         (setq s (irchat-317-args-lookup  
