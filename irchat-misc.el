@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-misc.el,v 3.50 2002/06/04 15:47:27 tri Exp $
+;;;  $Id: irchat-misc.el,v 3.51 2002/06/20 10:00:09 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -766,6 +766,27 @@
   (if (> n 0)
       (cons (car list) (irchat-set-nth (- n 1) (cdr list) item))
     (cons item (cdr list))))
+
+(defun irchat-list-rnd-int (lst)
+  (let ((l lst)
+	(r '()))
+    (while l
+      (let ((c (car l)))
+	(setq l (cdr l))
+	(if (< (irchat-random-8) 128)
+	    (setq r (append r (list c)))
+	  (setq r (append (list c) r)))))
+    r))
+
+(defun irchat-list-rnd (lst)
+  "Return items of LST in random order list.  Doesn't randomize long lists well."
+  (irchat-list-rnd-int
+   (irchat-list-rnd-int
+    (irchat-list-rnd-int
+     (irchat-list-rnd-int
+      (irchat-list-rnd-int
+       (irchat-list-rnd-int
+	(irchat-list-rnd-int lst))))))))
 
 (eval-and-compile (provide 'irchat-misc))
 ;;;

@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn-cmd.el,v 3.9 2002/06/09 17:35:56 tri Exp $
+;;;  $Id: irchat-msn-cmd.el,v 3.10 2002/06/20 10:00:09 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -363,6 +363,24 @@
                             (irchat-msn-seqno) 
                             (irchat-msn-status-code irchat-msn-my-online-mode)))) 
         (t nil)))
+
+(defun irchat-Command-show-online ()
+  (interactive)
+  (if (not (irchat-msn-server-opened))
+      (error "MSN Messenger connection is not open."))
+  (let ((l (irchat-list-rnd irchat-msn-online-list))
+	(m nil))
+    (while l
+      (let ((c (car l))
+	    (x nil))
+	(setq l (cdr l))
+	(if (not (string-equal (nth 0 c) (nth 1 c)))
+	    (setq x (format "%s <%s>" (nth 1 c) (nth 0 c)))
+	  (setq x (nth 0 c)))
+	(if m
+	    (setq m (concat m ", " x))
+	  (setq m x))))
+    (message (if m m "None!"))))
 
 (eval-and-compile (provide 'irchat-msn-cmd))
 
