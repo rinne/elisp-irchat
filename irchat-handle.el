@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-handle.el,v 3.14 1997/03/23 22:29:44 tri Exp $
+;;;  $Id: irchat-handle.el,v 3.15 1997/05/05 12:49:49 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright in(eval-wfo
 
@@ -366,7 +366,7 @@
 			       (format "%s%s %s\n" 
 				       x-prefix
 				       (format (if msg-encrypted-p
-						   irchat-format-string4-p
+						   irchat-format-string4-e
 						 irchat-format-string4)
 					       prefix) 
 				       temp))))
