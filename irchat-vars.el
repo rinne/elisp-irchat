@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-vars.el,v 3.1 1997/02/24 16:00:02 tri Exp $
+;;;  $Id: irchat-vars.el,v 3.2 1997/02/25 13:21:13 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -183,13 +183,13 @@ IRCHAT to suit old users of the irc-loser-client.")
   "*Name of Command input buffer")
 (defvar irchat-Dialogue-buffer "*IRC Dialogue*"
   "*Name of Dialogue output buffer")
+(defvar irchat-Private-buffer "*IRC Private*"
+  "*Name of Private message buffer*")
 
-(defvar irchat-Private-buffer "*IRC Private*")
-
-;;;(defvar irchat-Privmsg-buffer nil)
 (defvar irchat-KILLS-buffer "*IRC KILLS*")
 (defvar irchat-IGNORED-buffer "*IRC IGNORED*")
 (defvar irchat-WALLOPS-buffer "*IRC WALLOPS*")
+(defvar irchat-CRYPT-buffer "*IRC CRYPT*")
 
 ;;;
 ;;;  Misc
@@ -348,6 +348,8 @@ The last ignores all messages that contain the word `fuck`.
   "*A list of buffers where WALLOPS messages to me are sent.")
 (defvar irchat-K-buffer (list irchat-KILLS-buffer)
   "*A list of buffers where KILL messages to me are sent.")
+(defvar irchat-C-buffer (list irchat-CRYPT-buffer)
+  "*A list of buffers where messages that were not decrypted are sent.")
 (defvar irchat-000-buffer (list irchat-Dialogue-buffer)
   "*A list of buffers where 000 messages to me are sent.")
 (defvar irchat-200-buffer (list irchat-Dialogue-buffer)

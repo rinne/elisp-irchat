@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-main.el,v 3.1 1997/02/24 16:00:02 tri Exp $
+;;;  $Id: irchat-main.el,v 3.2 1997/02/25 13:21:13 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -362,6 +362,7 @@ If already connected, just pop up the windows."
 	(irchat-KILLS-setup-buffer)
 	(irchat-IGNORED-setup-buffer)
 	(irchat-WALLOPS-setup-buffer)
+	(irchat-CRYPT-setup-buffer)
 	(irchat-configure-windows)
 	(setq irchat-current-channels nil)
 	(if irchat-current-channel
@@ -529,6 +530,13 @@ One is for entering commands and text, the other displays the IRC dialogue."
   (or (get-buffer irchat-WALLOPS-buffer)
       (save-excursion
 	(set-buffer (irchat-get-buffer-create irchat-WALLOPS-buffer)))))
+
+
+(defun irchat-CRYPT-setup-buffer ()
+  "Initialize CRYPT buffer."
+  (or (get-buffer irchat-CRYPT-buffer)
+      (save-excursion
+	(set-buffer (irchat-get-buffer-create irchat-CRYPT-buffer)))))
 
 
 (defun irchat-clear-system ()
