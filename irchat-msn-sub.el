@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn-sub.el,v 3.8 2002/06/09 14:40:28 tri Exp $
+;;;  $Id: irchat-msn-sub.el,v 3.9 2002/06/09 17:35:56 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -230,23 +230,33 @@
   (let ((p (irchat-msn-sub-server-search-with-process process)))
     (if p
 	(let ((m (irchat-msn-parse-message msg)))
-	  (if m
-	      (if (and (> (length (cdr m)) 0)
-		       (irchat-msn-message-header-val "Content-type" m)
-		       (string-match "TEXT/PLAIN" (upcase (irchat-msn-message-header-val "Content-type" m))))
-		  (progn
-		    (setq irchat-msn-recipient-cache (if (> (length (nth 6 p)) 1) (nth 1 p) pp-uid))
-		    (irchat-msn-name-cache-add pp-uid pp-name)
-		    (irchat-w-insert irchat-MSN-MSG-buffer
-				     (concat 
-				      (if (> (length (nth 6 p)) 1)
-					  (format irchat-msn-format-string-in2 pp-uid (nth 1 p))
-					(format irchat-msn-format-string-in pp-uid))
-				      " "
-				      (irchat-msn-iso8859-1-to-utf8 (cdr m) t)
-				      "\n"))
-		    t))))
-      t)))
+	  (cond ((and m
+		      (> (length (cdr m)) 0)
+		      (irchat-msn-message-header-val "Content-type" m)
+		      (string-match "TEXT/PLAIN" (upcase (irchat-msn-message-header-val "Content-type" m))))
+		 (progn
+		   (setq irchat-msn-recipient-cache (if (> (length (nth 6 p)) 1) (nth 1 p) pp-uid))
+		   (irchat-msn-name-cache-add pp-uid pp-name)
+		   (irchat-w-insert irchat-MSN-MSG-buffer
+				    (concat 
+				     (if (> (length (nth 6 p)) 1)
+					 (format irchat-msn-format-string-in2 pp-uid (nth 1 p))
+				       (format irchat-msn-format-string-in pp-uid))
+				     " "
+				     (irchat-msn-iso8859-1-to-utf8 (cdr m) t)
+				     "\n"))))
+		((and m
+		      (> (length (cdr m)) 0)
+		      (irchat-msn-message-header-val "Content-type" m)
+		      (string-match "TEXT/IRCHAT-ENCRYPTED" (upcase (irchat-msn-message-header-val "Content-type" m))))
+		 (progn
+		   (irchat-w-insert irchat-MSN-MSG-buffer
+				    (format "%sUnsupported encrypted message from %s <%s>\n"
+					    irchat-msn-error-prefix
+					    pp-name
+					    pp-uid))))
+		(t t)))
+      nil)))
 
 (defun irchat-msn-sub-handle-BYE (process parsed msg)
   (let ((p (irchat-msn-sub-server-search-with-process process)))
@@ -280,7 +290,10 @@
 	     (setq p (irchat-msn-sub-server-search-with-process process))
 	     (let ((pending (if p (nth 7 p) nil)))
 	       (if pending
-		   (let ((m (irchat-msn-make-message (nth 1 pending))))
+		   (let ((m (irchat-msn-make-message (nth 1 pending) 
+						     (not (or (null (nth 2 pending))
+							      (string-equal (nth 1 pending) 
+									    (nth 2 pending)))))))
 		     (irchat-msn-sub-server-remove-with-process (nth 0 p))
 		     (setq irchat-msn-sub-servers (cons (irchat-set-nth 7 p nil)
 							irchat-msn-sub-servers))

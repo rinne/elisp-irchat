@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn-cmd.el,v 3.8 2002/06/08 11:57:19 tri Exp $
+;;;  $Id: irchat-msn-cmd.el,v 3.9 2002/06/09 17:35:56 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -174,7 +174,7 @@
 	  (if (fboundp 'irchat-encrypt-message)
 	      (let ((irchat-real-nickname irchat-msn-uid))
 		(setq msg (irchat-encrypt-message msg recipient))))
-	  (let ((m (irchat-msn-make-message msg)))
+	  (let ((m (irchat-msn-make-message msg (not (string-equal msg cmsg)))))
 	    (setq irchat-msn-recipient-cache recipient)
 	    (irchat-w-insert irchat-MSN-MSG-buffer
 			     (concat 

@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn-msg.el,v 3.5 2002/06/08 19:32:58 tri Exp $
+;;;  $Id: irchat-msn-msg.el,v 3.6 2002/06/09 17:35:56 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -84,19 +84,20 @@
     (setq msg (replace-in-string msg "\n" "\r\n"))
     msg))
 
-(defun irchat-msn-make-message (msg &optional headers)
+(defun irchat-msn-make-message (msg &optional encrypted)
   (setq msg (replace-in-string msg "\r\n" "\n"))
   (setq msg (irchat-msn-iso8859-1-to-utf8 msg))
-  (let ((len (length msg)))
+  (let ((cnt (if encrypted "irchat-encrypted" "plain"))
+	(len (length msg)))
     (if (string-equal "\n" (substring msg (- len 1) len))
-	(setq msg (substring msg 0 (- len 1)))))
-  (setq msg (concat "MIME-Version: 1.0\n"
-		    "Content-Type: text/plain; charset=UTF-8\n"
-		    "X-MMS-IM-Format: FN=Microsoft%20Sans%20Serif; EF=; CO=000000; CS=0; PF=22\n"
-		    "\n"
-		    msg))
-  (setq msg (replace-in-string msg "\n" "\r\n"))
-  msg)
+	(setq msg (substring msg 0 (- len 1))))
+    (setq msg (concat "MIME-Version: 1.0\n"
+		      "Content-Type: text/" cnt "; charset=UTF-8\n"
+		      "X-MMS-IM-Format: FN=Microsoft%20Sans%20Serif; EF=; CO=000000; CS=0; PF=22\n"
+		      "\n"
+		      msg))
+    (setq msg (replace-in-string msg "\n" "\r\n"))
+    msg))
 
 (defun irchat-msn-parse-message (msg)
   (let ((m (replace-in-string msg "\r" "")))
