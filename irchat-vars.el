@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-vars.el,v 3.32 1997/12/11 05:58:40 tri Exp $
+;;;  $Id: irchat-vars.el,v 3.33 1998/01/27 16:37:04 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -85,6 +85,12 @@ killed again if automagic reconnect is too fast.")
 
 (defvar irchat-message-split-^C-compat t
   "Also recognize ^C as split separator?")
+
+(defvar irchat-default-kick-message nil
+  "String to use as message in channel KICK commands.")
+
+(defvar irchat-ask-kick-message t
+  "If non-nil, the KICK message is asked from user with every kick.")
 
 ;;;
 ;;;  Hooks, each message type has its own hook. These are used to setup
