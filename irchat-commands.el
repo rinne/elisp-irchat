@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-commands.el,v 3.37 1998/11/04 10:54:33 tri Exp $
+;;;  $Id: irchat-commands.el,v 3.38 1998/11/12 11:30:53 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -191,7 +191,7 @@
 			   (irchat-own-private-message 
 			    (format (format "%s %%s"
 					    (irchat-format-string 
-					     nil
+					     t
 					     msg-encrypted-p))
 				    irchat-current-chat-partner own-message)))
 			  (t '())))
@@ -213,14 +213,14 @@
 		       (irchat-own-message
 			(format (format (format "%s %%%%s" 
 					    (irchat-format-string 
-					     nil
+					     t
 					     msg-encrypted-p))
 					irchat-real-nickname) message)))
 		      ((> (length own-message) 0)
 		       (irchat-own-message
 			(format (format (format "%s %%%%s" 
 					    (irchat-format-string 
-					     nil
+					     t
 					     msg-encrypted-p))
 					irchat-real-nickname) own-message)))
 		      (t '())))))
