@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-main.el,v 3.19 1997/06/10 12:26:31 tri Exp $
+;;;  $Id: irchat-main.el,v 3.20 1997/10/02 05:54:00 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -271,7 +271,8 @@ If optional argument SERVICE is non-nil, open by the service name."
 	   (if (not irchat-real-nickname)
 	       (setq irchat-real-nickname irchat-nickname)
 	     (let ((match (string-match "[^_]_+$" irchat-real-nickname)))
-	       (if match
+	       (if (and irchat-autoremove-virtual-penis
+			match)
 		   (setq irchat-real-nickname
 			 (substring irchat-real-nickname 0 (+ match 1))))))
 	   (setq irchat-old-nickname irchat-real-nickname)
