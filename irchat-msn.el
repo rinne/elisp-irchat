@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn.el,v 3.9 2002/06/07 13:09:00 tri Exp $
+;;;  $Id: irchat-msn.el,v 3.10 2002/06/08 11:37:10 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -18,7 +18,7 @@
 ;;;
 ;;; Internal variables
 ;;;
-(defvar irchat-msn-server-ping-interval 600)
+(defvar irchat-msn-server-ping-interval 900)
 (defvar irchat-msn-server-closed-because-of-another-login nil)
 (defvar irchat-msn-server-int nil)
 (defvar irchat-msn-seqno 0)

@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn-handle.el,v 3.7 2002/06/07 08:28:48 tri Exp $
+;;;  $Id: irchat-msn-handle.el,v 3.8 2002/06/08 11:37:10 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -40,15 +40,19 @@
 	     (setq irchat-msn-server-closed-because-of-another-login t)
 	     (irchat-w-insert irchat-MSN-buffer 
 			      (format "%sMSN Messenger connection closed because of another login.\n"
-				      irchat-msn-info-prefix))
-	     (irchat-msn-close-server)))
+				      irchat-msn-info-prefix))))
+	  ((string-equal "SSD" (nth 1 ml))
+	   (progn
+	     (irchat-w-insert irchat-MSN-buffer 
+			      (format "%sMSN Messenger connection closed server is going down.\n"
+				      irchat-msn-info-prefix))))
 	  (t
 	   (progn
 	     (irchat-w-insert irchat-MSN-buffer 
 			      (format "%sMSN Messenger connection closed (reason=%s).\n"
 				      irchat-msn-info-prefix
-				      (nth 1 ml)))
-	     (irchat-msn-close-server))))))
+				      (nth 1 ml)))))))
+  (irchat-msn-close-server))
 
 (defun irchat-msn-handle-NLN (msg)
   (if (string-match 
