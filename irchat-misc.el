@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-misc.el,v 3.33 1998/05/18 11:28:27 tri Exp $
+;;;  $Id: irchat-misc.el,v 3.34 1998/05/23 18:13:47 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -261,6 +261,55 @@
             (setq irchat-channel-filter (matching-substring ditem 2))
           (setq irchat-channel-filter "")))))
 
+;;;
+;;; Delayed send.  Same as irchat send.  Sends one message per 3 seconds
+;;; saves order between other delayed sends, but direct irchat-send
+;;; calls can violate the order.  Use this to send replies for example
+;;; to ctcp queries that don't need to be sent immediately and can
+;;; cause excess flood.
+;;;
+;;; //tri 19980523
+;;;
+
+(defvar irchat-send-delayed-queue '())
+(defvar irchat-send-delayed-timer nil)
+
+(defun irchat-send-delayed-start-timer ()
+  (if irchat-send-delayed-timer
+      nil
+    (setq irchat-send-delayed-timer
+	  (irchat-start-timer 'irchat-commit-delayed-send 3))))
+
+(defun irchat-send-delayed-cancel-timer ()
+  (if irchat-send-delayed-timer
+      (progn
+	(irchat-cancel-timer irchat-send-delayed-timer)
+	(setq irchat-send-delayed-timer nil)
+	t)
+    nil))
+
+(defun irchat-commit-delayed-send ()
+  (let ((l (length irchat-send-delayed-queue)))
+    (if (> l 0)
+	(let ((r (nth (- l 1) irchat-send-delayed-queue))
+	      (nq '()))
+	  (while (> l 1)
+	    (setq nq (cons (nth (- l 2) irchat-send-delayed-queue) nq))
+	    (setq l (- l 1)))
+	  (setq irchat-send-delayed-queue nq)
+	  (irchat-send r)))
+    (if (null irchat-send-delayed-queue)
+	(irchat-send-delayed-cancel-timer))))
+
+(defun irchat-send-delayed (format &rest args)
+  (irchat-reset-idle)
+  (let ((item (apply 'format format args)))
+    (setq irchat-send-delayed-queue (cons item irchat-send-delayed-queue))
+    (irchat-send-delayed-start-timer)))
+	  
+;;;
+;;; end of delayed send stuff...
+;;;
 
 (defun irchat-clean-hostname (hostname)
   "Return the arg HOSTNAME, but if is a dotted-quad, put brackets around it."
