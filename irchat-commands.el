@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-commands.el,v 3.30 1997/12/01 08:13:44 tri Exp $
+;;;  $Id: irchat-commands.el,v 3.31 1998/01/23 08:11:13 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -623,16 +623,26 @@ contents are updated future sessions."
 				  message)))))
 
 
-(defun irchat-Command-kick (kick-nickname-var)
+(defun irchat-Command-kick (kick-nickname-var &optional why-var)
   "Kick this user out."
-  (interactive (let (kick-nickname-var (completion-ignore-case t))
+  (interactive (let (kick-nickname-var 
+		     why-var
+		     (completion-ignore-case t))
 		 (setq kick-nickname-var 
 		       (completing-read 
 			"Kick out nickname: " 
 			irchat-nick-alist
 			'(lambda (s) t) nil nil))
-		 (list kick-nickname-var)))
-  (irchat-send "KICK %s %s" irchat-current-channel kick-nickname-var))
+		 (setq why-var (read-from-minibuffer "Why? "))
+		 (list kick-nickname-var (if (and why-var
+						  (not (string= ""
+								why-var)))
+					     why-var
+					   nil))))
+  (irchat-send "KICK %s %s%s" 
+	       irchat-current-channel 
+	       kick-nickname-var
+	       (if why-var (concat " :" why-var) "")))
 
 
 (defun irchat-Command-list (&optional channel)
