@@ -4,7 +4,7 @@
 ;;;  IDEA encryption in elisp.  Cool, ha?
 ;;;  ----------------------------------------------------------------------
 ;;;  Created      : Thu Jun 29 08:11:25 1995 tri
-;;;  Last modified: Thu Jun 25 02:10:15 1998 tri
+;;;  Last modified: Thu Jun 25 02:15:45 1998 tri
 ;;;  ----------------------------------------------------------------------
 ;;;  Copyright © 1995-1998
 ;;;  Timo J. Rinne <tri@iki.fi>
@@ -18,7 +18,7 @@
 ;;;  irchat-copyright.el applies only if used with irchat IRC client.
 ;;;  Contact the author for additional copyright info.
 ;;;
-;;;  $Id: idea.el,v 3.15 1998/06/24 23:11:24 tri Exp $
+;;;  $Id: idea.el,v 3.16 1998/06/24 23:15:50 tri Exp $
 ;;;
 
 (eval-and-compile  
@@ -902,7 +902,7 @@
       (aset r 2  (idea-& (idea->> (nth 6 key) 8) 255))
       (aset r 1  (idea-& (nth 7 key) 255))
       (aset r 0  (idea-& (idea->> (nth 7 key) 8) 255))
-      (let ((ra (idea-ke-x r)))
+      (let ((ra (idea-expand-string-to-key-version-3 r)))
 	(concat type ":" (format "%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c"
 				 (+ ?a (% (nth 0 ra) 26))
 				 (+ ?a (% (nth 1 ra) 26))
