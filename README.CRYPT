@@ -1,0 +1,67 @@
+In Finnish for now...
+
+
+Kryptaavasta irchatista
+-----------------------
+
+Versiosta 3.0 alkaen tukee irchat kryptaavia viestejä.  Käytössä oleva
+salausjärjestelmä on IDEA, jossa avaimet ovat 128 bittisiä ja
+krypt-blokit 64 bittisiä.  Avaimet generoidaan yleensä merkkijonoista.
+
+Homman ajatus on siis seuraava:
+
+Käytössäsi olevat avaimet ovat merkkijonoja.  Etukäteen tietämäsi
+avaimet voit tallettaa stringilistana irchat-crypt-known-keys
+muuttujaan.  Jälkikäteen avaimia voidaan lisätä interaktiivisella
+irchat-Command-add-new-key (C-c % a) funktiolla.  Nämä avaimet ovat
+siis käytössäsi kaikkien viestien avaamiseen.
+
+Esim: (setq irchat-crypt-known-keys '("kukkuu" "reset"))
+
+Jos haluat kryptata tietylle vastaanottajalle (kanavalle/nicknamelle)
+menevät viestit, voit asettaa ne valmiiksi muuttujaan
+irchat-crypt-default-keys vastaanottaja-avain pareina.
+
+Esim: (setq irchat-crypt-default-keys '(("#sex" . "foo") (("mypal" . "bar"))))
+
+Ajon aikana default-avaimia lisätään funktiolla
+irchat-Command-set-default-key (C-c % d), joka kysyy vastaanottajan ja
+avaimen.  Avain lisätään automaattisesti myös dekryptausavainten
+listaan.  Mikäli avaimeksi annetaan tyhjä stringi, poistetaan kyseinen
+oletusavain.
+
+Toiminnalla on kaksi moodia.  Oletusmoodissa kanavalle/nicknamelle
+lähetetyt viestit lähetetään kryptattuna, mikäli vastaanottajalle on
+asetettu oletusavain.  Kanavaviestit voi kuitenkin tässä moodissa
+lähettää selväkielisenä komennolla
+irchat-Command-enter-message-opposite-crypt-mode (M-return).  Toisessa
+tilassa kaikki viestit lähetetään selväkielisenä.  Kryptattuja
+kanavaviestejä voi kuitenkin lähettää, mikäli oletusavain on asetettu,
+komennolla irchat-Command-enter-message-opposite-crypt-mode
+(M-return).  Tilojen välillä vaihdetaan komennolla
+irchat-Command-toggle-crypt (C-c % t).
+
+Mikäli haluat selväkielisen moodin oletusarvoksi aseta muuttuja 
+irchat-crypt-mode-active arvoon nil.
+
+Esim: (setq irchat-crypt-mode-active nil)
+
+Mikäli sinulla on irchat-privmsg-hook, vaihda se
+irchat-privmsg-cleartext-hook:iksi, jolloin homman pitäisi toimia myös
+kryptatuilla viesteillä.
+
+Pellet lähettelevät kryptaustageilla varustettuja viestejä aina
+sillointällöin.  Niistä tulee ruutuun viesti "Invalid...".  Mikäli
+tällaiset viestit haluaa ignoroida, voi asettaa muuttujan
+irchat-crypt-ignore-defected arvoksi t.
+
+Esim. (setq irchat-crypt-ignore-defected t)
+
+Yleisesti ottaen kryptatut viestit, joita ei saada auki, tallennetaan
+puskuriin *IRC CRYPT*.
+
+Jaa ja nauti
+
+//tri
+
+$Id: README.CRYPT,v 1.1 1997/02/25 21:05:20 tri Exp $
