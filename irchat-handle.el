@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-handle.el,v 3.16 1997/06/10 11:05:04 tri Exp $
+;;;  $Id: irchat-handle.el,v 3.17 1997/06/10 14:44:47 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright in(eval-wfo
 
@@ -524,32 +524,40 @@
 
 
 (defun irchat-handle-join-msg (prefix rest) ; kmk, 14101990
-  (if (string-match "\\([^ ]*\\)\ .*" rest)
-      (setq rest (matching-substring rest 1))) ;; throw away the channel mode
-  (if (string= prefix irchat-real-nickname)
-      (progn
-	(setq irchat-current-channel rest)
-	(setq irchat-current-channels
-	      (cons irchat-current-channel irchat-current-channels))
- 	(setq irchat-channel-indicator
-	      (format "Channel %s" rest))
-	(irchat-set-crypt-indicator))
-    (irchat-add-to-channel prefix rest))
-  (if (not irchat-ignore-changes)
-      (if irchat-compress-changes
-	  (let* ((text (format " \\(has\\|have\\) joined channel %s" 
-			       (regexp-quote rest)))
-		 (match (format "^%s.* .*%s$" 
-				(regexp-quote irchat-change-prefix) text))
-		 (default (format "%s%s (%s) has joined channel %s\n" 
-				  irchat-change-prefix prefix irchat-userathost rest)))
-	    (irchat-w-replace (irchat-pick-buffer rest) match default text
-			      (format ", %s (%s) have joined channel %s" 
-				      prefix irchat-userathost rest)))
+  (let ((chnl (irchat-convert-^G-channel-name rest))
+	(rest (if (string-match "\\([^ \t\007]*\\)\ .*" rest)
+		  (matching-substring rest 1)
+		rest)))
+    (if (string= prefix irchat-real-nickname)
+	(progn
+	  (setq irchat-current-channel rest)
+	  (setq irchat-current-channels
+		(cons irchat-current-channel irchat-current-channels))
+	  (setq irchat-channel-indicator
+		(format "Channel %s" rest))
+	  (irchat-set-crypt-indicator))
+      (irchat-add-to-channel prefix rest))
+    (if (not irchat-ignore-changes)
+	(if irchat-compress-changes
+	    (let* ((text (format " \\(has\\|have\\) joined channel %s" 
+				 (regexp-quote chnl)))
+		   (match (format "^%s.* .*%s$" 
+				  (regexp-quote irchat-change-prefix) text))
+		   (default (format "%s%s (%s) has joined channel %s\n" 
+				    irchat-change-prefix 
+				    prefix
+				    irchat-userathost 
+				    chnl)))
+	      (irchat-w-replace (irchat-pick-buffer rest) match default text
+				(format ", %s (%s) have joined channel %s" 
+					prefix irchat-userathost chnl)))
 	  (irchat-w-insert (irchat-pick-buffer rest) 
 			   (format "%s%s (%s) has joined channel %s\n" 
-				   irchat-change-prefix prefix irchat-userathost rest))))
-  (irchat-change-nick-of prefix prefix))
+				   irchat-change-prefix
+				   prefix
+				   irchat-userathost 
+				   chnl))))
+    (irchat-change-nick-of prefix prefix)))
 
 
 (defun irchat-handle-part-msg (prefix rest) ; kmk, 14101990
