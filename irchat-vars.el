@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-vars.el,v 3.4 1997/02/25 21:06:22 tri Exp $
+;;;  $Id: irchat-vars.el,v 3.5 1997/02/25 22:01:31 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -266,8 +266,8 @@ Default is what (system-name) returns.")
   "List containing pairs of addresses and associated default keys.  e.g '((\"#42\" . \"foo\") (\"#xyz\" . \"zappa\"))")
 (defvar irchat-crypt-timestamp-tolerance 300
   "Allow incoming messages to have N seconds old timestamp.")
-(defvar irchat-crypt-ignore-suspicious-messages nil
-  "If t, ignore messages with invalid nick or timestamp.")  ;; not yet!
+(defvar irchat-crypt-ignore-suspicious nil
+  "If t, ignore messages with invalid nick or timestamp.")
 (defvar irchat-crypt-mode-active t
   "If t, irchat encrypts all messages it has a default key for.")
 (defvar irchat-crypt-ignore-defected nil
