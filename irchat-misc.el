@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-misc.el,v 3.40 1998/05/24 15:33:36 tri Exp $
+;;;  $Id: irchat-misc.el,v 3.41 1998/05/25 08:51:56 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -306,14 +306,17 @@
 
 (defvar irchat-send-delayed-queue '())
 (defvar irchat-send-delayed-timer nil)
+(defvar irchat-send-delayed-first-commit nil)
 
 (defun irchat-send-delayed-start-timer ()
   "Start delayed send timer.  This is done automagically in delayed send."
   (if irchat-send-delayed-timer
       nil
-    (setq irchat-send-delayed-timer
-	  (irchat-start-timer 'irchat-commit-delayed-send 
-			      irchat-send-delayed-interval))))
+    (progn
+      (setq irchat-send-delayed-first-commit t)
+      (setq irchat-send-delayed-timer
+	    (irchat-start-timer 'irchat-commit-delayed-send 
+				irchat-send-delayed-interval)))))
 
 (defun irchat-send-delayed-reset ()
   "Wipe delayed sends.  This is done automagically in quit."
@@ -331,17 +334,19 @@
 
 (defun irchat-commit-delayed-send ()
   "Send one delayed send line.  This is called by timer."
-  (let ((l (length irchat-send-delayed-queue)))
-    (if (> l 0)
-	(let ((r (nth (- l 1) irchat-send-delayed-queue))
-	      (nq '()))
-	  (while (> l 1)
-	    (setq nq (cons (nth (- l 2) irchat-send-delayed-queue) nq))
-	    (setq l (- l 1)))
-	  (setq irchat-send-delayed-queue nq)
-	  (irchat-send r)))
-    (if (null irchat-send-delayed-queue)
-	(irchat-send-delayed-cancel-timer))))
+  (if irchat-send-delayed-first-commit
+      (setq irchat-send-delayed-first-commit nil)
+    (let ((l (length irchat-send-delayed-queue)))
+      (if (> l 0)
+	  (let ((r (nth (- l 1) irchat-send-delayed-queue))
+		(nq '()))
+	    (while (> l 1)
+	      (setq nq (cons (nth (- l 2) irchat-send-delayed-queue) nq))
+	      (setq l (- l 1)))
+	    (setq irchat-send-delayed-queue nq)
+	    (irchat-send r)))
+      (if (null irchat-send-delayed-queue)
+	  (irchat-send-delayed-cancel-timer)))))
 
 (defun irchat-send-delayed (format &rest args)
   "Same as irchat-send but queues send."
