@@ -1,5 +1,9 @@
 MSN Messenger protocol implementation is still preliminary and it
 doesn't work properly if you don't have irc-connection open also.
+There seems to be some problems with gnu-emacs but xemacs seems to
+work a-ok.  If your emacs doesn't have md5 hash function, copy 
+greed-md5.el (comes with the distribution but is not compiled into 
+irchat.elc) somewhere to your site-lisps, so that irchat can find it.
 
 Basically:
     1) Start irchat (M-x irchat)
