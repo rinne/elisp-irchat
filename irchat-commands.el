@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-commands.el,v 3.16 1997/03/18 10:55:24 jtp Exp $
+;;;  $Id: irchat-commands.el,v 3.17 1997/03/19 15:52:13 jtp Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -242,18 +242,22 @@ current channel."
 (defun irchat-Command-debug ()
   "Start debugging irchat."
   (interactive)
-  (let ((buf (current-buffer)))
+  (let ((buf (current-buffer))
+	win)
     (if irchat-debug-buffer
 	(progn
 	  (if (eq buf irchat-debug-buffer)
 	      (setq buf nil))
 	  (delete-windows-on irchat-debug-buffer)
 	  (setq irchat-debug-buffer nil)
-	  (and buf (pop-to-buffer buf)))
+	  (and buf (select-window (irchat-get-buffer-window buf)))
+	  )
       (if irchat-use-full-window
-	  (delete-other-windows))
-      (and (get-buffer-window irchat-Dialogue-buffer)
-	   (pop-to-buffer irchat-Dialogue-buffer))
+	  (progn
+	    (delete-other-windows)
+	    (irchat-configure-windows)))
+      (and (setq win (irchat-get-buffer-window irchat-Dialogue-buffer))
+	   (select-window win))
       (and (< (window-height) (* window-min-height 2))
 	   (enlarge-window (- (* window-min-height 2) (window-height))))
       (split-window)
@@ -261,7 +265,8 @@ current channel."
       (switch-to-buffer irchat-debug-buffer)
       (goto-char (point-max))
       (recenter)
-      (pop-to-buffer buf))))
+      (and (setq win (irchat-get-buffer-window buf))
+	   (select-window win)))))
 
 
 (defun irchat-Command-inline ()
