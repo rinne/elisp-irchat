@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-uah-cache.el,v 1.4 1997/10/20 06:48:25 tri Exp $
+;;;  $Id: irchat-uah-cache.el,v 1.5 1997/10/20 06:54:29 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 ;;;
@@ -46,8 +46,8 @@
 					  irchat-nick-to-uah-vector-length)))))
 
 
-(defun irchat-nick-to-uah (nick)
-  "Find uah associated with NICK from cache if possible."
+(defun irchat-nick-to-uah-raw (nick)
+  "Find uah and uah-type associated with NICK from cache if possible."
   (if (null irchat-nick-to-uah-vector)
       (irchat-nick-to-uah-init))
   (let ((pos (if (= irchat-nick-to-uah-pos 0)
@@ -65,9 +65,15 @@
     (if (and (string-ci-equal nick n)
 	     (stringp u)
 	     (> (length u) 0))
-	u
+	(list u m)
       nil))))
 
+(defun irchat-nick-to-uah (nick)
+  "Find uah associated with NICK from cache if possible."
+  (let ((r (irchat-nick-to-uah-raw nick)))
+    (if (null r)
+	nil
+      (nth 0 r))))
 
 (defun irchat-convert-uah-to-ignore-list (uah)
   "Convert UAH-string to list of regexps to be ignored."
