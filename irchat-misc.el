@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-misc.el,v 1.4 1997/02/18 12:31:25 too Exp $
+;;;  $Id: irchat-misc.el,v 3.1 1997/02/24 16:00:02 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -60,7 +60,7 @@
       (store-match-data data))))
 
 
-(defun irchat-replace-in-string (string from to)
+(defun irchat-replace-in-string (str regexp newtext)
   (if (string-match "XEmacs" emacs-version)
       (replace-in-string str regexp newtext t)
     (save-excursion
@@ -172,6 +172,112 @@
   "Difference in seconds of two `three integer lists' returned by current-time function."
   (+ (* (- (car t1) (car t0)) 65536) (- (car (cdr t1)) (car (cdr t0)))))
 
+(defun irchat-generate-hex-timestamp (&optional time)
+  "Generate timestamp string as hexadecimal"
+  (let ((x (if time time (current-time))))
+	(format "%04x%04x" (car x) (car (cdr x)))))
+
+(defun irchat-hex-timestamp-valid (timestamp limit)
+  "Is TIMESTAMP valid within LIMIT?"
+  (if (not (and (stringp timestamp)
+		(string-match "^[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]$" timestamp)))
+      nil
+    (let* ((t1 (irchat-hex-to-int (substring timestamp 0 4)))
+	   (t2 (irchat-hex-to-int (substring timestamp 4 8)))
+	   (diff (irchat-time-difference (list t1 t2 0)
+					 (current-time))))
+      (if (> limit 0)
+	  (if (and (< diff limit)
+		   (> diff (- 0 limit)))
+	      t
+	    nil)
+	t))))
+
+(defun irchat-hex-to-int (x)
+  "Convert a HEX-STRING like ffff to the decimal integer"
+  (if (string-match "^[0-9a-fA-F][0-9a-fA-F]*$" x)
+      (let ((i 0)
+	    (l (length x))
+	    (r 0))
+	(while (< i l)
+	  (setq r (+ (* 16 r) (irchat-hex-digit-to-int (elt x i))))
+	  (setq i (+ i 1)))
+	r)
+    -1))
+
+(defun irchat-hex-digit-to-int (x)
+  "Convert single HEX-DIGIT (char or string) to integer"
+  (cond ((= x ?0) 0)
+        ((= x ?1) 1)
+        ((= x ?2) 2)
+        ((= x ?3) 3)
+        ((= x ?4) 4)
+        ((= x ?5) 5)
+        ((= x ?6) 6)
+        ((= x ?7) 7)
+        ((= x ?8) 8)
+        ((= x ?9) 9)
+        ((or (= x ?a) (= x ?A)) 10)
+        ((or (= x ?b) (= x ?B)) 11)
+        ((or (= x ?c) (= x ?C)) 12)
+        ((or (= x ?d) (= x ?D)) 13)
+        ((or (= x ?e) (= x ?E)) 14)
+        ((or (= x ?f) (= x ?F)) 15)
+	((string= x "0") 0)
+        ((string= x "1") 1)
+        ((string= x "2") 2)
+        ((string= x "3") 3)
+        ((string= x "4") 4)
+        ((string= x "5") 5)
+        ((string= x "6") 6)
+        ((string= x "7") 7)
+        ((string= x "8") 8)
+        ((string= x "9") 9)
+        ((or (string= x "a") (string= x "A")) 10)
+        ((or (string= x "b") (string= x "B")) 11)
+        ((or (string= x "c") (string= x "C")) 12)
+        ((or (string= x "d") (string= x "D")) 13)
+        ((or (string= x "e") (string= x "E")) 14)
+        ((or (string= x "f") (string= x "F")) 15)
+        (t -1)))
+
+(if (not (fboundp 'remassoc))
+    (defun remassoc (key lst)
+      (let ((r '())
+	    (i (length lst)))
+	(while (> i 0)
+	  (setq i (- i 1))
+	  (let ((current (nth i lst)))
+	    (if (not (equal (car current) key))
+		(setq r (cons current r)))))
+	r)))
+
+(if (not (fboundp 'assoc-if))
+    (defun assoc-if (pred lst)
+      (let ((r nil))
+	(while lst
+	  (if (eval (list pred (car (car lst))))
+	      (progn
+		(setq r (car lst))
+		(setq lst '()))
+	    (setq lst (cdr lst))))
+	r)))
+
+(if (not (fboundp '<<))
+    (defun << (x n)
+      (while (> n 0)
+	(setq x (* x 2))
+	(setq n (- n 1)))
+      x))
+
+(if (not (fboundp '>>))
+    (defun >> (x n)
+      (while (> n 0)
+	(setq x (/ x 2))
+	(setq n (- n 1)))
+      x))
+
+(eval-and-compile (provide 'irchat-misc))
 ;;;
 ;;; eof
 ;;;

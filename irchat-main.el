@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-main.el,v 1.8 1997/02/18 12:31:25 too Exp $
+;;;  $Id: irchat-main.el,v 3.1 1997/02/24 16:00:02 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -111,6 +111,8 @@ carried out.")))))
     ("\C-cG" 	irchat-Command-dcc-list)
     ("\C-m"  	irchat-Command-enter-message)
     ("\C-j"  	irchat-Command-enter-message)
+    ("\M-\C-m" 	irchat-Command-enter-message-cleartext)
+    ("\M-\C-j" 	irchat-Command-enter-message-cleartext)
     ("\C-cF" 	irchat-Command-send-file)
     ("\C-c\C-c" irchat-Client-query-prefix)
     ("\C-c\C-d" irchat-Command-debug)
@@ -158,7 +160,9 @@ carried out.")))))
     ("\C-[\C-i" lisp-complete-symbol)
     ("\C-c$" 	irchat-Command-eod-buffer)
     ("\C-c>" 	irchat-Command-push)
-    ("\C-c<" 	irchat-Command-pop))
+    ("\C-c<" 	irchat-Command-pop)
+    ("\C-c%d"	irchat-Command-set-default-key)
+    ("\C-c%a"	irchat-Command-add-new-key))
   "Key definition table for Command mode")
     
 (defun irchat-define-keys (map keys)
@@ -352,6 +356,7 @@ If already connected, just pop up the windows."
 	    (progn
 	      (setq irchat-freeze-indicator "-")
 	      (irchat-freeze-toggle (car irchat-D-buffer))))
+	(irchat-init-crypt)
 	(irchat-Dialogue-setup-buffer)
 	(irchat-Private-setup-buffer)
 	(irchat-KILLS-setup-buffer)
