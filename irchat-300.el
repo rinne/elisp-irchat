@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-300.el,v 3.2 1997/03/12 16:20:09 jtp Exp $
+;;;  $Id: irchat-300.el,v 3.3 1997/03/12 16:56:47 jtp Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -262,11 +262,13 @@ This is called if no specific handler exists"
 	    (progn
 	      (put (intern chnl irchat-obarray) 'topic topic)
 	      (irchat-w-insert (irchat-pick-buffer chnl)
-			       (format "%s%-10s%6s  %s\n"
+			       (format "%s%-10s%6s user%s%s%s\n"
 				       irchat-info-prefix
 				       (if (string= chnl "*") "Priv"
 					 chnl)
 				       users
+				       (if (> (string-to-int users) 1) "s" "")
+				       (if (string= "" topic) "" ": ")
 				       topic)))))
     (message "IRCHAT: Strange 322 reply")))
 
@@ -430,7 +432,7 @@ don't display anything."
   (let ((level (- irchat-polling 1)))
     (setq irchat-polling (if (< level 0) 0 level))
     (irchat-w-insert (irchat-pick-buffer irchat-353-nameschnl)
-		     (format "%s%9s: (%d user%s): %s\n"
+		     (format "%s%-10s%6d user%s: %s\n"
 			     irchat-info-prefix
 			     (if (string= irchat-353-nameschnl "*") 
 				 "Priv" 
