@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-vars.el,v 3.29 1997/11/19 14:22:26 tri Exp $
+;;;  $Id: irchat-vars.el,v 3.30 1997/12/01 08:02:42 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -79,6 +79,9 @@ killed again if automagic reconnect is too fast.")
 
 (defvar irchat-message-length-limit 256
   "*Messages longer than this are split to pieces")
+
+(defvar irchat-message-split-separator ""
+  "String to used as separator in splitted messages.")
 
 ;;;
 ;;;  Hooks, each message type has its own hook. These are used to setup
