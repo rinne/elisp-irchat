@@ -1,6 +1,6 @@
 #! /bin/sh
 #
-# $Id: irchat-mkdist,v 1.11 2001/06/07 14:25:09 tri Exp $
+# $Id: irchat-mkdist,v 1.12 2001/06/07 14:51:07 tri Exp $
 #
 # This file is part of irchat.  Command irchat-mkdist creates 
 # a snapshot of irchat current.  This file itself does not go 
@@ -11,6 +11,37 @@
 # This file is covered by the copyright notice in irchat-copyright.el.
 #
 
+ver_alpha_val=t
+ver_beta_val=t
+ver_release_val=NO
+
+while echo "$1" | grep '^-' >/dev/null 2>&1 ; do
+    if [ "$1" = "--" ] ; then
+      shift;
+      break;
+    elif [ "$1" = "-" ] ; then
+      shift;
+      break;
+    elif [ "$1" = "-A" ] ; then
+      shift;
+      ver_alpha_val=t
+      ver_beta_val=t
+      ver_release=NO
+    elif [ "$1" = "-B" ] ; then
+      shift;
+      ver_alpha_val=nil
+      ver_beta_val=t
+      ver_release=NO
+    elif [ "$1" = "-R" ] ; then
+      shift;
+      ver_alpha_val=nil
+      ver_beta_val=nil
+      ver_release=YES
+    else
+      echo "Unknown option $1" ; exit 1
+    fi       
+done
+
 distfiles=""
 
 if [ "x$1" != "x" ] ; then
@@ -20,6 +51,27 @@ else
 fi
 
 [ -d "$distname" ] && { echo "You have already made $distname today."; exit 1; }
+
+if [ "$ver_release" = "YES" ] ; then
+    echo "$distname"
+    if echo "$distname" | grep '^irchat-[0-9][0-9]*\.[0-9][0-9]*$' > /dev/null 2>&1 ; then
+        ver_major=`echo "$distname" | sed 's,^irchat-\([0-9][0-9]*\)\.[0-9][0-9]*$,\1,'`
+        ver_minor=`echo "$distname" | sed 's,^irchat-[0-9][0-9]*\.\([0-9][0-9]*\)$,\1,'`
+    else
+        echo "Release version number must be in form ##.##"; exit 1;
+    fi
+else
+    ver_major=""
+    ver_minor=""
+fi
+
+if [ "x$ver_major" = "x" ] ; then
+  cat irchat-version.el |
+  sed 's,defconst irchat-client-version-alpha-p [^ ][^ ]*,defconst irchat-client-version-alpha-p '"$ver_alpha_val"',;s,defconst irchat-client-version-beta-p [^ ][^ ]*,defconst irchat-client-version-beta-p '"$ver_beta_val"',' > irchat-version.el.new
+else
+  cat irchat-version.el |
+  sed 's,defconst irchat-client-version-alpha-p [^ ][^ ]*,defconst irchat-client-version-alpha-p '"$ver_alpha_val"',;s,defconst irchat-client-version-beta-p [^ ][^ ]*,defconst irchat-client-version-beta-p '"$ver_beta_val"',;s,defconst irchat-client-version-major "[^"]*",defconst irchat-client-version-major "'"$ver_major"'",;s,defconst irchat-client-version-minor "[^"]*",defconst irchat-client-version-minor "'"$ver_minor"'",' > irchat-version.el.new
+fi
 
 mkdir "$distname"
 [ $? -ne 0 ] &&  { echo "Unable to make distdir $distname."; exit 1; }
@@ -39,6 +91,11 @@ for i in * ; do
         elif [ "$i" = "ChangeLog.new" ] ; then
             cp -p ChangeLog.new "$distname"/ChangeLog
             rm -f ChangeLog.new
+        elif [ "$i" = "irchat-version.el" ] ; then
+            echo 'Skipped irchat-version.el.'
+        elif [ "$i" = "irchat-version.el.new" ] ; then
+            cp -p irchat-version.el.new "$distname"/irchat-version.el
+            rm -f irchat-version.el.new
         else
             cp -p "$i" "$distname"
             [ $? -ne 0 ] &&  { echo "Unable to copy file $i."; exit 1; }
@@ -58,7 +115,7 @@ rm -f "$distname"/*.elc
                  { if      (match($0, "^... BEGIN NODIST")) { s = 0 }
                    else if (match($0, "^... END NODIST"))   { s = 1 }
                    else if (s == 1) { print $0 } }' |
-     sed 's,\$Date[^$]*\$,'"`date -u '+$Date: 2001/06/07 14:25:09 $'`"',' > "$ttt" &&
+     sed 's,\$Date[^$]*\$,'"`date -u '+$Date: 2001/06/07 14:51:07 $'`"',' > "$ttt" &&
      rm -f "$i" &&
      cat "$ttt" > "$i" &&
      rm -f "$ttt"
