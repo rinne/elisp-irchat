@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-inlines.el,v 3.2 1997/02/26 17:04:03 too Exp $
+;;;  $Id: irchat-inlines.el,v 3.3 1997/03/03 18:26:06 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -82,6 +82,21 @@
       (string-ci-equal x key)))
    lst))
 
+(defsubst assoc-ci-regexp (key lst)
+  "Assoc with REGEXP-KEY from LIST."
+  (assoc-if
+   (function
+    (lambda (x)
+      (not (null (string-match (upcase key) (upcase x))))))
+   lst))
+
+(defsubst assoc-ci-regexp-rev (key lst)
+  "Assoc with KEY from LIST, in which keys are regexps."
+  (assoc-if
+   (function
+    (lambda (x)
+      (not (null (string-match (concat "^" (upcase x) "$") (upcase key))))))
+   lst))
 
 ;;;;;
 
