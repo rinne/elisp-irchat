@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-misc.el,v 3.2 1997/02/26 13:13:28 jsl Exp $
+;;;  $Id: irchat-misc.el,v 3.3 1997/02/26 13:16:34 jsl Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -18,7 +18,7 @@
 	(if (< expiretime 0)
 	    (setq irchat-kill-nickname (remassoc (car (car mylist))
 						 irchat-kill-nickname)
-		  irchat-save-is-vars-dirty t))
+		  irchat-save-vars-is-dirty t))
 	(setq mylist (cdr mylist)))))
   (let ((killit nil))
     (mapcar (function 
