@@ -4,7 +4,7 @@
 ;;;  IDEA encryption in elisp.  Cool, ha?
 ;;;  ----------------------------------------------------------------------
 ;;;  Created      : Thu Jun 29 08:11:25 1995 tri
-;;;  Last modified: Wed Jun 24 13:32:11 1998 tri
+;;;  Last modified: Thu Jun 25 02:10:15 1998 tri
 ;;;  ----------------------------------------------------------------------
 ;;;  Copyright © 1995-1998
 ;;;  Timo J. Rinne <tri@iki.fi>
@@ -18,12 +18,11 @@
 ;;;  irchat-copyright.el applies only if used with irchat IRC client.
 ;;;  Contact the author for additional copyright info.
 ;;;
-;;;  $Id: idea.el,v 3.14 1998/06/24 10:32:36 tri Exp $
+;;;  $Id: idea.el,v 3.15 1998/06/24 23:11:24 tri Exp $
 ;;;
 
 (eval-and-compile  
   (require 'b64)
-  (require 'rc4)
   (require 'crc32))
 
 (eval-and-compile  
@@ -103,11 +102,15 @@
 
 (defun idea-random ()
   "Generate 16 bit random value"
-  (idea-mask-16bit (abs (random))))
+  (if (fboundp 'irchat-random-16)
+      (irchat-random-16)
+    (idea-mask-16bit (abs (random)))))
 
 (defun idea-random-char ()
   "Generate 8 bit random value"
-  (idea-& 255 (idea-random)))
+  (if (fboundp 'irchat-random-8)
+      (irchat-random-8)
+    (idea-& 255 (idea-random))))
 
 (defun idea-<< (x n)
   "Shift integer X left N bits"
@@ -179,6 +182,31 @@
 	(idea-| (idea-<< (nth 6 key) 9) (idea->> (nth 7 key) 7))
 	(idea-| (idea-<< (nth 7 key) 9) (idea->> (nth 0 key) 7))
 	(idea-| (idea-<< (nth 0 key) 9) (idea->> (nth 1 key) 7))))
+
+;;; [(1 2 3 4) (5 6 7 8) (9 10 11 12)]
+;;; transforms to
+;;; [(1 5 9 2) (6 10 3 7) (11 4 8 12)]
+;;; and
+;;; [(1 2 3 4) (5 6 7 8) (9 10 11 12) (13 14 15 16)]
+;;; transforms to
+;;; [(1 5 9 13) (2 6 10 14) (3 7 11 15) (4 8 12 16)]
+;;; transforms to
+;;; [(1 2 3 4) (5 6 7 8) (9 10 11 12) (13 14 15 16)]
+(defun idea-interlace-blocklist (bl)
+  "Make interlaced version of BLOCKLIST."
+  (let* ((l (length bl))
+	 (l4 (* 4 l))
+	 (r (make-vector l 0))
+	 (i 0))
+    (while (< i l)
+      (aset r i
+	    (let ((j (* 4 i)))
+	      (list (nth (/ j l) (elt bl (% j l)))
+		    (nth (/ (+ j 1) l) (elt bl (% (+ j 1) l)))
+		    (nth (/ (+ j 2) l) (elt bl (% (+ j 2) l)))
+		    (nth (/ (+ j 3) l) (elt bl (% (+ j 3) l))))))
+      (setq i (+ i 1)))
+    r))
 
 (defun idea-expand-string-to-key (string &optional version)
   "Expand string to full 128bit key (list of 8 16bit ints)"
@@ -264,19 +292,65 @@
 	   (k8 (idea-4hex-to-int (substring v4 4 8))))
       (list k1 k2 k3 k4 k5 k6 k7 k8))))
 
-(defun idea-expand-string-to-key-version-3 (string)
-  "Expand string to full 128bit key (list of 8 16bit ints) (version 3)"
-  (if (= (length string) 0)
+;;;
+;;; Mystical constants in following function are just digits from pi
+;;; taken with following scheme.
+;;;   - Digits are split into sequences of five 31415 58979 32384 ...
+;;;   - Any sequence forming a number > 65535 is dropped
+;;;
+(defun idea-expand-string-to-key-version-3 (str)
+  "Generate idea key from STRING."
+  (if (= (length str) 0)
       '(0 0 0 0 0 0 0 0)
-    (let ((v (rc4-random-vector-complex string 16 64 4)))
-      (list (+ (elt v 0)  (* (elt v 1) 256))
-	    (+ (elt v 2)  (* (elt v 3) 256))
-	    (+ (elt v 4)  (* (elt v 5) 256))
-	    (+ (elt v 6)  (* (elt v 7) 256))
-	    (+ (elt v 8)  (* (elt v 9) 256))
-	    (+ (elt v 10) (* (elt v 11) 256))
-	    (+ (elt v 12) (* (elt v 13) 256))
-	    (+ (elt v 14) (* (elt v 15) 256))))))
+    (let* ((kk '(31415 58979 32384 62643 38327 16939 5820 45923))
+	   (ek (idea-build-encryption-key kk))
+	   (bl (idea-cleartext-string-to-block-list str nil))
+	   (bl (idea-interlace-blocklist bl))
+	   (r1 '(7816 40628 62089 3482))
+	   (r2 '(53421 17067 13282 30664))
+	   (r3 '(44609 55058 22317 25359))
+	   (r4 '(40812 17450 28410 27019))
+	   (i 0)
+	   (l (length bl)))
+      (while (< i l)
+	(setq r1 (idea-xor-blocks 
+		  (idea-crypt-transform-block (idea-xor-blocks 
+					       (elt bl i)
+					       r2)
+					      ek) 
+		  r1))
+	(if (< (+ i 1) l)
+	    (setq r2 (idea-xor-blocks
+		      (idea-crypt-transform-block (idea-xor-blocks 
+						   (elt bl (+ i 1))
+						   r1)
+						  ek)
+		      r2)))
+	(setq i (+ i 1)))
+      (setq ek (idea-build-encryption-key (list (nth 0 r1) (nth 0 r2)
+						(nth 1 r1) (nth 1 r2)
+						(nth 2 r1) (nth 2 r2)
+						(nth 3 r1) (nth 3 r2))))
+      (setq bl (idea-interlace-blocklist bl))
+      (setq i 0)
+      (while (< i l)
+	(setq r3 (idea-xor-blocks 
+		  (idea-crypt-transform-block (idea-xor-blocks 
+					       (elt bl i)
+					       r4)
+					      ek) 
+		  r3))
+	(if (< (+ i 1) l)
+	    (setq r4 (idea-xor-blocks
+		      (idea-crypt-transform-block (idea-xor-blocks 
+						   (elt bl (+ i 1))
+						   r3)
+						  ek)
+		      r4)))
+	(setq i (+ i 1)))
+      (list (nth 0 r3) (nth 0 r4) (nth 1 r3)
+	    (nth 1 r4) (nth 2 r3) (nth 2 r4)
+	    (nth 3 r3) (nth 3 r4)))))
 
 (defun idea-expand-substring (string)
   (if (= (length string) 0)
@@ -803,46 +877,49 @@
 (defun idea-build-key-annotation-version-3 (key type)
   "Build annotation table of KEY that is of TYPE \"e\" or \"\d\"."
   (if (and (= 0 (nth 0 key))
-	   (= 0 (nth 1 key))
-	   (= 0 (nth 2 key))
-	   (= 0 (nth 3 key))
-	   (= 0 (nth 4 key))
-	   (= 0 (nth 5 key))
-	   (= 0 (nth 6 key))
-	   (= 0 (nth 7 key)))
-      (concat type ":0000000000"))
-  
-  (let* ((v (format "%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c"
-		    (% (nth 0 key) 256)
-		    (% (/ (nth 0 key) 256) 256)
-		    (% (nth 1 key) 256)
-		    (% (/ (nth 1 key) 256) 256)
-		    (% (nth 2 key) 256)
-		    (% (/ (nth 2 key) 256) 256)
-		    (% (nth 3 key) 256)
-		    (% (/ (nth 3 key) 256) 256)
-		    (% (nth 4 key) 256)
-		    (% (/ (nth 4 key) 256) 256)
-		    (% (nth 5 key) 256)
-		    (% (/ (nth 5 key) 256) 256)
-		    (% (nth 6 key) 256)
-		    (% (/ (nth 6 key) 256) 256)
-		    (% (nth 7 key) 256)
-		    (% (/ (nth 7 key) 256) 256)))
-	 (r (rc4-random-vector-complex v 10 64 4)))
-    (concat type 
-	    ":"
-	    (format "%c%c%c%c%c%c%c%c%c%c"	
-		    (+ ?a (% (elt r 0) 26))
-		    (+ ?a (% (elt r 1) 26))
-		    (+ ?a (% (elt r 2) 26))
-		    (+ ?a (% (elt r 3) 26))
-		    (+ ?a (% (elt r 4) 26))
-		    (+ ?a (% (elt r 5) 26))
-		    (+ ?a (% (elt r 6) 26))
-		    (+ ?a (% (elt r 7) 26))
-		    (+ ?a (% (elt r 8) 26))
-		    (+ ?a (% (elt r 9) 26))))))
+           (= 0 (nth 1 key))
+           (= 0 (nth 2 key))
+           (= 0 (nth 3 key))
+           (= 0 (nth 4 key))
+           (= 0 (nth 5 key))
+           (= 0 (nth 6 key))
+           (= 0 (nth 7 key)))
+      (concat type ":0000000000000000")
+    (let ((r (make-string 16 0)))
+      (aset r 15 (idea-& (nth 0 key) 255))
+      (aset r 14 (idea-& (idea->> (nth 0 key) 8) 255))
+      (aset r 13 (idea-& (nth 1 key) 255))
+      (aset r 12 (idea-& (idea->> (nth 1 key) 8) 255))
+      (aset r 11 (idea-& (nth 2 key) 255))
+      (aset r 10 (idea-& (idea->> (nth 2 key) 8) 255))
+      (aset r 9  (idea-& (nth 3 key) 255))
+      (aset r 8  (idea-& (idea->> (nth 3 key) 8) 255))
+      (aset r 7  (idea-& (nth 4 key) 255))
+      (aset r 6  (idea-& (idea->> (nth 4 key) 8) 255))
+      (aset r 5  (idea-& (nth 5 key) 255))
+      (aset r 4  (idea-& (idea->> (nth 5 key) 8) 255))
+      (aset r 3  (idea-& (nth 6 key) 255))
+      (aset r 2  (idea-& (idea->> (nth 6 key) 8) 255))
+      (aset r 1  (idea-& (nth 7 key) 255))
+      (aset r 0  (idea-& (idea->> (nth 7 key) 8) 255))
+      (let ((ra (idea-ke-x r)))
+	(concat type ":" (format "%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c"
+				 (+ ?a (% (nth 0 ra) 26))
+				 (+ ?a (% (nth 1 ra) 26))
+				 (+ ?a (% (nth 2 ra) 26))
+				 (+ ?a (% (nth 3 ra) 26))
+				 (+ ?a (% (nth 4 ra) 26))
+				 (+ ?a (% (nth 5 ra) 26))
+				 (+ ?a (% (nth 6 ra) 26))
+				 (+ ?a (% (nth 7 ra) 26))
+				 (+ ?a (% (/ (nth 0 ra) 256) 26))
+				 (+ ?a (% (/ (nth 1 ra) 256) 26))
+				 (+ ?a (% (/ (nth 2 ra) 256) 26))
+				 (+ ?a (% (/ (nth 3 ra) 256) 26))
+				 (+ ?a (% (/ (nth 4 ra) 256) 26))
+				 (+ ?a (% (/ (nth 5 ra) 256) 26))
+				 (+ ?a (% (/ (nth 6 ra) 256) 26))
+				 (+ ?a (% (/ (nth 7 ra) 256) 26))))))))
 
 (defun idea-legal-subkey-p (subkey)
   "Is SUBKEY a legal subkey structure?"
@@ -942,7 +1019,7 @@
 		   (let ((fingerprint (idea-key-fingerprint key)))
 		     (cond ((= (length fingerprint) 8) 1)
 			   ((= (length fingerprint) 12) 2)
-			   ((= (length fingerprint) 10) 3)
+			   ((= (length fingerprint) 16) 3)
 			   (t nil))))
 		  ((or (equal 'key-string my-key-type)
 		       (equal 'key-intlist my-key-type))
@@ -964,9 +1041,7 @@
     (if my-key
 	(let ((annotation (nth 9 my-key)))
 	  (if (not (and (stringp annotation)
-			(or (= (length annotation) 10)
-			    (= (length annotation) 12)
-			    (= (length annotation) 14))))
+			(> (length annotation) 9)))
 	      nil
 	    (let ((ty (elt annotation 0))
 		  (de (elt annotation 1)))
