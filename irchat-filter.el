@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-filter.el,v 3.4 1997/06/10 11:04:02 tri Exp $
+;;;  $Id: irchat-filter.el,v 3.5 1997/10/19 15:39:19 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -10,41 +10,6 @@
 ;;;  These are defsubst just for speed, as it is expensive to call funtions at
 ;;;  emacs lisp (also evals are expensive)
 ;;;
-(defsubst irchat-handle-msg-msg (prefix rest)
-  (if (or (and prefix
-	       (irchat-ignore-this-p prefix irchat-userathost)
-	       (irchat-msg-from-ignored prefix rest))
-	  (and (not prefix)
-	       (string= "> " rest)))
-      nil
-    (if prefix 
-	(let ((oma (get (intern prefix irchat-obarray) 'chnl)))
-	  (if oma
-	      (while (or (string= "#" (substring (car oma) 0 1))
-			 (string= "&" (substring (car oma) 0 1)))
-		(setq oma (cdr oma)))
-	    (setq oma (list irchat-current-channel)))
-	  (if (string= (car oma) irchat-current-channel)
-	      (irchat-w-insert 
-	       irchat-D-buffer 
-	       (format "%s %s\n"
-		       (format irchat-format-string2 prefix)
-		       rest))
-	    (irchat-w-insert 
-	     irchat-D-buffer
-	     (format "%s %s\n"
-		     (format irchat-format-string3 prefix (car oma))
-		     rest)))))
-;    (if (and (string-match "\007" rest) irchat-beep-on-bells)
-;	(progn
-;	  (if (not (irchat-get-buffer-window irchat-Dialogue-buffer))
-;	      (progn
-;		(beep t)
-;		(message "IRCHAT: %s is trying to get attention" prefix)))
-;	  (if (eq irchat-beep-on-bells 'always)
-;	      (beep t))))
-    ))
-
 (defun irchat-run-message-hook-types (hook prefix rest-of-line)
   "Run either old fashion irchat hook variable or hook list."
   (let ((hook (if (and (symbolp hook)
