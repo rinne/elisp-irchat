@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-crypt.el,v 3.2 1997/02/26 12:20:14 tri Exp $
+;;;  $Id: irchat-crypt.el,v 3.3 1997/02/26 12:38:33 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -35,7 +35,7 @@
 
 (defun irchat-Command-add-new-key (key-var &optional interactive-p)
   "Add new KEY to known decryption keys list"
-  (interactive (list (read-from-minibuffer "Passphrase: ") t))
+  (interactive (list (read-from-minibuffer "Add passphrase: ") t))
   (let* ((my-key-type (idea-legal-key key-var))
 	 (my-key (cond ((equal 'key-complete-encryption my-key-type)
 			(error "KEY is not an decryption key."))
@@ -55,7 +55,7 @@
 
 (defun irchat-Command-delete-key (key-var &optional interactive-p)
   "Delete a KEY from known decryption keys list"
-  (interactive (list (read-from-minibuffer "Passphrase: ") t))
+  (interactive (list (read-from-minibuffer "Delete passphrase: ") t))
   (let ((fingerprint (idea-key-fingerprint key-var)))
     (setq irchat-known-idea-key-list (remassoc fingerprint
 					       irchat-known-idea-key-list))
@@ -73,7 +73,7 @@
 (defun irchat-Command-set-default-key (addr-var pass-var)
   "Set a default key for ADDRESS (channel/nick) to be KEY"
   (interactive (let (addr-var pass-var)
-		 (setq addr-var (read-from-minibuffer "Channel/User: "))
+		 (setq addr-var (read-from-minibuffer "Default key for channel/user: "))
 		 (setq pass-var (read-from-minibuffer "Passphrase: "))
 		 (if (string= pass-var "")
 		     (setq pass-var nil))	 
