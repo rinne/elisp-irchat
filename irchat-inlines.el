@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-inlines.el,v 3.4 1997/03/03 18:32:35 tri Exp $
+;;;  $Id: irchat-inlines.el,v 3.5 1997/03/04 22:27:19 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -57,7 +57,7 @@
 	(result nil))
     (while item
       (if (listp item)
-	  (if (not (string-equal (car item) uthing))
+	  (if (not (string-equal (car item) thing))
 	      (setq result (nconc result (list item))))
 	(if (not (string-equal item thing))
 	    (setq result (nconc result (list item)))))
