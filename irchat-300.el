@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-300.el,v 3.4 1998/01/19 16:54:35 jtp Exp $
+;;;  $Id: irchat-300.el,v 3.5 2001/05/06 19:58:16 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -12,6 +12,7 @@
 
 (defvar irchat-recursing-whois nil)
 (defvar irchat-recursing-whowas nil)
+(defvar irchat-recursing-whois-for-host-mask nil)
 
 (defun irchat-handle-300-msgs (number prefix rest)
   "Generic handler for 3?? messages. 
@@ -134,19 +135,27 @@ This is called if no specific handler exists"
   "Handle the 312 WHOISSERVER."
   (if (string-match "^[^ ]+ \\(\\([^ ]+\\) \\)?\\([^ ]+\\) :\\(.*\\)" rest)
       (let ((who (matching-substring rest 2))
-	    (server (matching-substring rest 3))
-	    (real (matching-substring rest 4)))
-	(if (and (not (irchat-dcc-compare-hostnames server irchat-server))
+            (server (matching-substring rest 3))
+            (real (matching-substring rest 4)))
+        (if (and (not (irchat-dcc-compare-hostnames server irchat-server))
+		 (not irchat-recursing-whois-for-host-mask)
 		 (not irchat-recursing-whois)
 		 (not irchat-recursing-whowas))
+            (progn
+	      (if (string-match "\*\..*" server)
+		  (setq irchat-recursing-whois-for-host-mask t))
+              (setq irchat-recursing-whois t)
+              (irchat-send "WHOIS %s %s" server who))
+	  (if irchat-recursing-whois-for-host-mask
+	      (progn
+		(setq irchat-recursing-whois-for-host-mask nil)
+		(irchat-send "WHOIS %s %s" server who))
 	    (progn
-	      (setq irchat-recursing-whois t)
-	      (irchat-send "WHOIS %s %s" server who))
-	  (progn
-	    (setq irchat-recursing-whois nil)
-	    (irchat-w-insert irchat-300-buffer 
-			     (format "%son via server %s (%s)\n"
-				     irchat-info-prefix server real)))))
+	      (setq irchat-recursing-whois nil)
+	      (setq irchat-recursing-whois-for-host-mask nil)
+	      (irchat-w-insert irchat-300-buffer 
+			       (format "%son via server %s (%s)\n"
+				       irchat-info-prefix server real))))))
     (irchat-w-insert irchat-300-buffer "IRCHAT: Strange 312 reply")))
 
 
