@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-obsolete.el,v 1.1 1997/10/19 19:28:39 tri Exp $
+;;;  $Id: irchat-obsolete.el,v 1.2 1997/10/19 19:46:34 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -22,10 +22,13 @@
 			    (read-from-minibuffer "Timeout [RET for none]: "))))
 		 (list kill-nickname-var timeout)))
 
-  (message (concat "Obsolete interface irchat-Command-kill."
-		   "  "
-		   "Use irchat-Command-ignore."))
-  (irchat-Command-ignore kill-nickname-var timeout silent))
+  (let ((msg (concat "Obsolete interface irchat-Command-kill."
+		     "  "
+		     "Use irchat-Command-ignore.")))
+    (message msg)
+    (irchat-Command-ignore kill-nickname-var timeout silent)
+    (message msg)))
+  
   
 
 (defun irchat-Command-kill-by-regexp (kill-regexp-var &optional timeout silent)
@@ -45,10 +48,12 @@
 			     "Timeout [RET for none]: "))))
 		 (list kill-regexp-var timeout)))
 
-  (message (concat "Obsolete interface irchat-Command-kill-by-regexp."
-		   "  "
-		   "Use irchat-Command-ignore-by-regexp."))
-  (irchat-Command-ignore-by-regexp kill-regexp-var timeout silent))
+  (let ((msg (concat "Obsolete interface irchat-Command-kill-by-regexp."
+		     "  "
+		     "Use irchat-Command-ignore-by-regexp.")))
+    (message msg)
+    (irchat-Command-ignore-by-regexp kill-regexp-var timeout silent)
+    (message msg)))
 
 (defun irchat-Command-global-kill (nickname timeout reason)
   (interactive (let ((nickname-var nil)
@@ -68,10 +73,12 @@
 		       (setq reason (read-from-minibuffer "Reason: "))))
 		 (list nickname timeout reason)))
 
-  (message (concat "Obsolete interface irchat-Command-global-kill."
-		   "  "
-		   "Use irchat-Command-global-ignore."))
-  (irchat-Command-global-ignore nickname timeout reason))
+  (let ((msg (concat "Obsolete interface irchat-Command-global-kill."
+		     "  "
+		     "Use irchat-Command-global-ignore.")))
+    (message msg)
+    (irchat-Command-global-ignore nickname timeout reason)
+    (message msg)))
 
 (eval-and-compile (provide 'irchat-obsolete))
 ;;;
