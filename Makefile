@@ -2,7 +2,7 @@
 #
 # Makefile for irchat
 #
-# $Id: Makefile,v 3.2 1997/02/24 22:10:28 too Exp $
+# $Id: Makefile,v 3.3 1997/02/25 21:47:45 tri Exp $
 #
 
 #
@@ -45,7 +45,7 @@ OBJS 	= \
 	irchat-timer.elc	\
 	irchat-main.elc		\
 	b64.elc			\
-	crc32.el		\
+	crc32.elc		\
 	idea.elc		\
 	irchat-crypt.elc
 
@@ -64,6 +64,9 @@ xemacs:
 	$(MAKE) EMACSCMD=xemacs irchat-build
 
 xemacs2:
+	$(MAKE) EMACSCMD=xemacs irchat2.elc
+
+gnuemacs2:
 	$(MAKE) EMACSCMD=xemacs irchat2.elc
 
 #	cat $(SRCS) > irchat2.el
