@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-dcc.el,v 3.3 1997/03/12 16:19:35 jtp Exp $
+;;;  $Id: irchat-dcc.el,v 3.4 1997/03/16 18:17:06 too Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 ;;;
@@ -36,25 +36,26 @@
 	      (irchat-Command-dcc-receive))))))
 
 
-(defun irchat-Command-dcc-send ()
+(defun irchat-Command-dcc-send (filename towhom)
   "Send file to user."
-  (interactive)
-  (let ((filename (expand-file-name (read-file-name
-				     "File to send: "
-				     default-directory nil))))
-    (setq irchat-privmsg-partner
-	(irchat-completing-default-read 
-	 "To whom: "
-	 (append irchat-nick-alist irchat-channel-alist)
-	 '(lambda (s) t) 
-	 nil irchat-privmsg-partner))
-    (set-process-filter
-     (start-process irchat-dcc-program nil 
-		    irchat-dcc-program "send" 
-		    (number-to-string irchat-dcc-port)
-		    filename)
-     'irchat-dcc-send-filter)
-    (setq irchat-dcc-port (1+ irchat-dcc-port))))
+  (interactive
+   (list (expand-file-name (read-file-name
+			    "File to send: "
+			    default-directory nil))
+	 (irchat-completing-default-read 
+	  "To whom: "
+	  (append irchat-nick-alist irchat-channel-alist)
+	  '(lambda (s) t) 
+	  nil irchat-privmsg-partner)))
+
+  (setq irchat-privmsg-partner towhom)
+  (set-process-filter
+   (start-process irchat-dcc-program nil 
+		  irchat-dcc-program "send" 
+		  (number-to-string irchat-dcc-port)
+		  filename)
+   'irchat-dcc-send-filter)
+  (setq irchat-dcc-port (1+ irchat-dcc-port)))
 
 
 (defun irchat-dcc-send-filter (process output)
