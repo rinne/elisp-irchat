@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-vars.el,v 3.30 1997/12/01 08:02:42 tri Exp $
+;;;  $Id: irchat-vars.el,v 3.31 1997/12/01 08:20:03 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -80,7 +80,7 @@ killed again if automagic reconnect is too fast.")
 (defvar irchat-message-length-limit 256
   "*Messages longer than this are split to pieces")
 
-(defvar irchat-message-split-separator ""
+(defvar irchat-message-split-separator "÷»"
   "String to used as separator in splitted messages.")
 
 ;;;
@@ -108,11 +108,10 @@ killed again if automagic reconnect is too fast.")
     (while (and path (not result))
       (setq path (file-name-as-directory path))
       (if (file-executable-p (concat path "dcc")) (setq result "dcc")
-	(if (file-executable-p (concat path "dcc.perl")) (setq result "dcc.perl")
-	  ))
+	(if (file-executable-p (concat path "dcc.perl")) 
+	    (setq result "dcc.perl")))
       (setq list (cdr list)
-	    path (car list))
-      )
+	    path (car list)))
     result)
   "*Name of the external dcc-program.")
 
