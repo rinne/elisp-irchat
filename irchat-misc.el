@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-misc.el,v 3.32 1998/03/24 09:25:17 tri Exp $
+;;;  $Id: irchat-misc.el,v 3.33 1998/05/18 11:28:27 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -9,70 +9,80 @@
   (require 'irchat-filter))
 
 (defun irchat-ignore-this-p (nick uah &optional message)
-  (let ((mylist irchat-ignore-nickname)
-        (time (current-time)))
-    (while mylist
-      (let ((expiretime (if (cdr (car mylist))
-                            (irchat-time-difference time (cdr (car mylist)))
-                          1)))
-        (if (< expiretime 0)
-            (progn
-              (setq irchat-ignore-nickname (remassoc (car (car mylist))
-						     irchat-ignore-nickname)
-                    irchat-save-vars-is-dirty t)
-              (if (= (car (cdr (cdr (cdr (car mylist))))) 0)
-                  (irchat-w-insert irchat-D-buffer
-                                   (format "%sIgnore timeout for %s expired.\n"
-                                           irchat-info-prefix
-                                           (car (car mylist)))))))
-        (setq mylist (cdr mylist)))))
-  (let ((mylist irchat-ignore-message-regexp)
-        (time (current-time)))
-    (while mylist
-      (let ((expiretime (if (cdr (car mylist))
-                            (irchat-time-difference time (cdr (car mylist)))
-                          1)))
-        (if (< expiretime 0)
-            (progn
-              (setq irchat-ignore-message-regexp (remassoc (car (car mylist))
-							   irchat-ignore-message-regexp)
-                    irchat-save-vars-is-dirty t)
-              (if (= (car (cdr (cdr (cdr (car mylist))))) 0)
-                  (irchat-w-insert irchat-D-buffer
-                                   (format
-		    "%sIgnore timeout for messages matching \"%s\" expired.\n"
-				    irchat-info-prefix
-				    (car (car mylist)))))))
-        (setq mylist (cdr mylist)))))
-  (if (or (and (fboundp 'irchat-custom-ignore-this-p)
-	       (irchat-custom-ignore-this-p nick uah))
-	  (and message
-	       (fboundp 'irchat-custom-ignore-this-message-p)
-	       (irchat-custom-ignore-this-message-p nick uah message)))
-      t
-    (let ((killit nil)
-          (case-fold-search t))
-      (mapcar (function 
-               (lambda (kill)
-                 (if (or (string-ci-equal (car kill) nick)
-			 (and (string-match (upcase (car kill)) (upcase nick))
-                              (= (match-beginning 0) 0)
-                              (= (match-end 0) (length nick)))
-			 (and (string-match "@" (car kill))
-			      (or (string-ci-equal (car kill) uah)
-				  (and (string-match (upcase (car kill))
-						     (upcase uah))
-				       (= (match-beginning 0) 0)
-				       (= (match-end 0) (length uah))))))
-                     (setq killit t))))
-              irchat-ignore-nickname)
-      (if message
+  (if (string-match "\." nick)
+      nil ;;; Server messages can't be ignored by nick.
+    (progn
+      (let ((mylist irchat-ignore-nickname)
+	    (time (current-time)))
+	(while mylist
+	  (let ((expiretime (if (cdr (car mylist))
+				(irchat-time-difference time
+							(cdr (car mylist)))
+			      1)))
+	    (if (< expiretime 0)
+		(progn
+		  (setq irchat-ignore-nickname (remassoc 
+						(car (car mylist))
+						irchat-ignore-nickname)
+			irchat-save-vars-is-dirty t)
+		  (if (= (car (cdr (cdr (cdr (car mylist))))) 0)
+		      (irchat-w-insert irchat-D-buffer
+				       (format 
+					"%sIgnore timeout for %s expired.\n"
+					irchat-info-prefix
+					(car (car mylist)))))))
+	    (setq mylist (cdr mylist)))))
+      (let ((mylist irchat-ignore-message-regexp)
+	    (time (current-time)))
+	(while mylist
+	  (let ((expiretime (if (cdr (car mylist))
+				(irchat-time-difference time 
+							(cdr (car mylist)))
+			      1)))
+	    (if (< expiretime 0)
+		(progn
+		  (setq irchat-ignore-message-regexp 
+			(remassoc (car (car mylist))
+				  irchat-ignore-message-regexp)
+			irchat-save-vars-is-dirty t)
+		  (if (= (car (cdr (cdr (cdr (car mylist))))) 0)
+		      (irchat-w-insert irchat-D-buffer
+				       (format
+					"%sIgnore timeout for messages matching \"%s\" expired.\n"
+					irchat-info-prefix
+					(car (car mylist)))))))
+	    (setq mylist (cdr mylist)))))
+      (if (or (and (fboundp 'irchat-custom-ignore-this-p)
+		   (irchat-custom-ignore-this-p nick uah))
+	      (and message
+		   (fboundp 'irchat-custom-ignore-this-message-p)
+		   (irchat-custom-ignore-this-message-p nick uah message)))
+	  t
+	(let ((killit nil)
+	      (case-fold-search t))
 	  (mapcar (function 
 		   (lambda (kill)
-		     (if (string-match (upcase (car kill)) (upcase message))
+		     (if (or (string-ci-equal (car kill) nick)
+			     (and (string-match (upcase (car kill)) 
+						(upcase nick))
+				  (= (match-beginning 0) 0)
+				  (= (match-end 0) (length nick)))
+			     (and (string-match "@" (car kill))
+				  (or (string-ci-equal (car kill) uah)
+				      (and (string-match (upcase (car kill))
+							 (upcase uah))
+					   (= (match-beginning 0) 0)
+					   (= (match-end 0) (length uah))))))
 			 (setq killit t))))
-		  irchat-ignore-message-regexp))
-      killit)))
+		  irchat-ignore-nickname)
+	  (if message
+	      (mapcar (function 
+		       (lambda (kill)
+			 (if (string-match (upcase (car kill)) 
+					   (upcase message))
+			     (setq killit t))))
+		      irchat-ignore-message-regexp))
+	  killit)))))
 
 
 (defun irchat-split-string-with-separator (string separator size)
