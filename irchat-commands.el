@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-commands.el,v 3.28 1997/10/20 05:57:09 tri Exp $
+;;;  $Id: irchat-commands.el,v 3.29 1997/12/01 08:04:00 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -119,25 +119,27 @@
 
 (defun irchat-Command-send-message (message &optional crypt-type
 					              user-defined-key
-						      own-message)
+						      own-message
+						      do-not-split)
   "Send MESSAGE to current chat partner of current channel."
   (if (not irchat-crypt-mode-active) (setq crypt-type 'cleartext))
-  (if (and (> (length message) irchat-message-length-limit)
-	   (> irchat-message-length-limit 2))
-      (let ((i 0)
-	    (l (length message))
-	    (p (- irchat-message-length-limit 2))
+  (if (and (not do-not-split)
+	   (> (length message) irchat-message-length-limit)
+	   (> irchat-message-length-limit 
+	      (* 2 (length irchat-message-split-separator))))
+      (let ((lst (irchat-split-string-with-separator 
+		  message 
+		  irchat-message-split-separator
+		  irchat-message-length-limit))
 	    (r nil))
-	(while (< i l)
-	  (setq r (irchat-Command-send-message
-		   (concat
-		    (if (> i 0) "" "")
-		    (substring message i (if (> (+ i p) l) l (+ i p)))
-		    (if (< (+ i p) l) "" ""))
-		   crypt-type 
-		   user-defined-key
-		   (if (< (+ i p) l) "" message)))
-	  (setq i (+ i p)))
+	(while lst
+	  (let ((msg (car lst)))
+	    (setq lst (cdr lst))
+	    (setq r (irchat-Command-send-message msg
+						 crypt-type
+						 user-defined-key
+						 (if lst "" message)
+						 t))))
 	r)
     (if (> (length message) 0)
 	(let* ((addr (if (eq irchat-command-buffer-mode 'chat)
@@ -669,7 +671,8 @@ With - as argument, list all channels."
 (defun irchat-Command-message (message-nick-var
 			       message
 			       &optional crypt-type-var
-			                 own-message-var)
+			                 own-message-var
+					 do-not-split)
   "Send a private message to another user.  If you send a message that
 is already encrypted use 'cleartext flag and put message as a cleartext
 into own-message-var"
@@ -687,24 +690,27 @@ into own-message-var"
 			(format "Private message to %s: " message-nick-var))
 		       crypt-type-var
 		       nil)))
-  (if (and (> (length message) irchat-message-length-limit)
-	   (> irchat-message-length-limit 2))
-      (let ((i 0)
-	    (l (length message))
-	    (p (- irchat-message-length-limit 2))
+  (if (and (not do-not-split)
+	   (> (length message) irchat-message-length-limit)
+	   (> irchat-message-length-limit
+	      (* 2 (length irchat-message-split-separator))))
+      (let ((lst (irchat-split-string-with-separator 
+		  message 
+		  irchat-message-split-separator
+		  irchat-message-length-limit))
 	    (r nil))
-	(while (< i l)
-	  (setq r (irchat-Command-message
-		   message-nick-var
-		   (concat
-		    (if (> i 0) "" "")
-		    (substring message i (if (> (+ i p) l) l (+ i p)))
-		    (if (< (+ i p) l) "" ""))
-		   crypt-type-var
-		   (if (< (+ i p) l) 
-		       "" 
-		     (if own-message-var own-message-var message))))
-	  (setq i (+ i p)))
+	(while lst
+	  (let ((msg (car lst)))
+	    (setq lst (cdr lst))
+	    (setq r (irchat-Command-message message-nick-var
+					    msg
+					    crypt-type-var
+					    (if lst 
+						""
+					      (if own-message-var
+						  own-message-var
+						message))
+					    t))))
 	r)
     (let* ((msg-encrypted-p nil)
 	   (msg (cond ((equal crypt-type-var 'cleartext)
