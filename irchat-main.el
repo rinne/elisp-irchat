@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-main.el,v 1.4 1997/02/05 14:57:56 tri Exp $
+;;;  $Id: irchat-main.el,v 1.5 1997/02/05 19:39:23 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -323,10 +323,10 @@ If the stream is opened, return T, otherwise return NIL."
 
 (defvar irchat-timers
   (list
-;   (list nil (function irchat-Command-timestamp) irchat-timestamp-interval)
+   ;(list nil (function irchat-Command-timestamp) irchat-timestamp-interval)
    (list nil (function irchat-Command-pollnames) irchat-pollnames-interval)
    (list nil (function irchat-Command-keepalive) irchat-keepalive-interval)
-   (list nil (function irchat-check-buffers) irchat-checkbuffer-interval)
+   ;(list nil (function irchat-check-buffers) irchat-checkbuffer-interval)
    )
   "Symbol name to store timer, timer-function and timer-interval.")
 
@@ -644,6 +644,11 @@ One is for entering commands and text, the other displays the IRC dialogue."
 	   (spoint nil)
 	   (oldwstart nil)
 	   (oldwpoint nil))
+      ;;
+      ;; Check buffers and possibly insert timestamp.
+      ;;
+      (irchat-check-buffers-if-interval-expired)
+      (irchat-Command-timestamp-if-interval-expired)
 
       (if (not nbuf)
 	  (save-excursion
@@ -691,8 +696,7 @@ One is for entering commands and text, the other displays the IRC dialogue."
 	    (set-window-start (get-buffer-window obuf) oldwstart)
 	    (set-window-point (get-buffer-window obuf) oldwpoint)
 	    (goto-char oldwpoint)
-	    ))))
-  (irchat-Command-timestamp-if-interval-expired))
+	    )))))
 
 
 (defun irchat-get-buffer-create (name)
@@ -738,19 +742,37 @@ One is for entering commands and text, the other displays the IRC dialogue."
     buffer-ownfrozen))
 
 
+(defvar irchat-last-checkbuffer-time nil "Last time buffers were checked.")
+
+
+(defun irchat-check-buffers-if-interval-expired ()
+  (if (and (numberp irchat-checkbuffer-interval)
+           (> irchat-checkbuffer-interval 0)
+           (or (null irchat-last-checkbuffer-time)
+               (> (irchat-time-difference irchat-last-checkbuffer-time
+                                          (current-time))
+                  irchat-checkbuffer-interval)))
+      (progn
+        (irchat-check-buffers)
+        t)
+    nil))
+
+
 (defun irchat-check-buffers ()
-  (if (> irchat-buffer-maxsize 0)
-      (let ((buflist irchat-buffer-list)
-	    (obuf (current-buffer)))
-	(while buflist
-	  (set-buffer (irchat-get-buffer-create (car buflist)))
-	  (if (< irchat-buffer-maxsize (buffer-size))
-	      (let ((buffer-read-only nil))
-		(goto-char (- (buffer-size) irchat-buffer-defsize))
-		(forward-line -1)
-		(delete-region (point-min) (point))))
-	  (setq buflist (cdr buflist)))
-	(set-buffer obuf))))
+  (let ((irchat-checkbuffer-interval 0))
+    (if (> irchat-buffer-maxsize 0)
+	(let ((buflist irchat-buffer-list)
+	      (obuf (current-buffer)))
+	  (while buflist
+	    (set-buffer (irchat-get-buffer-create (car buflist)))
+	    (if (< irchat-buffer-maxsize (buffer-size))
+		(let ((buffer-read-only nil))
+		  (goto-char (- (buffer-size) irchat-buffer-defsize))
+		  (forward-line -1)
+		  (delete-region (point-min) (point))))
+	    (setq buflist (cdr buflist)))
+	  (set-buffer obuf)))))
+
 
 (defun irchat-is-message-ignored (string buffer)
   (let ((mylist irchat-ignore-list)
