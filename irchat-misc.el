@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-misc.el,v 3.28 1997/10/20 07:11:56 tri Exp $
+;;;  $Id: irchat-misc.el,v 3.29 1997/11/19 14:22:07 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -356,7 +356,14 @@
 (defun irchat-msg-from-ignored (prefix rest)
   (save-excursion
     (let ((buf (current-buffer)))
-      (irchat-w-insert irchat-I-buffer (format "%s::%s\n" prefix rest))
+      (irchat-w-insert irchat-I-buffer 
+		       (format "%s%s::%s\n" 
+			       (if (not irchat-timestamp-irc-I-buffer-p)
+				   ""
+				 (format "[%s] " 
+					 (current-time-string)))
+			       prefix 
+			       rest))
       t)))
 
 (defun irchat-window-height (win)   ;;; No w-v-h in GNU-Emacs //tri

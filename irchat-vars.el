@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-vars.el,v 3.28 1997/10/28 07:11:21 tri Exp $
+;;;  $Id: irchat-vars.el,v 3.29 1997/11/19 14:22:26 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -226,6 +226,9 @@ the local server.")
 
 (defvar irchat-ignore-changes-from-ignored nil
   "*Don't show changes from ignored users.")
+
+(defvar irchat-timestamp-irc-I-buffer-p nil
+  "*Timestamps lines inserted into *IRC IGNORED* buffer.")
 
 (defvar irchat-shorten-kills t
   "*Shorten KILL messages to about one line.")
