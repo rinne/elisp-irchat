@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-misc.el,v 3.3 1997/02/26 13:16:34 jsl Exp $
+;;;  $Id: irchat-misc.el,v 3.4 1997/02/27 07:54:04 jsl Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -16,9 +16,13 @@
 			    (irchat-time-difference time (cdr (car mylist)))
 			  1)))
 	(if (< expiretime 0)
-	    (setq irchat-kill-nickname (remassoc (car (car mylist))
-						 irchat-kill-nickname)
-		  irchat-save-vars-is-dirty t))
+	    (progn
+	      (setq irchat-kill-nickname (remassoc (car (car mylist))
+						   irchat-kill-nickname)
+		    irchat-save-vars-is-dirty t)
+	      (irchat-w-insert irchat-D-buffer
+			       (format "*** Ignore timeout for %s expired.\n"
+				       (car (car mylist))))))
 	(setq mylist (cdr mylist)))))
   (let ((killit nil))
     (mapcar (function 

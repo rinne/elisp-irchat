@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-commands.el,v 3.4 1997/02/26 13:13:28 jsl Exp $
+;;;  $Id: irchat-commands.el,v 3.5 1997/02/27 07:54:04 jsl Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -395,8 +395,12 @@ contents are updated future sessions."
     ;; else not empty, check if exists
     (let ((elem (assoc-ci-string kill-nickname-var irchat-kill-nickname)))
       (if elem
-	  (setq irchat-kill-nickname (remassoc (car elem)
-					       irchat-kill-nickname))
+	  (progn
+	    (setq irchat-kill-nickname (remassoc (car elem)
+						 irchat-kill-nickname))
+	    (irchat-w-insert irchat-D-buffer
+			     (format "*** No longer ignoring: %s.\n"
+				     (car elem))))
       ;; did not find, add to ignored ones
 	(progn
 	  (setq irchat-kill-nickname
@@ -404,8 +408,14 @@ contents are updated future sessions."
 			    (if (> timeout 0)
 				(irchat-time-add (current-time)
 						 (* timeout 60))))
-		      irchat-kill-nickname)))))
-    (setq irchat-save-vars-is-dirty t)))
+		      irchat-kill-nickname))
+	  (irchat-w-insert irchat-D-buffer
+			   (format "*** Ignoring %s" kill-nickname-var))
+	  (irchat-w-insert irchat-D-buffer
+			   (if (> timeout 0)
+			       (format " for %d minutes.\n" timeout)
+			     (format ".\n"))))))
+      (setq irchat-save-vars-is-dirty t)))
 
 
 (defun irchat-Command-send-action (&optional private)
