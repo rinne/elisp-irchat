@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-commands.el,v 3.25 1997/10/06 15:40:44 tri Exp $
+;;;  $Id: irchat-commands.el,v 3.26 1997/10/16 07:53:07 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -498,6 +498,82 @@ contents are updated future sessions."
 		(irchat-w-insert irchat-D-buffer
 				 (format "%sIgnoring %s"
 					 irchat-info-prefix kill-nickname-var))
+		(irchat-w-insert irchat-D-buffer
+				 (if (> timeout 0)
+				     (format " for %d minutes.\n" timeout)
+				   (format ".\n"))))))))
+    (setq irchat-save-vars-is-dirty t)))
+
+(defun irchat-Command-kill-by-regexp (kill-regexp-var &optional timeout silent)
+  "Ignore messages matcing regexp.  If already ignoring regexp, toggle."
+  (interactive (let ((kill-regexp-var nil)
+		     (timeout nil)
+		     (completion-ignore-case t))
+		 (setq kill-regexp-var 
+		       (completing-read "Ignore messages matching: " 
+					irchat-kill-message-regexp
+					'(lambda (s) t) nil nil))
+		 (if (and (not (string= "" kill-regexp-var))
+			  (not (assoc-ci-string kill-regexp-var
+						irchat-kill-message-regexp)))
+		     (setq timeout
+			   (string-to-int
+			    (read-from-minibuffer
+			     "Timeout [RET for none]: "))))
+		 (list kill-regexp-var timeout)))
+  
+  ;; empty, just list them
+  (if (string= "" kill-regexp-var)
+      (let ((buf (current-buffer))
+	    (buffer-read-only))
+	(set-buffer irchat-Dialogue-buffer)
+	(goto-char (point-max))
+	(irchat-w-insert irchat-D-buffer
+			 (format "%sCurrently ignoring messages matching:"
+				 irchat-info-prefix))
+	(let ((mylist irchat-kill-message-regexp)
+	      (time (current-time)))
+	  (while mylist
+	    (let* ((expiretime (if (cdr (car mylist))
+				   (/ (irchat-time-difference time 
+							      (cdr 
+							       (car mylist)))
+				      60)
+				 nil))
+		   (expire (cond ((not expiretime) "")
+				 ((>= expiretime 0)
+				  (format " (%d min)" expiretime))
+				 ((< expiretime 0)
+				  (format " expired")))))
+	      (irchat-w-insert irchat-D-buffer
+			       (format " \"%s\"%s" (car (car mylist)) expire)))
+	    (setq mylist (cdr mylist))))
+	(irchat-w-insert irchat-D-buffer "\n")
+	(set-buffer buf))
+    ;; else not empty, check if exists
+    (let ((elem (assoc-ci-string kill-regexp-var irchat-kill-message-regexp)))
+      (if elem
+	  (progn
+	    (setq irchat-kill-message-regexp 
+		  (remassoc (car elem)
+			    irchat-kill-message-regexp))
+	    (irchat-w-insert irchat-D-buffer
+			     (format "%sNo longer ignoring: \"%s\".\n"
+				     irchat-info-prefix (car elem))))
+	;; did not find, add to ignored ones
+	(let ((expire-time (if (> timeout 0)
+			       (irchat-time-add (current-time)
+						(* timeout 60)))))
+	  (if (and silent (> timeout 0))
+	      (setcar (cdr (cdr expire-time)) -1))
+	  (setq irchat-kill-message-regexp
+		(cons (cons kill-regexp-var expire-time)
+		      irchat-kill-message-regexp))
+	  (if (not silent)
+	      (progn
+		(irchat-w-insert irchat-D-buffer
+				 (format "%sIgnoring messages matching \"%s\""
+					 irchat-info-prefix kill-regexp-var))
 		(irchat-w-insert irchat-D-buffer
 				 (if (> timeout 0)
 				     (format " for %d minutes.\n" timeout)
