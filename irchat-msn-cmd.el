@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn-cmd.el,v 3.11 2002/06/23 15:23:43 tri Exp $
+;;;  $Id: irchat-msn-cmd.el,v 3.12 2002/06/23 18:58:29 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -208,27 +208,6 @@
 	    (t
 	     (message "Recipient not found."))))))
 
-(defun irchat-Command-msn-list-online ()
-  (interactive)
-  (if (not (irchat-msn-server-opened))
-      (error "MSN Messenger connection is not open."))
-  (if irchat-msn-online-list
-      (let ((l irchat-msn-online-list))
-	(irchat-w-insert irchat-MSN-buffer 
-			 (format "%s%d contacts online:\n"
-				 irchat-msn-info-prefix
-				 (length l)))
-	(while l
-	  (irchat-w-insert irchat-MSN-buffer
-			   (format "    %s <%s> is %s\n"
-				   (nth 1 (car l))
-				   (nth 0 (car l))
-				   (irchat-msn-status-string (nth 3 (car l)))))
-	  (setq l (cdr l))))
-    (irchat-w-insert irchat-MSN-buffer 
-		     (format "%sNo contacts online.\n"
-			     irchat-msn-info-prefix))))
-
 (defun irchat-msn-list-list (head list)
   (if list
       (let ((l list))
@@ -364,10 +343,7 @@
                             (irchat-msn-status-code irchat-msn-my-online-mode)))) 
         (t nil)))
 
-(defun irchat-Command-show-online () 
-  (interactive) 
-  (if (not (irchat-msn-server-opened)) 
-      (error "MSN Messenger connection is not open.")) 
+(defun irchat-msn-online-list-string ()
   (let ((l (irchat-list-rnd irchat-msn-online-list)) 
         (m nil)
 	(l2 nil))
@@ -397,7 +373,28 @@
 	      (if m
 		  (setq m (concat m ", " x)) 
 		(setq m x))))))
-    (message (if m m "None!"))))
+    (if m m "None!")))
+
+(defun irchat-Command-msn-list-online ()
+  (interactive)
+  (if (not (irchat-msn-server-opened))
+      (error "MSN Messenger connection is not open."))
+  (if irchat-msn-online-list
+      (irchat-w-insert irchat-MSN-buffer 
+		       (format "%s%d contact%s online: %s\n"
+			       irchat-msn-info-prefix
+			       (length irchat-msn-online-list)
+			       (if (> (length irchat-msn-online-list) 1) "s" "")
+			       (irchat-msn-online-list-string)))
+    (irchat-w-insert irchat-MSN-buffer 
+		     (format "%sNo contacts online.\n"
+			     irchat-msn-info-prefix))))
+
+(defun irchat-Command-show-online () 
+  (interactive) 
+  (if (not (irchat-msn-server-opened)) 
+      (error "MSN Messenger connection is not open.")) 
+  (message (irchat-msn-online-list-string)))
 
 (eval-and-compile (provide 'irchat-msn-cmd))
 
