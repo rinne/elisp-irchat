@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-misc.el,v 3.21 1997/10/06 13:27:25 tri Exp $
+;;;  $Id: irchat-misc.el,v 3.22 1997/10/06 13:36:03 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -111,7 +111,7 @@
 			   "\n"))
 		(o "$")
 		(n (substring message 1 (length message))))
-	    (irchat-w-replace buffer m d o n)))
+	    (irchat-w-replace buffer m d o n 64)))
     (irchat-w-insert buffer (concat absolute-prefix
 				    (format format-string sender channel)
 				    " "
