@@ -2,7 +2,7 @@
 #
 # Makefile for irchat
 #
-# $Id: Makefile,v 3.6 1997/03/04 22:24:10 tri Exp $
+# $Id: Makefile,v 3.7 1997/10/19 15:35:50 tri Exp $
 #
 
 #
@@ -43,6 +43,8 @@ OBJS 	= \
 	irchat-misc.elc		\
 	irchat-timer.elc	\
 	irchat-main.elc		\
+	irchat-uah-cache.elc	\
+	irchat-global-kill.elc	\
 	b64.elc			\
 	crc32.elc		\
 	idea.elc		\
