@@ -4,9 +4,9 @@
 ;;;  Cipher Saber encryption in elisp.  Cool, ha?
 ;;;  ----------------------------------------------------------------------
 ;;;  Created      : Tue Jul  7 18:55:02 1998 tri
-;;;  Last modified: Sat Aug  8 18:33:54 1998 tri
+;;;  Last modified: Fri Jan 15 08:42:12 1999 tri
 ;;;  ----------------------------------------------------------------------
-;;;  Copyright © 1998
+;;;  Copyright © 1998-1999
 ;;;  Timo J. Rinne <tri@iki.fi>
 ;;; 
 ;;;  Address: Cirion oy, PO-BOX 250, 00121 Helsinki, Finland
@@ -18,7 +18,7 @@
 ;;;  irchat-copyright.el applies only if used with irchat IRC client.
 ;;;  Contact the author for additional copyright info.
 ;;;
-;;;  $Id: cipher-saber.el,v 1.7 1998/08/08 15:34:03 tri Exp $
+;;;  $Id: cipher-saber.el,v 1.8 1999/01/15 06:49:28 tri Exp $
 ;;;
 
 (eval-and-compile  
@@ -77,14 +77,18 @@
       (cipher-saber-init-random-state))
   (rc4-random cipher-saber-random-state))
 
-(defun cipher-saber-make-iv ()
-  "Build random Cipher Safer initialization vector."
-  (let ((r (make-string 10 0))
+(defun cipher-saber-random-string (len)
+  "Generate a randon string of LEN random characters."
+  (let ((r (make-string len 0))
 	(i 0))
-    (while (< i cipher-saber-iv-length)
+    (while (< i len)
       (aset r i (cipher-saber-random-byte))
       (setq i (+ i 1)))
     r))
+
+(defun cipher-saber-make-iv ()
+  "Build random Cipher Safer initialization vector."
+  (cipher-saber-random-string cipher-saber-iv-length))
 
 (defun cipher-saber-check-key (key)
   "Check and possibly truncate cipher saber key."
