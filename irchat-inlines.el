@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-inlines.el,v 3.5 1997/03/04 22:27:19 tri Exp $
+;;;  $Id: irchat-inlines.el,v 3.6 1997/03/13 23:40:07 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -116,7 +116,8 @@
 (defsubst irchat-update-user (chnl user)
   "Add CHNL to list of channels USER belongs to"
   (if (not (string= user ""))
-      (let* ((u (if (string= (substring user 0 1) "@")
+      (let* ((u (if (or (string= (substring user 0 1) "@")
+			(string= (substring user 0 1) "+"))
                     (intern (substring user 1 (length user)) irchat-obarray)
                   (intern user irchat-obarray)))
              (chnls (get u 'chnl)))
