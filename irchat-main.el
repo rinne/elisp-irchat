@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-main.el,v 3.15 1997/04/03 13:41:23 jsl Exp $
+;;;  $Id: irchat-main.el,v 3.16 1997/04/11 10:34:11 jtp Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -748,19 +748,20 @@ One is for entering commands and text, the other displays the IRC dialogue."
 		(smiley-region spoint (point-max)))))		
       (setq buffer-read-only t)
       (goto-char spoint)
-      (let ((win (irchat-get-buffer-window (get-buffer buffer))))
-	(if (and (not (not win))
-		 (not frozen)
-		 (not (pos-visible-in-window-p (point-max) win)))
-	    (progn
-	      (goto-char (point-max))
-	      (vertical-motion (- (+ 1 (if (not irchat-scroll-step)
-					   (/ (irchat-window-height win) 2)
-					 (1- irchat-scroll-step)))
-				  (irchat-window-height win))
-			       win)
-	      (set-window-start win (point))
-	      (goto-char (point-max)))))
+      (let ((win-list (irchat-get-buffer-window-list (get-buffer buffer))))
+	(mapcar
+	 '(lambda (win)
+	    (if (and win (not frozen)
+		     (not (pos-visible-in-window-p (point-max) win)))
+		(progn
+		  (goto-char (point-max))
+		  (vertical-motion (- (or irchat-scroll-step
+					  (1- (/ (irchat-window-height win) 2)))
+				      (irchat-window-height win))
+				   win)
+		  (set-window-start win (point))
+		  (goto-char (point-max)))))
+	 win-list))
       (set-buffer obuf)
       (if (and frozen (irchat-get-buffer-window obuf) (equal obuf nbuf))
 	  (progn
