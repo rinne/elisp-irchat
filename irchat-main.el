@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-main.el,v 3.20 1997/10/02 05:54:00 tri Exp $
+;;;  $Id: irchat-main.el,v 3.21 1997/10/06 13:34:25 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -673,7 +673,13 @@ One is for entering commands and text, the other displays the IRC dialogue."
   (irchat-send "PING %s" (system-name)))
 
 
-(defun irchat-w-replace (buffer match defstring oldstring newstring)
+(defun irchat-w-replace (buffer 
+			 match
+			 defstring
+			 oldstring 
+			 newstring 
+			 &optional treshold)
+  (if (not (integerp treshold)) (setq treshold irchat-compress-treshold))
   (if (or (not buffer) (listp buffer))
       (while buffer
 	(progn
@@ -688,7 +694,7 @@ One is for entering commands and text, the other displays the IRC dialogue."
       (goto-char (point-max))
       (if buffer-read-only
 	  (setq buffer-read-only nil))
-      (previous-line irchat-compress-treshold)
+      (previous-line treshold)
       (if (re-search-forward match nil t)
 	  (progn
 	    (while (re-search-forward match nil t))
