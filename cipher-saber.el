@@ -4,7 +4,7 @@
 ;;;  Cipher Saber encryption in elisp.  Cool, ha?
 ;;;  ----------------------------------------------------------------------
 ;;;  Created      : Tue Jul  7 18:55:02 1998 tri
-;;;  Last modified: Tue Jul  7 20:06:10 1998 tri
+;;;  Last modified: Wed Jul  8 12:36:52 1998 tri
 ;;;  ----------------------------------------------------------------------
 ;;;  Copyright © 1998
 ;;;  Timo J. Rinne <tri@iki.fi>
@@ -18,11 +18,11 @@
 ;;;  irchat-copyright.el applies only if used with irchat IRC client.
 ;;;  Contact the author for additional copyright info.
 ;;;
-;;;  $Id: cipher-saber.el,v 1.1 1998/07/07 17:15:29 tri Exp $
+;;;  $Id: cipher-saber.el,v 1.2 1998/07/08 09:38:40 tri Exp $
 ;;;
 
 (eval-and-compile  
-  (requide 'rc4)
+  (require 'rc4)
   (provide 'cipher-saber))
 
 (defconst cipher-saber-iv-length 10
@@ -44,6 +44,11 @@
 ;                                                   (random 256)
 ;                                                   (random 256))))
 
+(defun cipher-saber-warning (msg &optional beep-p)
+  "Output warning MSG and beep if BEEP-P is non nil."
+  (if (not (null beep-p)) (beep t))
+  (message (concat "Warning: " msg)))
+
 (defun cipher-saber-generate-initial-salt (&optional key)
   "Generate pseudo random string from emacs standard stuff with optional KEY."
   (let ((s (if (stringp key) key "")))
@@ -55,7 +60,14 @@
   "Initialize Cipher Saber internal random number generator."
   (setq cipher-saber-random-state 
 	(rc4-make-state (cipher-saber-generate-initial-salt
-			 cipher-saber-random-entropy))))
+			 cipher-saber-random-entropy)))
+  (rc4-random cipher-saber-random-state)
+  (rc4-random cipher-saber-random-state)
+  (let ((x (+ (rc4-random cipher-saber-random-state) 10)))
+    (message "%d" x)
+    (while (> x 0)
+      (rc4-random cipher-saber-random-state)
+      (setq x (- x 1)))))
 
 (defun cipher-saber-random-byte ()
   (if (null cipher-saber-random-state)
@@ -71,9 +83,25 @@
       (setq i (+ i 1)))
     r))
 
+(defun cipher-saber-check-key (key)
+  "Check and possibly truncate cipher saber key."
+  (let ((l (length key))
+	(m (- 256 cipher-saber-iv-length))
+	(w (- 64 cipher-saber-iv-length)))
+    (cond ((> l m) 
+	   (cipher-saber-warning
+	    (format "CipherSaber key exceeds %d bytes.  Truncated!" m)
+	    t)
+	   (setq key (substring key 0 m)))
+	  ((> l 54) 
+	   (cipher-saber-warning
+	    (format "CipherSaber key exceeds %d bytes.  Avoid this!" w))))
+    key))
+
 (defun cipher-saber-make-encryption-state (key)
   "Build initial Cipher Safer encryption state with KEY."
-  (let ((iv (cipher-saber-make-iv)))
+  (let ((iv (cipher-saber-make-iv))
+	(key (cipher-saber-check-key key)))
     (vector (rc4-make-state (concat key iv))
 	    iv)))
 
@@ -98,7 +126,8 @@
 
 (defun cipher-saber-make-decryption-state (key)
   "Build initial Cipher Safer decryption state with KEY."
-  (vector key ""))
+  (let ((key (cipher-saber-check-key key)))
+    (vector key "")))
 
 (defun cipher-saber-decrypt (str state)
   "Cipher Safer decrypt STR with a given STATE and update state."
