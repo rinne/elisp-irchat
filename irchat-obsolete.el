@@ -1,12 +1,13 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-obsolete.el,v 1.2 1997/10/19 19:46:34 tri Exp $
+;;;  $Id: irchat-obsolete.el,v 1.3 1997/10/19 19:47:38 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
 (eval-when-compile (require 'irchat-inlines))
 
 (defun irchat-Command-kill (kill-nickname-var &optional timeout silent)
+  "Obsolete front end to irchat-Command-ignore."
   (interactive (let ((kill-nickname-var nil)
 		     (timeout nil)
 		     (completion-ignore-case t))
@@ -32,6 +33,7 @@
   
 
 (defun irchat-Command-kill-by-regexp (kill-regexp-var &optional timeout silent)
+  "Obsolete front end to irchat-Command-ignore-by-regexp."
   (interactive (let ((kill-regexp-var nil)
 		     (timeout nil)
 		     (completion-ignore-case t))
@@ -56,6 +58,7 @@
     (message msg)))
 
 (defun irchat-Command-global-kill (nickname timeout reason)
+  "Obsolete front end to irchat-Command-global-ignore."
   (interactive (let ((nickname-var nil)
 		     (timeout 0)
 		     (reason ""))
