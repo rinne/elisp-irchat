@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-hooks.el,v 3.2 1997/02/27 10:19:14 jsl Exp $
+;;;  $Id: irchat-hooks.el,v 3.3 1998/10/06 11:47:06 tri Exp $
 ;;;
 ;;;  Example hooks to customize irchat. These are copy-pasted from 2.2beta
 ;;;  and modified a bit. The might or might not work. The general idea is 
@@ -62,8 +62,10 @@ LIST"
 	    nil
 	  (progn 
 	    (string-match "[^ ]* :\\(.*\\)" rest)
-	    (irchat-send "PRIVMSG %s :%s%s" irchat-broadcast-partner prefix
-			 (matching-substring rest 1))))
+	    (irchat-send-privmsg "PRIVMSG %s :%s%s" 
+				 irchat-broadcast-partner 
+				 prefix
+				 (matching-substring rest 1))))
 	nil)
     nil))
 
@@ -80,8 +82,10 @@ LIST"
 	    nil
 	  (progn 
 	    (string-match "[^ ]* :\\(.*\\)" rest)
-	    (irchat-send "PRIVMSG %s :%s%s" irchat-broadcast-partner prefix
-			 (matching-substring rest 1))))
+	    (irchat-send-privmsg "PRIVMSG %s :%s%s"
+				 irchat-broadcast-partner 
+				 prefix
+				 (matching-substring rest 1))))
 	nil)
     nil))
 	    
@@ -116,11 +120,11 @@ LIST"
 	   (setq message (read-string "Action: "))
 	 (setq message (buffer-substring start stop))
 	 (irchat-next-line 1))
-       (irchat-send "PRIVMSG %s :ACTION %s"
-		    (if private
-			irchat-privmsg-partner
-		      irchat-current-channel)
-		    message)
+       (irchat-send-privmsg "PRIVMSG %s :ACTION %s"
+			    (if private
+				irchat-privmsg-partner
+			      irchat-current-channel)
+			    message)
        (if private
 	   (irchat-own-message (format "*** Action to %s: %s %s"
 				       irchat-privmsg-partner irchat-real-nickname

@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-global-kill.el,v 1.4 1997/10/20 05:57:27 tri Exp $
+;;;  $Id: irchat-global-kill.el,v 1.5 1998/10/06 11:47:06 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 ;;;
@@ -185,7 +185,9 @@
 					 irchat-global-kill-use-silent-ignore)
 		    (setq l (cdr l)))))
 	      ; Send ctcp
-	      (irchat-send "PRIVMSG %s :%s" irchat-current-channel msg)))))))
+	      (irchat-send-privmsg "PRIVMSG %s :%s"
+				   irchat-current-channel
+				   msg)))))))
 
 
 (setq irchat-ctl-a-ignore-msg-hook (function irchat-ctl-a-ignore-msg-hook))

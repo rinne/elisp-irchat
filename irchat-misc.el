@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-misc.el,v 3.44 1998/08/07 19:11:32 tri Exp $
+;;;  $Id: irchat-misc.el,v 3.45 1998/10/06 11:47:06 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -266,6 +266,12 @@
 
 (defun irchat-own-private-message (message)
   (irchat-w-insert irchat-P-buffer (format "%s\n" message)))
+
+(defun irchat-send-privmsg (&rest args)
+  "Send the protocol string to the irc server.  Delayed if irchat-use-delayed-privmsg is non-nil."
+  (if irchat-use-delayed-privmsg
+      (eval (cons (function irchat-send-delayed) args))
+    (eval (cons (function irchat-send) args))))
 
 (defun irchat-send (&rest args)
   "Send the protocol string to the irc server."

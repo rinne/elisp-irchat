@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-dcc.el,v 3.4 1997/03/16 18:17:06 too Exp $
+;;;  $Id: irchat-dcc.el,v 3.5 1998/10/06 11:47:06 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 ;;;
@@ -68,7 +68,7 @@
 	       (port (matching-substring output 2))
 	       (machine (matching-substring output 3))
 	       (size (matching-substring output 4)))
-	   (irchat-send "PRIVMSG %s :DCC SEND %s %s %s %s"
+	   (irchat-send-privmsg "PRIVMSG %s :DCC SEND %s %s %s %s"
 			irchat-privmsg-partner filename machine port size)
 	   (irchat-own-message
 	    (format "%sSending file %s (%s bytes) to %s"

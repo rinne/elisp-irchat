@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-vars.el,v 3.37 1998/06/25 06:44:58 tri Exp $
+;;;  $Id: irchat-vars.el,v 3.38 1998/10/06 11:47:06 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -238,6 +238,9 @@ IRCHAT to suit old users of the irc-loser-client.")
 
 (defvar irchat-send-delayed-interval 3
   "Seconds between delayed sends.")
+
+(defvar irchat-use-delayed-privmsg nil
+  "*Should privmsg messages be delayed too?")
 
 (defvar irchat-blink-parens nil
   "*Should we blink matching parenthesis in irchat command buffer?")

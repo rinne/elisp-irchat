@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-commands.el,v 3.34 1998/06/25 06:41:15 jsl Exp $
+;;;  $Id: irchat-commands.el,v 3.35 1998/10/06 11:47:06 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -178,8 +178,8 @@
 	  (if (eq irchat-command-buffer-mode 'chat)
 	      (if irchat-current-chat-partner
 		  (progn
-		    (irchat-send "PRIVMSG %s :%s" 
-				 irchat-current-chat-partner msg)
+		    (irchat-send-privmsg "PRIVMSG %s :%s" 
+					 irchat-current-chat-partner msg)
 		    (cond ((null own-message)
 			   (irchat-own-private-message 
 			    (format (format "%s %%s"
@@ -206,7 +206,9 @@
 		    "Type \\[irchat-Command-join] to join a channel"))
 		  nil)
 	      (progn
-		(irchat-send "PRIVMSG %s :%s" irchat-current-channel msg)
+		(irchat-send-privmsg "PRIVMSG %s :%s"
+				     irchat-current-channel
+				     msg)
 		(cond ((null own-message)
 		       (irchat-own-message
 			(format (format (format "%s %%%%s" 
@@ -607,11 +609,11 @@ contents are updated future sessions."
 	(setq message (read-string "Action: "))
       (setq message (buffer-substring start stop))
       (irchat-next-line 1))
-    (irchat-send "PRIVMSG %s :ACTION %s"
-		 (if private
-		     irchat-privmsg-partner
-		   irchat-current-channel)
-		 message)
+    (irchat-send-privmsg "PRIVMSG %s :ACTION %s"
+			 (if private
+			     irchat-privmsg-partner
+			   irchat-current-channel)
+			 message)
     (if private
 	(irchat-own-private-message (format "%sAction to %s: %s %s"
 					    irchat-info-prefix
@@ -756,7 +758,7 @@ into own-message-var"
 			 (setq msg-encrypted-p nil)
 			 message)))))
       (setq irchat-privmsg-partner message-nick-var)
-      (irchat-send "PRIVMSG %s :%s" message-nick-var msg)
+      (irchat-send-privmsg "PRIVMSG %s :%s" message-nick-var msg)
       (if (or (null own-message-var)
 	      (> (length own-message-var) 0))
 	  (irchat-own-private-message 
@@ -1063,8 +1065,9 @@ be sent to the server.  For a list of messages, see irchat-Command-generic."
 			'(lambda (s) t) nil irchat-query-client-nick))
 		 (list client-version-nick-var)))
   (setq irchat-query-client-nick client-version-nick-var)
-  (irchat-send "PRIVMSG %s :%s" 
-	       client-version-nick-var irchat-query-client-version))
+  (irchat-send-privmsg "PRIVMSG %s :%s" 
+		       client-version-nick-var
+		       irchat-query-client-version))
 
 
 (defun irchat-Command-client-userinfo (client-userinfo-nick-var)
@@ -1076,8 +1079,9 @@ be sent to the server.  For a list of messages, see irchat-Command-generic."
 			'(lambda (s) t) nil irchat-query-client-nick))
 		 (list client-userinfo-nick-var)))
   (setq irchat-query-client-nick client-userinfo-nick-var)
-  (irchat-send "PRIVMSG %s :%s"
-	       client-userinfo-nick-var irchat-query-client-userinfo))
+  (irchat-send-privmsg "PRIVMSG %s :%s"
+		       client-userinfo-nick-var
+		       irchat-query-client-userinfo))
 
 
 (defun irchat-Command-client-help (client-help-nick-var)
@@ -1089,8 +1093,9 @@ be sent to the server.  For a list of messages, see irchat-Command-generic."
 			'(lambda (s) t) nil irchat-query-client-nick))
 		 (list client-help-nick-var)))
   (setq irchat-query-client-nick client-help-nick-var)
-  (irchat-send "PRIVMSG %s :%s" 
-	       client-help-nick-var irchat-query-client-help))
+  (irchat-send-privmsg "PRIVMSG %s :%s" 
+		       client-help-nick-var
+		       irchat-query-client-help))
 
 
 (defun irchat-Command-client-clientinfo (client-clientinfo-nick-var)
@@ -1102,8 +1107,9 @@ be sent to the server.  For a list of messages, see irchat-Command-generic."
 			'(lambda (s) t) nil irchat-query-client-nick))
 		 (list client-clientinfo-nick-var)))
   (setq irchat-query-client-nick client-clientinfo-nick-var)
-  (irchat-send "PRIVMSG %s :%s" 
-	       client-clientinfo-nick-var irchat-query-client-clientinfo))
+  (irchat-send-privmsg "PRIVMSG %s :%s" 
+		       client-clientinfo-nick-var
+		       irchat-query-client-clientinfo))
 
 
 (defun irchat-Command-client-x-face (client-x-face-nick-var)
@@ -1115,8 +1121,9 @@ be sent to the server.  For a list of messages, see irchat-Command-generic."
 			'(lambda (s) t) nil irchat-query-client-nick))
 		 (list client-x-face-nick-var)))
   (setq irchat-query-client-nick client-x-face-nick-var)
-  (irchat-send "PRIVMSG %s :%s"
-	       client-x-face-nick-var irchat-query-client-x-face))
+  (irchat-send-privmsg "PRIVMSG %s :%s"
+		       client-x-face-nick-var
+		       irchat-query-client-x-face))
 
 
 (defun irchat-Command-client-generic (client-generic-nick-var
@@ -1134,10 +1141,10 @@ be sent to the server.  For a list of messages, see irchat-Command-generic."
 	irchat-query-client-lastcommand irchat-query-client-command)
   (if (string-ci-equal irchat-query-client-lastcommand "ping")
       (setq irchat-ctcp-ping-time (current-time)))
-  (irchat-send "PRIVMSG %s :%s%s"
-	       client-generic-nick-var
-	       irchat-query-client-lastcommand
-	       irchat-query-client-insert-to-generic))
+  (irchat-send-privmsg "PRIVMSG %s :%s%s"
+		       client-generic-nick-var
+		       irchat-query-client-lastcommand
+		       irchat-query-client-insert-to-generic))
 
 
 (defun irchat-Command-client-userinfo-from-minibuffer ()
@@ -1190,8 +1197,9 @@ be sent to the server.  For a list of messages, see irchat-Command-generic."
 		 (list client-help-nick-var)))
   (setq irchat-query-client-nick client-help-nick-var)
   (setq irchat-ctcp-ping-time (current-time))
-  (irchat-send "PRIVMSG %s :%s" 
-	       client-help-nick-var irchat-query-client-ping))
+  (irchat-send-privmsg "PRIVMSG %s :%s" 
+		       client-help-nick-var 
+		       irchat-query-client-ping))
 
 ;;;
 ;;; sending files (any files actually)
