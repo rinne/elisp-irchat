@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-handle.el,v 3.26 1998/01/23 08:09:41 tri Exp $
+;;;  $Id: irchat-handle.el,v 3.27 1998/05/18 13:38:54 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -505,12 +505,16 @@
 	(if (or (and (string-match "\\([^ ]*\\) :*\\(.*\\)" rest)
 		     (setq chnl (matching-substring rest 1)
 			   str (matching-substring rest 2)
-			   str (if (= (aref str (1- (length str))) 32) (substring str 0 -1) str)))
-		(and (string-match " :\\(.*\\)" rest) (setq str (matching-substring rest 1))))
+			   str (if (= (aref str (1- (length str))) 32) 
+				   (substring str 0 -1) str)))
+		(and (string-match " :\\(.*\\)" rest) 
+		     (setq str (matching-substring rest 1))))
 	    (if irchat-compress-changes
 		(let* ((text (format "\n" rest))
 		       (match (format "^%sNew mode for %s set by %s: " 
-				      (regexp-quote irchat-change-prefix) chnl prefix))
+				      (regexp-quote irchat-change-prefix) 
+				      chnl 
+				      prefix))
 		       (default (format "%sNew mode for %s set by %s: %s\n" 
 					irchat-change-prefix chnl prefix str)))
 		  (irchat-w-replace (irchat-pick-buffer chnl)
@@ -618,7 +622,14 @@
                                         prefix 
 					(if flags (format " [%s]" flags) "")
 					irchat-userathost 
-					rest)))
+					rest)
+				; Server joins and mode changes come in
+				; "interlaced".  To avoid breaking change
+				; compression, we temporarily raise
+				; treshold.
+				(if (= irchat-compress-treshold 1)
+				    2 
+				  irchat-compress-treshold)))
           (irchat-w-insert (irchat-pick-buffer rest) 
                            (format "%s%s%s (%s) has joined channel %s\n" 
                                    irchat-change-prefix
