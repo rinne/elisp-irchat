@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-main.el,v 3.8 1997/02/27 10:19:14 jsl Exp $
+;;;  $Id: irchat-main.el,v 3.9 1997/02/27 11:31:29 jsl Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -412,7 +412,7 @@ For a list of the generic commands type \\[irchat-Command-generic] ? RET.
   (interactive)
   (kill-all-local-variables)
 
-  (setq irchat-nick-alist (list (list irchat-real-nickname))
+  (setq irchat-nick-alist (list (list irchat-nickname))
 	mode-line-modified "--- "
 	major-mode 'irchat-Command-mode
 	mode-name "IRCHAT Commands"
