@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-crypt.el,v 3.5 1997/03/03 12:26:25 tri Exp $
+;;;  $Id: irchat-crypt.el,v 3.6 1997/03/03 18:26:06 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -73,7 +73,11 @@
 (defun irchat-Command-set-default-key (addr-var pass-var)
   "Set a default key for ADDRESS (channel/nick) to be KEY"
   (interactive (let (addr-var pass-var)
-		 (setq addr-var (read-from-minibuffer "Default key for channel/user: "))
+		 (setq addr-var (irchat-completing-default-read
+				 "Default key for channel/user: "
+				 (append irchat-nick-alist
+					 irchat-channel-alist)
+				 '(lambda (s) t) nil irchat-privmsg-partner))
 		 (setq pass-var (read-from-minibuffer "Passphrase: "))
 		 (if (string= pass-var "")
 		     (setq pass-var nil))	 
@@ -108,8 +112,11 @@
 
 (defun irchat-encrypt-message (message address &optional no-clear-text)
   "Encrypt MESSAGE to ADDRESS.  NO-CLEAR-TEXT prohibits cleartext output"
-  (let ((key (car (cdr (cdr (assoc-ci-string address
-					     irchat-default-idea-key-list))))))
+  (let ((key (car 
+	      (cdr
+	       (cdr
+		(assoc-ci-regexp-rev address 
+				     irchat-default-idea-key-list))))))
     (cond ((and no-clear-text
 		(null key))
 	   (error (format "No default key associated with \"%s\"." address)))
