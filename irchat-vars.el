@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-vars.el,v 3.27 1997/10/20 05:57:31 tri Exp $
+;;;  $Id: irchat-vars.el,v 3.28 1997/10/28 07:11:21 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -223,6 +223,9 @@ IRCHAT to suit old users of the irc-loser-client.")
 (defvar irchat-ignore-extra-notices t
   "*Don't show NOTICEs with \"as being away\" unless they come from
 the local server.")
+
+(defvar irchat-ignore-changes-from-ignored nil
+  "*Don't show changes from ignored users.")
 
 (defvar irchat-shorten-kills t
   "*Shorten KILL messages to about one line.")
