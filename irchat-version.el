@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-version.el,v 3.129 2002/06/06 13:04:31 tri Exp $
+;;;  $Id: irchat-version.el,v 3.130 2002/06/06 13:06:31 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -25,7 +25,7 @@
 (defconst irchat-client-version-rcs-snap t
   "*Is this just a snapshot from rcs?")
 
-(defconst irchat-client-version-release "$Date: 2002/06/06 13:04:31 $"
+(defconst irchat-client-version-release "$Date: 2002/06/06 13:06:31 $"
   "*Version release date")
 
 (defconst irchat-client-name "Irchat"
@@ -99,7 +99,9 @@
 	  (if (string-match ".*: \\([^ ]*\\) .*"
 			    irchat-client-version-release)
 	      (concat "("
-		      (matching-substring irchat-client-version-release 1)
+		      (substring irchat-client-version-release 
+				 (match-beginning 1)
+				 (match-end 1))
 		      ")")
 	    ""))
   "*The version of irchat you are using.")
