@@ -1,6 +1,6 @@
 #! /bin/sh
 #
-# $Id: irchat-mkdist,v 1.2 1997/02/21 15:19:49 too Exp $
+# $Id: irchat-mkdist,v 1.3 1997/02/25 22:31:24 tri Exp $
 #
 # This file is part of irchat.  Command irchat-mkdist creates 
 # a snapshot of irchat current.  This file itself does not go 
@@ -8,13 +8,18 @@
 #
 # Author: Timo J. Rinne <tri@iki.fi>
 #
-# This file is covered by copyright notice in irchat-copyright.el.
+# This file is covered by the copyright notice in irchat-copyright.el.
 #
 
 distfiles=""
-distname="irchat-`date '+%y%m%d'`"
 
-[ -d $distname ] && { echo You have already made $distname today.; exit 1; }
+if [ "x$1" != "x" ] ; then
+    distname="irchat-""$1"
+else
+    distname="irchat-`date '+%y%m%d'`"
+fi
+
+[ -d "$distname" ] && { echo "You have already made $distname today."; exit 1; }
 
 for i in RCS/*,v ; do
     if [ -f $i ] ; then
@@ -38,8 +43,19 @@ co -l irchat-version.el &&
      mkdir "$distname" &&
      cp $distfiles "$distname" &&
      chmod 755 "$distname" &&
+     (
+          cd "$distname" &&
+          gmake xemacs2 &&
+          rm -f irchat2.el &&
+          mv irchat2.elc irchat-xemacs-elc &&
+          gmake gnuemacs2 &&
+          rm -f irchat2.el &&
+          mv irchat2.elc irchat-gnuemacs-elc &&
+          mv irchat-xemacs-elc irchat-xemacs.elc &&
+          mv irchat-gnuemacs-elc irchat-gnuemacs.elc
+     )
      chmod a-w,a+r,u+w "$distname"/* &&
-     tar cvf "$distname"".tar" ./$distname &&
+     tar cvf "$distname"".tar" ./"$distname" &&
      gzip -9 "$distname"".tar" &&
      ls -l "$distname"".tar.gz" &&
      rm -rf "$distname" &&
