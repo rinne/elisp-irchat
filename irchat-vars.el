@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-vars.el,v 1.1 1996/12/19 14:54:52 tri Exp $
+;;;  $Id: irchat-vars.el,v 1.2 1996/12/19 19:39:27 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -194,6 +194,9 @@ Default is what (system-name) returns.")
 ;;;
 (defvar irchat-client-userinfo "No user information given."
   "*Userinfo message given to anyone asking.")
+
+(defvar irchat-client-x-face ""
+  "*X-Face message given to anyone asking.")
 
 (defvar irchat-keepalive-interval nil
   "*Interval on seconds the existence of server connection is checked")

@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-cta.el,v 1.1 1996/12/19 14:54:48 tri Exp $
+;;;  $Id: irchat-cta.el,v 1.2 1996/12/19 19:39:27 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -8,37 +8,6 @@
   (require 'irchat-globals)  
   (require 'irchat-vars)
   (require 'irchat-inlines))
-
-;;;
-;;; answer to client messages, no postprocessing
-;;;
-
-(defvar irchat-query-client-lastcommand nil
-  "*Place to keep last entered command")
-
-(defvar irchat-query-client-nick nil
-  "*Place to keep last queried nick")
-
-(defvar irchat-query-client-alist
-  '(("VERSION") ("CLIENTINFO") ("HELP") ("DCC") ("USERINFO") ("PING")))
-
-(defconst irchat-query-client-insert-to-generic
-  "")
-
-(defconst irchat-query-client-version
-  (concat "VERSION" irchat-query-client-insert-to-generic))
-
-(defconst irchat-query-client-userinfo
-  (concat "USERINFO" irchat-query-client-insert-to-generic))
-
-(defconst irchat-query-client-help
-  (concat "HELP" irchat-query-client-insert-to-generic))
-
-(defconst irchat-query-client-clientinfo
-  (concat "CLIENTINFO" irchat-query-client-insert-to-generic))
-
-(defconst irchat-query-client-ping
-  (concat "PING" irchat-query-client-insert-to-generic))
 
 ;;;
 ;;; decode and encode of binary data
@@ -190,7 +159,6 @@
 	       from irchat-client-userinfo)
   (message (format "CLIENT USERINFO query from %s." from)))
 
-
 (defun irchat-ctl-a-clientinfo-msg (from rest)
   (irchat-send 
    (format 
@@ -210,6 +178,10 @@
   (irchat-send 
    (format 
     "NOTICE %s :HELP :CLIENTINFO gives commands this client knows" 
+    from))
+  (irchat-send 
+   (format 
+    "NOTICE %s :HELP :X-FACE gives you user supplied X-Face (if exists)" 
     from))
   (irchat-send 
    (format 
@@ -236,6 +208,11 @@
       (setq rest ""))
   (irchat-send "NOTICE %s :PING %s" from rest)
   (message (format "CLIENT PING query from %s." from)))
+
+(defun irchat-ctl-a-x-face-msg (from rest)
+  (irchat-send "NOTICE %s :X-FACE %s"
+	       from irchat-client-x-face)
+  (message (format "CLIENT X-FACE query from %s." from)))
 
 ;;;
 ;;; read CLIENT messages from notice, no postprocessing done
@@ -385,6 +362,10 @@
   (irchat-w-insert irchat-D-buffer (format irchat-client-message prefix rest)))
 
 
+(defun irchat-client-x-face-notice (prefix rest)  
+  (irchat-w-insert irchat-D-buffer (format irchat-client-message prefix rest)))
+
+
 (defun irchat-client-errmsg-notice (prefix rest)  
   (irchat-w-insert irchat-D-buffer (format irchat-client-message prefix rest)))
 
@@ -435,6 +416,10 @@
 
 
 (defun irchat-ctl-a-errmsg-notice (prefix rest)  
+  (irchat-w-insert irchat-D-buffer (format irchat-client-message prefix rest)))
+
+
+(defun irchat-ctl-a-x-face-notice (prefix rest)  
   (irchat-w-insert irchat-D-buffer (format irchat-client-message prefix rest)))
 
 

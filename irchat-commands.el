@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-commands.el,v 1.1 1996/12/19 14:54:47 tri Exp $
+;;;  $Id: irchat-commands.el,v 1.2 1996/12/19 19:39:27 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -727,6 +727,19 @@ be sent to the server.  For a list of messages, see irchat-Command-generic."
 	       client-clientinfo-nick-var irchat-query-client-clientinfo))
 
 
+(defun irchat-Command-client-x-face (client-x-face-nick-var)
+  "Ask about someones client x-face."
+  (interactive (let (client-x-face-nick-var (completion-ignore-case t))
+		 (setq client-x-face-nick-var 
+		       (irchat-completing-default-read 
+			"Whose client: " irchat-nick-alist
+			'(lambda (s) t) nil irchat-query-client-nick))
+		 (list client-x-face-nick-var)))
+  (setq irchat-query-client-nick client-x-face-nick-var)
+  (irchat-send "PRIVMSG %s :%s"
+	       client-x-face-nick-var irchat-query-client-x-face))
+
+
 (defun irchat-Command-client-generic (client-generic-nick-var)
   "Ask about someones client clientinfo."
   (interactive (let (client-generic-nick-var (completion-ignore-case t))
@@ -766,6 +779,26 @@ be sent to the server.  For a list of messages, see irchat-Command-generic."
     (end-of-line)
     (setq stop (point))
     (setq irchat-client-userinfo (buffer-substring start stop))
+    (irchat-next-line 1)))
+
+
+(defun irchat-Command-client-x-face-from-minibuffer ()
+  "Ask about someones client clientinfo."
+  (interactive)
+  (setq irchat-client-x-face
+	(read-from-minibuffer "New X-Face: "
+			      irchat-client-x-face)))
+
+
+(defun irchat-Command-client-x-face-from-commandbuffer ()
+  "Ask about someones client clientinfo."
+  (interactive)
+  (let (start stop)
+    (beginning-of-line)
+    (setq start (point))
+    (end-of-line)
+    (setq stop (point))
+    (setq irchat-client-x-face (buffer-substring start stop))
     (irchat-next-line 1)))
 
 

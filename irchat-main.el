@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-main.el,v 1.1 1996/12/19 14:54:51 tri Exp $
+;;;  $Id: irchat-main.el,v 1.2 1996/12/19 19:39:27 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -73,6 +73,9 @@ carried out.")))))
     ("c" 	irchat-Command-client-clientinfo)
     ("g" 	irchat-Command-client-generic)
     ("p" 	irchat-Command-client-ping)
+    ("x" 	irchat-Command-client-x-face)
+    ("X" 	irchat-Command-client-x-face-from-minibuffer)
+    ("\C-x" 	irchat-Command-client-x-face-from-commandbuffer)
     ("U" 	irchat-Command-client-userinfo-from-minibuffer)
     ("\C-u" 	irchat-Command-client-userinfo-from-commandbuffer))
   "Key definition table for Client-query-map")

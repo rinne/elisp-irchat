@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-globals.el,v 1.1 1996/12/19 14:54:50 tri Exp $
+;;;  $Id: irchat-globals.el,v 1.2 1996/12/19 19:39:27 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -20,7 +20,7 @@
 (defconst irchat-client-version-alpha-p t
   "Is this version an alpha version?")
 
-(defconst irchat-client-version-release "$Date: 1996/12/19 14:54:50 $"
+(defconst irchat-client-version-release "$Date: 1996/12/19 19:39:27 $"
   "version release date")
 
 (defconst irchat-client-name "Irchat"
@@ -179,7 +179,8 @@ make-vector for more information. Here is a list of some small primes...
   "*Place to keep last queried nick")
 
 (defvar irchat-query-client-alist
-  '(("VERSION") ("CLIENTINFO") ("HELP") ("DCC") ("USERINFO") ("PING")))
+  '(("VERSION") ("CLIENTINFO") ("HELP") ("DCC") ("USERINFO") ("PING")
+    ("X-FACE")))
 
 (defconst irchat-query-client-insert-to-generic
   "")
@@ -198,6 +199,9 @@ make-vector for more information. Here is a list of some small primes...
 
 (defconst irchat-query-client-ping
   (concat "PING" irchat-query-client-insert-to-generic))
+
+(defconst irchat-query-client-x-face
+  (concat "X-FACE" irchat-query-client-insert-to-generic))
 
 (provide 'irchat-globals)
 ;;;
