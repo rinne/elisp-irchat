@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn-handle.el,v 3.2 2002/06/04 20:21:39 tri Exp $
+;;;  $Id: irchat-msn-handle.el,v 3.3 2002/06/05 09:24:35 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -124,7 +124,9 @@
 	 (setq irchat-msn-password-cache irchat-msn-last-password)
 	 (irchat-msn-send "CHG %d NLN" (irchat-msn-seqno))
 	 (setq irchat-msn-online-list '()) ;; Server sends online list after CHG
-	 (setq irchat-msn-connection-phase 'chg-sent))
+	 (setq irchat-msn-connection-phase 'chg-sent)
+	 (if irchat-msn-fake-client-version
+	     (irchat-msn-send "CVR %d %s" (irchat-msn-seqno) irchat-msn-fake-client-version)))
        (t (irchat-msn-protocol-error))))
 
 (defun irchat-msn-handle-XFR (msg)
@@ -167,6 +169,9 @@
 	   (irchat-msn-close-server)))))
 
 (defun irchat-msn-handle-QRY (msg)
+  t)
+
+(defun irchat-msn-handle-CVR (msg)
   t)
 
 (defun irchat-msn-handle-CHL (msg)

@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-msn-vars.el,v 3.4 2002/06/04 23:20:44 tri Exp $
+;;;  $Id: irchat-msn-vars.el,v 3.5 2002/06/05 09:24:35 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -11,7 +11,7 @@
 ;;;
 ;;; Public variables.
 ;;;
-(defvar irchat-msn-server '("64.4.13.58")
+(defvar irchat-msn-server '("messenger.hotmail.com")
   "*Primary MSN Messenger server(s).  List can contain many addresses.")
 (defvar irchat-msn-service 1863
   "*MSN Messenger port")
@@ -25,6 +25,15 @@
   "*If non-nil, various MSN lists are dumped to screen on startup.")
 (defvar irchat-msn-send-typing-notifications nil
   "*If non-nil, send typing notification, while writing a message.")
+
+;;;
+;;; Fake version string to messenger server.  Don't change contents 
+;;; of this string.  Anyway, you can set this to nil, in order not to
+;;; send fake id to the server.  It seems to work OK without it, but
+;;; I dont know what may happen, if you do so.
+;;;
+(defvar irchat-msn-fake-client-version "0x0409 winnt 5.0 i386 MSMSGS 4.6.0042 MSMSGS"
+  "*Send this information as our client version.  Don't change!")
   
 ;;;
 ;;; Format strings
