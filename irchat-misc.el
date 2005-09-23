@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-misc.el,v 3.52 2002/11/09 19:40:47 tri Exp $
+;;;  $Id: irchat-misc.el,v 3.53 2005/09/23 16:07:08 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -287,7 +287,7 @@
         (setq item (irchat-replace-in-string item (car (car conv-list))
 					     (car (cdr (car conv-list)))))
         (setq conv-list (cdr conv-list))))
-    (let* ((sndstr (concat item "\r"))
+    (let* ((sndstr (concat item "\r\n"))
 	   (len (length sndstr)))
       (if (> len 512)
 	  (progn

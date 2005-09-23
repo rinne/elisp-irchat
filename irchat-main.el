@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-main.el,v 3.44 2002/11/09 19:01:57 tri Exp $
+;;;  $Id: irchat-main.el,v 3.45 2005/09/23 16:07:08 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -273,6 +273,8 @@ If optional argument SERVICE is non-nil, open by the service name."
 	(status nil))
     (setq irchat-status-message-string "")
     (cond ((and host (irchat-open-server-internal host service))
+	   (if irchat-pass
+	       (irchat-send "PASS %s" irchat-pass))
 	   (irchat-send "USER %s %s %s :%s"
 			(or (getenv "IRCUSER")
 			    (user-real-login-name))

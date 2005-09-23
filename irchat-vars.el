@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-vars.el,v 3.39 1998/11/04 10:54:33 tri Exp $
+;;;  $Id: irchat-vars.el,v 3.40 2005/09/23 16:07:08 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -56,6 +56,9 @@ Value initialized from the IRCSERVER environment variable if one is set")
 (defvar irchat-nickname (or (getenv "IRCNICK") (user-real-login-name))
   "*The nickname you want to use in IRC.
 Default is the environment variable IRCNICK, or your login name.")
+
+(defvar irchat-pass nil
+  "*Password to be sent to the server in connection open.")
 
 (defvar irchat-autoremove-virtual-penis t
   "*If t, virtual penis `_' is removed from nickname on reconnect")
