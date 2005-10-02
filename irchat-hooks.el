@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-hooks.el,v 3.4 1998/11/04 10:54:33 tri Exp $
+;;;  $Id: irchat-hooks.el,v 3.5 2005/10/02 21:24:48 tri Exp $
 ;;;
 ;;;  Example hooks to customize irchat. These are copy-pasted from 2.2beta
 ;;;  and modified a bit. The might or might not work. The general idea is 
@@ -171,7 +171,7 @@ LIST"
   (if (and irchat-arska-mode
 	   (string-match "\\(.fi\\)" irchat-userathost)
 	   (= (match-end 0) (match-end 1)))
-      (irchat-send (format "mode %s +o %s" rest prefix)))
+      (irchat-send "mode %s +o %s" rest prefix))
   (if (and (string-match "#report" rest)
 	   (not (string-match prefix irchat-real-nickname)))
       (message "%s (%s) has joined this channel%s"
