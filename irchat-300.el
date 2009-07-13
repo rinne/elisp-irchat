@@ -1,10 +1,13 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-300.el,v 3.9 2002/06/09 15:35:02 tri Exp $
+;;;  $Id: irchat-300.el,v 3.10 2009/07/13 18:06:49 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
 (eval-when-compile (require 'irchat-inlines))
+(eval-and-compile  
+  (require 'irchat-filter)
+  (require 'irchat-vars))
 
 ;;;
 ;;; 300 replies

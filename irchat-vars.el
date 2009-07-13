@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-vars.el,v 3.40 2005/09/23 16:07:08 tri Exp $
+;;;  $Id: irchat-vars.el,v 3.41 2009/07/13 18:06:49 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -33,6 +33,9 @@ screen). Useful for those (perverts) who use 24 line terminals.")
   "*Where to look for variables. Helps to remove clutter from your .emacs.
 This feature is most likely to dissappear in near future. The preferred 
 way is to put irchat variables on .emacs or file loaded from there.")
+
+(defvar irchat-utf8-kludge-disable nil
+  "*If non-nil, IRCHAT will not try to make sense of UTF-8 input.")
 
 (defvar irchat-backup-irchat-vars nil
   "*Do we want to backup irchat-vars file when updating it.  Nil inhibits.")

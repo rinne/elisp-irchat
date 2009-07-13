@@ -1,12 +1,14 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-main.el,v 3.45 2005/09/23 16:07:08 tri Exp $
+;;;  $Id: irchat-main.el,v 3.46 2009/07/13 18:06:49 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
 (eval-when-compile (require 'irchat-inlines))
 (eval-and-compile  
-  (require 'irchat-filter))
+  (require 'irchat-filter)
+  (require 'irchat-vars)
+  (require 'irchat-utf8))
 
 ;; Define hooks for each IRC message the server might send us.
 ;; The newer IRC servers use numeric reply codes instead of words.
@@ -742,17 +744,24 @@ One is for entering commands and text, the other displays the IRC dialogue."
 
 (defun irchat-w-insert (buffer string)
   (if (or (not buffer) (listp buffer))
-      (while buffer
-	(progn
-	  (irchat-w-insert (car buffer) string)
-	  (setq buffer (cdr buffer))))
+      (let ((string (if (null irchat-utf8-kludge-disable)
+			(irchat-utf8-kludge-decode-string string)
+		      string))
+	    (irchat-utf8-kludge-disable t))
+	(while buffer
+	  (progn
+	    (irchat-w-insert (car buffer) string)
+	    (setq buffer (cdr buffer)))))
     (let* ((obuf (current-buffer))
 	   (bufintern) 
 	   (nbuf (get-buffer buffer))
 	   (frozen)
 	   (spoint nil)
 	   (oldwstart nil)
-	   (oldwpoint nil))
+	   (oldwpoint nil)
+	   (string (if (null irchat-utf8-kludge-disable)
+		       (irchat-utf8-kludge-decode-string string)
+		     string)))
       ;;
       ;; Deleted or nonexistent buffers are (re)created.
       ;;
