@@ -1,13 +1,14 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-inlines.el,v 3.6 1997/03/13 23:40:07 tri Exp $
+;;;  $Id: irchat-inlines.el,v 3.7 2009/07/13 20:29:32 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
 ;;; these must be loaded in the file that requires this since this
 ;;; won't work otherwise.
 
-(eval-and-compile  (require 'irchat-globals)  (require 'irchat-vars))
+(eval-and-compile
+  (require 'irchat-vars))
 
 
 (defsubst matching-substring (string arg)

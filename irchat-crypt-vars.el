@@ -1,8 +1,11 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-crypt-vars.el,v 1.1 1998/11/04 10:54:33 tri Exp $
+;;;  $Id: irchat-crypt-vars.el,v 1.2 2009/07/13 20:29:32 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
+
+(eval-and-compile  
+  (require 'irchat-vars))
 
 (defconst irchat-crypt-support t
   "*Does current version support crypto?")
@@ -73,8 +76,8 @@
 (defvar irchat-C-buffer (list irchat-CRYPT-buffer)
   "*A list of buffers where messages that were not decrypted are sent.")
 
-(eval-and-compile (provide 'irchat-crypt-vars))
-
+(eval-and-compile
+  (provide 'irchat-crypt-vars))
 ;;;
 ;;; eof
 ;;;

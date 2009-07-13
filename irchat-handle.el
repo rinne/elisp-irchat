@@ -1,13 +1,14 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-handle.el,v 3.35 2009/07/13 18:06:49 tri Exp $
+;;;  $Id: irchat-handle.el,v 3.36 2009/07/13 20:29:32 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
 (eval-when-compile (require 'irchat-inlines))
+
 (eval-and-compile  
-  (require 'irchat-filter)
-  (require 'irchat-vars))
+  (require 'irchat-vars)
+  (require 'irchat-filter))
 
 (defun irchat-handle-error-msg (parsed-sender parsed-msg prefix rest)
   (message "IRC error: %s" rest))
@@ -691,6 +692,8 @@
 	result
       irchat-D-buffer)))
 
+(eval-and-compile  
+  (provide 'irchat-handle))
 ;;;
 ;;; eof
 ;;;

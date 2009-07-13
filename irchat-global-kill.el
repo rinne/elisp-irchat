@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-global-kill.el,v 1.5 1998/10/06 11:47:06 tri Exp $
+;;;  $Id: irchat-global-kill.el,v 1.6 2009/07/13 20:29:32 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 ;;;
@@ -11,6 +11,9 @@
 ;;;
 
 (eval-when-compile (require 'irchat-inlines))
+
+(eval-and-compile  
+  (require 'irchat-vars))
 
 ;(setq irchat-global-kill-valid-senders 
 ;      (list ("mypal@.*\\.hut.fi" . 600) ;; max 600 minutes from my pal
@@ -192,7 +195,8 @@
 
 (setq irchat-ctl-a-ignore-msg-hook (function irchat-ctl-a-ignore-msg-hook))
 
-(eval-and-compile (provide 'irchat-global-kill))
+(eval-and-compile
+  (provide 'irchat-global-kill))
 ;;;
 ;;; eof
 ;;;

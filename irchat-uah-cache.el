@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-uah-cache.el,v 1.8 1997/10/20 08:08:49 tri Exp $
+;;;  $Id: irchat-uah-cache.el,v 1.9 2009/07/13 20:29:32 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 ;;;
@@ -11,7 +11,11 @@
 ;;; Integrated to Irchat : Sun Oct 19          1997 tri
 ;;;
 
-(eval-when-compile (require 'irchat-inlines))
+(eval-when-compile
+  (require 'irchat-inlines))
+
+(eval-and-compile  
+  (require 'irchat-vars))
 
 (defconst irchat-nick-to-uah-vector-length 256
   "*Vector length")
@@ -95,7 +99,8 @@
 	  (list (format "%s@%s" usr dom) (format "%s@.*\\.%s" usr dom)))
       (list (regexp-quote uah)))))
 
-(eval-and-compile (provide 'irchat-uah-cache))
+(eval-and-compile
+  (provide 'irchat-uah-cache))
 ;;;
 ;;; eof
 ;;;

@@ -1,14 +1,14 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-copyright.el,v 3.5 2009/07/13 19:53:42 tri Exp $
+;;;  $Id: irchat-copyright.el,v 3.6 2009/07/13 20:29:32 tri Exp $
 ;;;
 (defvar irchat-copyright "
-    $Id: irchat-copyright.el,v 3.5 2009/07/13 19:53:42 tri Exp $
+    $Id: irchat-copyright.el,v 3.6 2009/07/13 20:29:32 tri Exp $
     Internet Relay CHAT interface for GNU Emacs
 
     Copyright © 1989 Tor Lillqvist <tml@iki.fi>
 
-    Copyright © 1990-2002 Irchat Developer Team    (see below)
+    Copyright © 1990-2003, 2005, 2009 Irchat Developer Team (see below)
  
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -42,22 +42,14 @@
 
     Current team is:
 	   Timo J. Rinne	<tri@iki.fi>
-	   Janne Liimatainen	<jsl@iki.fi>
-	   Tero T. Mononen     	<tmo@iki.fi>
-	   Kim Nyberg          	<kny@iki.fi>
-           Tomi Ollila          <too@iki.fi>
-	   Jukka Partanen      	<jtp@iki.fi>
 
     Bug reports and suggestions can be mailed to irchat-developers@cs.hut.fi.
 " "Basically GPL")
 
 ;;;
 ;;;  $Log: irchat-copyright.el,v $
-;;;  Revision 3.5  2009/07/13 19:53:42  tri
-;;;  	Removed obsolete MSN code.  It doesn't work anyways
-;;;  	with current MSN and it would be a massive work to
-;;;  	get that working again.  It would require SSL/TLS
-;;;  	and various XML utilities among other things.
+;;;  Revision 3.6  2009/07/13 20:29:32  tri
+;;;  	Cleaned up dependencies and stuff.
 ;;;
 ;;;  Revision 3.4  2002/06/04 16:03:06  tri
 ;;;  	Couple of bindings to msn stuff.

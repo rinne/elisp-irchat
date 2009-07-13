@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-dcc.el,v 3.5 1998/10/06 11:47:06 tri Exp $
+;;;  $Id: irchat-dcc.el,v 3.6 2009/07/13 20:29:32 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 ;;;
@@ -8,7 +8,11 @@
 ;;; Copyright 1994 Kim Nyberg <kny@tekla.fi>
 ;;; All Rights Reserved
 
-(eval-when-compile (require 'irchat-inlines))
+(eval-when-compile
+  (require 'irchat-inlines))
+
+(eval-and-compile  
+  (require 'irchat-vars))
 
 (defvar irchat-dcc-receive-list nil)
 (defvar irchat-dcc-receive-direct t)
@@ -32,7 +36,8 @@
 	(if irchat-dcc-receive-direct
 	    (progn 
 	      (irchat-w-insert irchat-D-buffer 
-			       (format "%sDCC autoreceive\n" irchat-info-prefix))
+			       (format "%sDCC autoreceive\n"
+				       irchat-info-prefix))
 	      (irchat-Command-dcc-receive))))))
 
 
@@ -136,7 +141,8 @@ same IP-address."
 	  domatch)
       (string-ci-equal h1 h2))))
       
-(eval-and-compile (provide 'irchat-dcc))
+(eval-and-compile
+  (provide 'irchat-dcc))
 ;;;
 ;;; eof
 ;;;

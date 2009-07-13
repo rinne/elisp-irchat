@@ -1,10 +1,14 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-filter.el,v 3.12 2002/06/09 16:43:51 tri Exp $
+;;;  $Id: irchat-filter.el,v 3.13 2009/07/13 20:29:32 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
-(eval-when-compile (require 'irchat-inlines))
+(eval-when-compile
+  (require 'irchat-inlines))
+
+(eval-and-compile  
+  (require 'irchat-vars))
 
 ;;;
 ;;;  These are defsubst just for speed, as it is expensive to call funtions at
@@ -187,7 +191,8 @@
 	(irchat))
     (message "IRCHAT: Connection closed.")))
 
-(eval-and-compile (provide 'irchat-filter))
+(eval-and-compile
+  (provide 'irchat-filter))
 ;;;
 ;;; eof
 ;;;

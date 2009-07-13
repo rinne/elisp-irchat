@@ -1,8 +1,14 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-timer.el,v 3.2 1998/05/26 10:35:00 tri Exp $
+;;;  $Id: irchat-timer.el,v 3.3 2009/07/13 20:29:32 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
+
+(eval-when-compile
+  (require 'irchat-inlines))
+
+(eval-and-compile  
+  (require 'irchat-vars))
 
 (defvar irchat-emacs-major-version 
   (string-to-number (substring emacs-version 0 2)))
@@ -44,6 +50,9 @@
 			 interval
 			 '(lambda (f)
 			    (run-at-time "1 sec" nil f)) func))))))
+
+(eval-and-compile  
+  (provide 'irchat-timer))
 ;;;
 ;;; eof
 ;;;

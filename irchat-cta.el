@@ -1,10 +1,14 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-cta.el,v 3.10 1998/06/25 07:35:19 jtp Exp $
+;;;  $Id: irchat-cta.el,v 3.11 2009/07/13 20:29:32 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
-(eval-when-compile (require 'irchat-inlines))
+(eval-when-compile
+  (require 'irchat-inlines))
+
+(eval-and-compile  
+  (require 'irchat-vars))
 
 ;;;
 ;;; decode and encode of binary data
@@ -455,6 +459,9 @@
       from
       (+ (* 65536 (- (car timenow) (car irchat-ctcp-ping-time)))
 	 (- (car (cdr timenow)) (car (cdr irchat-ctcp-ping-time))))))))
+
+(eval-and-compile  
+  (provide 'irchat-cta))
 ;;;
 ;;; eof
 ;;;

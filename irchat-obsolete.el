@@ -1,10 +1,14 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-obsolete.el,v 1.4 1997/10/20 05:57:17 tri Exp $
+;;;  $Id: irchat-obsolete.el,v 1.5 2009/07/13 20:29:32 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
-(eval-when-compile (require 'irchat-inlines))
+(eval-when-compile
+  (require 'irchat-inlines))
+
+(eval-and-compile  
+  (require 'irchat-vars))
 
 ;;;
 ;;;  Ignores
@@ -115,7 +119,8 @@
     (irchat-Command-global-ignore nickname timeout reason)
     (message msg)))
 
-(eval-and-compile (provide 'irchat-obsolete))
+(eval-and-compile
+  (provide 'irchat-obsolete))
 ;;;
 ;;; eof
 ;;;

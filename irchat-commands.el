@@ -1,12 +1,13 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-commands.el,v 3.40 2002/06/04 15:12:51 tri Exp $
+;;;  $Id: irchat-commands.el,v 3.41 2009/07/13 20:29:32 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
 (eval-when-compile (require 'irchat-inlines))
 (eval-and-compile  
 ;  (require 'irchat-crypt)
+  (require 'irchat-vars)
   (require 'irchat-dcc)
   (require 'irchat-caesar))
 
@@ -1692,8 +1693,8 @@ mode, the current channel and current chat partner are not altered)"
 	    (select-window sw)))))
   (irchat-w-insert irchat-D-buffer "")) ;; recenter if needed
 
-(eval-and-compile (provide 'irchat-commands))
-
+(eval-and-compile
+  (provide 'irchat-commands))
 ;;;
 ;;;  eof
 ;;;

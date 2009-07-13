@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-random.el,v 1.2 1998/06/24 23:08:31 tri Exp $
+;;;  $Id: irchat-random.el,v 1.3 2009/07/13 20:29:32 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 ;;;
@@ -90,7 +90,8 @@
 	(x3 (irchat-random-8)))
     (+ x1 (* x2 256) (* x3 65536))))
 
-(eval-and-compile (provide 'irchat-random))
+(eval-and-compile
+  (provide 'irchat-random))
 ;;;
 ;;; eof (irchat-random.el)
 ;;;

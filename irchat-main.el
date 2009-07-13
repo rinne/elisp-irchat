@@ -1,13 +1,15 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-main.el,v 3.47 2009/07/13 19:53:42 tri Exp $
+;;;  $Id: irchat-main.el,v 3.48 2009/07/13 20:29:32 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
-(eval-when-compile (require 'irchat-inlines))
+(eval-when-compile
+  (require 'irchat-inlines))
+
 (eval-and-compile  
-  (require 'irchat-filter)
   (require 'irchat-vars)
+  (require 'irchat-filter)
   (require 'irchat-utf8))
 
 ;; Define hooks for each IRC message the server might send us.
@@ -950,7 +952,8 @@ One is for entering commands and text, the other displays the IRC dialogue."
     )
   )
 
-(eval-and-compile (provide 'irchat))
+(eval-and-compile
+  (provide 'irchat))
 ;;;
 ;;; eof
 ;;;

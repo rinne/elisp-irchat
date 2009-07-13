@@ -1,13 +1,11 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-caesar.el,v 3.3 1998/08/08 14:56:08 tri Exp $
+;;;  $Id: irchat-caesar.el,v 3.4 2009/07/13 20:29:32 tri Exp $
 ;;;
 ;;; caesar-region written by phr@prep.ai.mit.edu  Nov 86
 ;;; Modified by tower@prep Nov 86
 ;;; Modified by umerin@flab.flab.Fujitsu.JUNET for ROT47.
 ;;; Modified by tri@iki.fi for irchat (japanese is now optional)
-
-(eval-and-compile (provide 'irchat-caesar))
 
 (defun irchat-caesar-string (str &optional n copy japanese)
   "Caesar rotation of STRING by N, default 13, for decrypting netnews.
@@ -86,6 +84,8 @@ ROT47 will be performed for Japanese text in any case."
     (delete-region from to)
     (insert str)))
   
+(eval-and-compile
+  (provide 'irchat-caesar))
 ;;;
 ;;; eof
 ;;;

@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-time.el,v 3.1 2002/06/04 15:12:51 tri Exp $
+;;;  $Id: irchat-time.el,v 3.2 2009/07/13 20:29:32 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -92,6 +92,8 @@
 	(list 0 0 0)
       (append n '(0)))))
 
+(eval-and-compile
+  (provide 'irchat-time))
 ;;;
-;;; eof
+;;; eof (irchat-time.el)
 ;;;
