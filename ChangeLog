@@ -1,6 +1,16 @@
+Mon Jul 13 19:00:00 2009  Timo J. Rinne  <tri@iki.fi>
+
+	* Removed MSN stuff.  It doesn't work with current MSN
+	  anyways.  To make it work, much work (e.g. SSL) would
+	  be needed and it's really not worth it.
+
 Mon Jul 13 18:07:17 2009  IRCHAT Distribution Generator <irchat@rinne.iki.fi>
 
 	* Generated release irchat-20090713.
+
+Mon Jul 13 17:00:00 2009  Timo J. Rinne  <tri@iki.fi>
+
+	* Added opportunistic UTF-8 decoding.
 
 Fri Sep 23 16:08:03 2005  IRCHAT Distribution Generator <irchat@rinne.iki.fi>
 

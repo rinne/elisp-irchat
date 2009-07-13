@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-main.el,v 3.46 2009/07/13 18:06:49 tri Exp $
+;;;  $Id: irchat-main.el,v 3.47 2009/07/13 19:53:42 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -60,11 +60,8 @@ carried out.")))))
   '(("v" 	irchat-Command-client-version)
     ("u" 	irchat-Command-client-userinfo)
     ("h" 	irchat-Command-client-help)
-    ("b"        irchat-Command-msn-list-online)
-    ("B"        irchat-Command-msn-list-lists)
     ("\C-b"     irchat-Command-show-online)
     ("c" 	irchat-Command-client-clientinfo)
-    ("d"        irchat-Command-msn-list-discussions)
     ("g" 	irchat-Command-client-generic)
     ("p" 	irchat-Command-client-ping)
     ("x" 	irchat-Command-client-x-face)
@@ -83,12 +80,9 @@ carried out.")))))
     (">" 	end-of-buffer)
     ("<" 	beginning-of-buffer)
     ("a" 	irchat-Command-away)
-    ("b"	irchat-Command-msn-send)
-    ("B"	irchat-Command-msn-set-status)
     ("f" 	irchat-Dialogue-freeze)
     ("M" 	irchat-Dialogue-ownfreeze)
     ("i" 	irchat-Command-invite)
-    ("I" 	irchat-Command-msn-invite)
     ("j" 	irchat-Command-join)
     ("l" 	irchat-Command-load-vars)
     ("s" 	irchat-Command-save-vars)
@@ -150,14 +144,11 @@ carried out.")))))
     ("\C-c!" 	irchat-Command-exec)
     ("\C-c2" 	irchat-Command-private-conversation)
     ("\C-ca" 	irchat-Command-away)
-    ("\C-cb"	irchat-Command-msn-send)
-    ("\C-cB"	irchat-Command-msn-set-status)
     ("\C-cc" 	irchat-Command-inline)
     ("\C-cf" 	irchat-Command-finger)
     ("\C-c\C-f" irchat-Command-freeze)
     ("\C-cM"	irchat-Command-ownfreeze)
     ("\C-ci" 	irchat-Command-invite)
-    ("\C-cI" 	irchat-Command-msn-invite)
     ("\C-cj" 	irchat-Command-join)
     ("\C-c\C-p" irchat-Command-part)
     ("\C-ck" 	irchat-Command-ignore)
@@ -172,7 +163,6 @@ carried out.")))))
     ("\C-cn" 	irchat-Command-nickname)
     ("\C-cp" 	irchat-Command-mta-private)
     ("\C-cq" 	irchat-Command-quit)
-    ("\C-cQ" 	irchat-Command-msn-quit)
     ("\C-cr" 	irchat-Command-reconfigure-windows)
     ("\C-ct" 	irchat-Command-topic)
     ("\C-cT" 	irchat-Command-timestamp)
@@ -422,28 +412,19 @@ If already connected, just pop up the windows."
 	(run-hooks 'irchat-Startup-hook)
 
 	(if (not irchat-timers-list-initialized-p)
-	    (progn
-	      (setq irchat-timers   
-		    (append irchat-timers
-			    (list
-			     ;(list nil (function irchat-Command-timestamp)
-			     ;      irchat-timestamp-interval)
-			     (list nil (function irchat-Command-pollnames) 
-				   irchat-pollnames-interval)
-			     (list nil (function irchat-Command-keepalive)
-				   irchat-keepalive-interval)
-			     ;(list nil (function irchat-check-buffers)
-			     ;     irchat-checkbuffer-interval)
-			     ))
-		    irchat-timers-list-initialized-p t)
-	      (if (and (fboundp 'irchat-Command-msn-ping-server)
-		       (boundp 'irchat-msn-server-ping-interval)
-		       (> irchat-msn-server-ping-interval 0))
-		  (setq irchat-timers   
-			(append irchat-timers
-				(list
-				 (list nil (function irchat-Command-msn-ping-server)
-				       irchat-msn-server-ping-interval)))))))
+	    (setq irchat-timers   
+		  (append irchat-timers
+			  (list
+			   ;(list nil (function irchat-Command-timestamp)
+			   ;      irchat-timestamp-interval)
+			   (list nil (function irchat-Command-pollnames) 
+				 irchat-pollnames-interval)
+			   (list nil (function irchat-Command-keepalive)
+				 irchat-keepalive-interval)
+			   ;(list nil (function irchat-check-buffers)
+			   ;     irchat-checkbuffer-interval)
+			   ))
+		    irchat-timers-list-initialized-p t))
 	(setq
 	 irchat-obarray (make-vector irchat-obarray-size nil)
 	 irchat-timers
@@ -524,7 +505,6 @@ Instead, these commands are available:
 	  irchat-crypt-indicator
 	  irchat-freeze-indicator
 	  irchat-ownfreeze-indicator 
-	  irchat-msn-indicator
 	  "-" (-3 . "%p") "-%-"))
 
   (use-local-map irchat-Dialogue-mode-map)
@@ -803,10 +783,6 @@ One is for entering commands and text, the other displays the IRC dialogue."
 		       (irchat-Dialogue-buffer-p (current-buffer)))
 		  (beep t))
 	      (insert string)
-	      (if (and (irchat-Dialogue-buffer-p buffer)
-		       irchat-msn-partner
-		       (not (string-equal string "")))
-		  (irchat-Command-msn-send irchat-msn-partner string))
 	      (if (and irchat-use-smiley (fboundp 'smiley-region))
 		  (smiley-region spoint (point-max)))))
 	(goto-char spoint)

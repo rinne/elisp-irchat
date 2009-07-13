@@ -1,9 +1,9 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-copyright.el,v 3.4 2002/06/04 16:03:06 tri Exp $
+;;;  $Id: irchat-copyright.el,v 3.5 2009/07/13 19:53:42 tri Exp $
 ;;;
 (defvar irchat-copyright "
-    $Id: irchat-copyright.el,v 3.4 2002/06/04 16:03:06 tri Exp $
+    $Id: irchat-copyright.el,v 3.5 2009/07/13 19:53:42 tri Exp $
     Internet Relay CHAT interface for GNU Emacs
 
     Copyright © 1989 Tor Lillqvist <tml@iki.fi>
@@ -48,13 +48,17 @@
            Tomi Ollila          <too@iki.fi>
 	   Jukka Partanen      	<jtp@iki.fi>
 
-    MSN Messenger protocol implementation by Timo J. Rinne <tri@iki.fi>.
-
     Bug reports and suggestions can be mailed to irchat-developers@cs.hut.fi.
 " "Basically GPL")
 
 ;;;
 ;;;  $Log: irchat-copyright.el,v $
+;;;  Revision 3.5  2009/07/13 19:53:42  tri
+;;;  	Removed obsolete MSN code.  It doesn't work anyways
+;;;  	with current MSN and it would be a massive work to
+;;;  	get that working again.  It would require SSL/TLS
+;;;  	and various XML utilities among other things.
+;;;
 ;;;  Revision 3.4  2002/06/04 16:03:06  tri
 ;;;  	Couple of bindings to msn stuff.
 ;;;  	Acknowledged MSNM code in the copyright notice.
