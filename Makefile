@@ -2,7 +2,7 @@
 #
 # Makefile for irchat
 #
-# $Id: Makefile,v 3.22 2009/07/13 22:32:13 tri Exp $
+# $Id: Makefile,v 3.23 2009/07/13 23:50:03 tri Exp $
 #
 
 #
@@ -31,15 +31,21 @@ CRYPTO_OBJS =			\
 	irchat-crypt.elc	\
 	irchat-random.elc
 
-NO_CRYPTO_OBJS =		\
-	irchat-no-crypt.elc
+#CRYPTO_OBJS =		\
+#	irchat-no-crypt.elc
+
+UTF8_TABLE_OBJS =		\
+	irchat-utf8-table.elc
+
+#UTF8_TABLE_OBJS =		\
+#	irchat-utf8-table-small.elc
 
 XOBJS 	=                       \
 	irchat-globals.elc	\
 	irchat-vars.elc		\
 	irchat-inlines.elc	\
 	irchat-filter.elc	\
-	irchat-utf8-table.elc	\
+	$(UTF8_TABLE_OBJS)	\
 	irchat-utf8.elc		\
 	irchat-dcc.elc		\
 	irchat-caesar.elc	\

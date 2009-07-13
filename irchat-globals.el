@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-globals.el,v 3.10 2009/07/13 20:29:32 tri Exp $
+;;;  $Id: irchat-globals.el,v 3.11 2009/07/13 23:50:03 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -26,7 +26,7 @@
 
 (defun irchat-get-buffer-window (buffer)
   "Getting the window for a buffer"
-  (if (> irchat-emacs-version 18)
+  (if (> irchat-emacs-version-major 18)
       (get-buffer-window buffer t)
     (get-buffer-window buffer)))
 
