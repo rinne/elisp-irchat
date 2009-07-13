@@ -2,7 +2,7 @@
 #
 # Makefile for irchat
 #
-# $Id: Makefile,v 3.21 2009/07/13 19:53:42 tri Exp $
+# $Id: Makefile,v 3.22 2009/07/13 22:32:13 tri Exp $
 #
 
 #
@@ -39,6 +39,7 @@ XOBJS 	=                       \
 	irchat-vars.elc		\
 	irchat-inlines.elc	\
 	irchat-filter.elc	\
+	irchat-utf8-table.elc	\
 	irchat-utf8.elc		\
 	irchat-dcc.elc		\
 	irchat-caesar.elc	\
