@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-utf8.el,v 3.3 2009/07/13 22:32:13 tri Exp $
+;;;  $Id: irchat-utf8.el,v 3.4 2009/07/13 22:58:09 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -16,7 +16,7 @@
   (if (and (stringp str)
 	   (>= n 0)
 	   (> (length str) n))
-      (+ 0 (elt str n))
+      (% (+ 0 (elt str n)) 256)
     nil))
 
 (defun irchat-utf8-kludge-decode (str)
