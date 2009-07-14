@@ -1,13 +1,12 @@
-#!/usr/local/bin/perl
-#!/usr/bin/perl
-#!/usr/bin/perl -w
+#! /usr/bin/env perl
+#
 # -*- perl -*-
-# $Id: dcc.perl,v 1.2 1997/02/21 14:56:07 too Exp $
+# $Id: dcc.perl,v 1.3 2009/07/14 16:30:36 tri Exp $
 #
 # see file irchat-copyright.el for change log and copyright info
 #
 # Created: Mon May  8 12:33:04 1995 too
-# Last modified: Fri Feb 21 16:49:36 1997 too
+# Last modified: Tue Jul 14 19:26:37 2009 tri
 #
 
 $AF_INET = 2;
