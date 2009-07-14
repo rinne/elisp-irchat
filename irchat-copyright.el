@@ -1,9 +1,9 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-copyright.el,v 3.6 2009/07/13 20:29:32 tri Exp $
+;;;  $Id: irchat-copyright.el,v 3.7 2009/07/14 16:25:26 tri Exp $
 ;;;
 (defvar irchat-copyright "
-    $Id: irchat-copyright.el,v 3.6 2009/07/13 20:29:32 tri Exp $
+    $Id: irchat-copyright.el,v 3.7 2009/07/14 16:25:26 tri Exp $
     Internet Relay CHAT interface for GNU Emacs
 
     Copyright © 1989 Tor Lillqvist <tml@iki.fi>
@@ -38,7 +38,7 @@
 	   Jukka Partanen      	<jtp@iki.fi>
 	   Timo J. Rinne	<tri@iki.fi>
 
-    You can ftp the latest version from cs.hut.fi:/pub/irchat
+    You can get the latest version from http://www.iki.fi/tri/irchat/
 
     Current team is:
 	   Timo J. Rinne	<tri@iki.fi>
@@ -48,6 +48,9 @@
 
 ;;;
 ;;;  $Log: irchat-copyright.el,v $
+;;;  Revision 3.7  2009/07/14 16:25:26  tri
+;;;  	Updated download address.
+;;;
 ;;;  Revision 3.6  2009/07/13 20:29:32  tri
 ;;;  	Cleaned up dependencies and stuff.
 ;;;
