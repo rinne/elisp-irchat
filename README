@@ -26,3 +26,28 @@ directory that is in your PATH environment variable.
 - Version 3.0 and higher supports IDEA encryption.
 
 - Version 4.0 and higher supports MSN Messenger protocol.
+
+- Version 5.0 and higher supports UTF-8 from the network and
+  has abolished MSN Messenger protocol.
+
+------------------------------------------------------------------
+
+To build your own irchat.elc
+
+$ make gnuemacs
+Makes full version for GNU Emacs
+
+$ make gnuemacs-nocrypto 
+Makes version for GNU Emacs without crypto
+
+$ make gnuemacs-nocrypto-smallutf
+Makes version for GNU Emacs with smaller UNICODE tables and no crypto
+
+$ make xemacs
+Makes full version for XEmacs
+
+$ make xemacs-nocrypto 
+Makes version for XEmacs without crypto
+
+$ make xemacs-nocrypto-smallutf
+Makes version for XEmacs with smaller UNICODE tables and no crypto
