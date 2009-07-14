@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-utf8.el,v 3.6 2009/07/14 00:37:02 tri Exp $
+;;;  $Id: irchat-utf8.el,v 3.7 2009/07/14 01:12:47 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -16,10 +16,19 @@
   (if (and (stringp str)
 	   (>= n 0)
 	   (> (length str) n))
-      (% (+ 0 (elt str n)) 256)
+      ; For reason that escapes from me, gnu emacs 22 seems to do
+      ; weird things for latin-1 characters in strings.  Function
+      ; elt returns those codes 128-255 to be in range 2176-2303
+      ; (i.e. 0x8## instead of 0x##).  This page in UTF-8 is unused
+      ; but reserved, so let's just handle those specially.  This
+      ; will certainly break big time if page 8 is sometime used.
+      (let ((c (+ 0 (elt str n))))
+	(if (and (>= c 2176) (<= c 2303))
+	    (% c 256)
+	  c))
     nil))
 
-(defun irchat-utf8-kludge-decode (str)
+(defun irchat-utf8-kludge-decode-first (str)
   "Decode the first character from STR as utf-8 if possible and return
 as (code . rest) pair containing the character code of the first
 character and the rest of the string"
@@ -92,11 +101,11 @@ character and the rest of the string"
 	  (t
 	   (format "[U+%04x]" ch)))))
 
-(defun irchat-utf8-kludge-decode-string (str)
+(defun irchat-utf8-kludge-decode (str)
   "Decode STR as utf-8 opportunisticly."
   (let ((r "")
 	(e nil))
-    (while (setq e (irchat-utf8-kludge-decode str))
+    (while (setq e (irchat-utf8-kludge-decode-first str))
 	(setq r (concat r (irchat-utf8-kludge-visible-char (car e))))
 	(setq str (cdr e)))
     r))

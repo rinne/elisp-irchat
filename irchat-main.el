@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-main.el,v 3.48 2009/07/13 20:29:32 tri Exp $
+;;;  $Id: irchat-main.el,v 3.49 2009/07/14 01:12:47 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -727,7 +727,7 @@ One is for entering commands and text, the other displays the IRC dialogue."
 (defun irchat-w-insert (buffer string)
   (if (or (not buffer) (listp buffer))
       (let ((string (if (null irchat-utf8-kludge-disable)
-			(irchat-utf8-kludge-decode-string string)
+			(irchat-utf8-kludge-decode string)
 		      string))
 	    (irchat-utf8-kludge-disable t))
 	(while buffer
@@ -742,7 +742,7 @@ One is for entering commands and text, the other displays the IRC dialogue."
 	   (oldwstart nil)
 	   (oldwpoint nil)
 	   (string (if (null irchat-utf8-kludge-disable)
-		       (irchat-utf8-kludge-decode-string string)
+		       (irchat-utf8-kludge-decode string)
 		     string)))
       ;;
       ;; Deleted or nonexistent buffers are (re)created.
