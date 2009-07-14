@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-utf8.el,v 3.8 2009/07/14 14:59:25 tri Exp $
+;;;  $Id: irchat-utf8.el,v 3.9 2009/07/14 20:03:40 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -13,7 +13,8 @@
 
 (defun irchat-utf8-kludge-nth-char (str n)
   "Get Nth character from STR as integer or nil if not in range."
-  (if (and (stringp str)
+  (if (and (or (stringp str)
+	       (vectorp str))
 	   (>= n 0)
 	   (> (length str) n))
       ; For reason that escapes from me, gnu emacs 22 seems to do
@@ -22,10 +23,14 @@
       ; (i.e. 0x8## instead of 0x##).  This page in UTF-8 is unused
       ; but reserved, so let's just handle those specially.  This
       ; will certainly break big time if page 8 is sometime used.
-      (let ((c (+ 0 (elt str n))))
-	(if (and (>= c 2176) (<= c 2303))
-	    (% c 256)
-	  c))
+      (let ((c (elt str n)))
+	(if (or (numberp c)
+		(and (fboundp 'characterp) (characterp c)))
+	    (let ((c (+ 0 c)))
+	      (if (and (>= c 2176) (<= c 2303))
+		  (% c 256)
+		c))
+	  nil))
     nil))
 
 (defun irchat-utf8-kludge-decode-first (str)
@@ -88,7 +93,7 @@ character and the rest of the string"
 	  ((< ch 256)
 	   (char-to-string ch))
 	  ((setq x (irchat-utf8-kludge-code-range ch))
-	   (format "[U+%04x '%s']" ch x))
+	   (format "[U+%04x %s]" ch x))
 	  (t
 	   (format "[U+%04x]" ch)))))
 
@@ -99,6 +104,42 @@ character and the rest of the string"
     (while (setq e (irchat-utf8-kludge-decode-first str))
 	(setq r (concat r (irchat-utf8-kludge-visible-char (car e))))
 	(setq str (cdr e)))
+    r))
+
+(defun irchat-utf8-kludge-encode-char (c)
+  "Encode character value C to utf-8 string."
+  (cond ((and (>= c 0) (<= c 127))
+	 (string c))
+	((and (>= c 128) (<= c 2047))
+	 (string (+ 192 (% (/ c 64) 32))
+		 (+ 128 (% c 64))))
+	((and (>= c 2048) (<= c 65565))
+	 (string (+ 224 (% (/ c (* 64 64)) 16))
+		 (+ 128 (% (/ c 64) 64))
+		 (+ 128 (% c 64))))
+	((and (>= c 65566) (<= c 1114111))
+	 (string (+ 240 (% (/ c (* 64 64 64)) 8))
+		 (+ 128 (% (/ c (* 64 64)) 64))
+		 (+ 128 (% (/ c 64) 64))
+		 (+ 128 (% c 64))))
+	(t nil)))
+
+(defun irchat-utf8-kludge-encode (str)
+  "Encode a STR which can be either a string or vector of numbers to UTF-8."
+  (let ((r "")
+	(i 0)
+	(len (length str)))
+    (while (< i len)
+      (let ((c (irchat-utf8-kludge-nth-char str i)))
+	(if (not (null c))
+	    (let ((x (irchat-utf8-kludge-encode-char c)))
+	      (if (not (null x))
+		  (setq r (concat r x)
+			i (+ i 1))
+		(setq r nil
+		      i len)))
+	  (setq r nil
+		i len))))
     r))
 
 (defun irchat-utf8-kludge-code-range (n)
