@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-utf8.el,v 3.9 2009/07/14 20:03:40 tri Exp $
+;;;  $Id: irchat-utf8.el,v 3.10 2009/07/15 16:45:00 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -140,6 +140,32 @@ character and the rest of the string"
 		      i len)))
 	  (setq r nil
 		i len))))
+    r))
+
+(defun irchat-utf8-kludge-encode-extended (str)
+  "Encode a STR which can be either a string or vector of numbers to UTF-8. Extended characters presented as [U+#] where # is a hexadecimal number are also converted to their corresponding UTF-8 encoding."
+  (let ((r ""))
+    (while (> (length str) 0)
+      (let ((c) (len))
+	(if (and (stringp str)
+		 (string-match
+		  "^\\(\\[U\\+\\([0-9a-fA-F][0-9a-fA-F]*\\)\\]\\)"
+		  str))
+	    (let ((s1 (matching-substring str 1))
+		  (s2 (matching-substring str 2)))
+	      (setq c (hex-to-int s2)
+		    len (length s1)))
+	  (setq c (irchat-utf8-kludge-nth-char str 0)
+		len 1))
+	(if (not (null c))
+	    (let ((x (irchat-utf8-kludge-encode-char c)))
+	      (if (not (null x))
+		  (setq str (substring str len)
+			r (concat r x))
+		(setq str ""
+		      r nil)))
+	  (setq str ""
+		r nil))))
     r))
 
 (defun irchat-utf8-kludge-code-range (n)
