@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-commands.el,v 3.41 2009/07/13 20:29:32 tri Exp $
+;;;  $Id: irchat-commands.el,v 3.42 2009/07/15 23:48:15 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -9,6 +9,7 @@
 ;  (require 'irchat-crypt)
   (require 'irchat-vars)
   (require 'irchat-dcc)
+  (require 'irchat-utf8)
   (require 'irchat-caesar))
 
 (defun irchat-Command-describe-briefly ()
@@ -223,7 +224,7 @@
 	nil))))
 
 
-(defun irchat-enter-message (crypt-type &optional key)
+(defun irchat-enter-message (crypt-type &optional key utf8-encode)
   "Enter the current line as an entry in the IRC dialogue on the
 current channel."
   (interactive)
@@ -232,6 +233,8 @@ current channel."
     (setq start (point))
     (end-of-line)
     (setq message (buffer-substring start (point)))
+    (if (not (null utf8-encode))
+	(setq message (irchat-utf8-kludge-encode-extended message)))
     (if (and irchat-confirm-bell-on-channel-message
 	     (stringp irchat-current-channel)
 	     (string-match "^#" irchat-current-channel)
@@ -247,36 +250,30 @@ current channel."
 
 (defun irchat-Command-enter-message ()
   (interactive)
-  (irchat-enter-message nil))
+  (irchat-enter-message nil nil nil))
 
+(defun irchat-Command-enter-message-utf8 ()
+  (interactive)
+  (irchat-enter-message nil nil t))
 
 (defun irchat-Command-enter-message-encrypted ()
   (interactive)
   (let ((irchat-crypt-mode-active t))
-    (irchat-enter-message 'encrypted)))
-
+    (irchat-enter-message 'encrypted nil nil)))
 
 (defun irchat-Command-enter-message-cleartext ()
   (interactive)
-  (irchat-enter-message 'cleartext))
-
+  (irchat-enter-message 'cleartext nil nil))
 
 (defun irchat-Command-enter-message-opposite-crypt-mode ()
   (interactive)
   (let ((irchat-crypt-mode-active (not irchat-crypt-mode-active)))
-    (irchat-enter-message nil)))
+    (irchat-enter-message nil nil nil)))
 
-(defun irchat-Command-enter-message-with-key (&optional encryption-key)
-  (interactive (let ((encryption-key nil)
-		     (completion-ignore-case t))
-		 (setq encryption-key
-		       (completing-read "Encrypt message with key [RET for none]: "
-					(cons (cons "" nil)
-					      irchat-default-idea-key-list)))
-		 (list encryption-key)))
-  (if (> (length encryption-key) 0)
-      (irchat-enter-message 'user-defined-key encryption-key)
-    (irchat-enter-message 'cleartext)))
+(defun irchat-Command-enter-message-utf8-opposite-crypt-mode ()
+  (interactive)
+  (let ((irchat-crypt-mode-active (not irchat-crypt-mode-active)))
+    (irchat-enter-message nil nil t)))
 
 (defun irchat-Dialogue-enter-message ()
   "Ask for a line as an entry in the IRC dialogue on the current channel."

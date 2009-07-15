@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-main.el,v 3.49 2009/07/14 01:12:47 tri Exp $
+;;;  $Id: irchat-main.el,v 3.50 2009/07/15 23:48:15 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -129,9 +129,9 @@ carried out.")))))
     ("\C-cs" 	irchat-Command-dcc-send)
     ("\C-cG" 	irchat-Command-dcc-list)
     ("\C-m"  	irchat-Command-enter-message)
-    ("\C-j"  	irchat-Command-enter-message)
+    ("\C-j"  	irchat-Command-enter-message-utf8)
     ("\M-\C-m" 	irchat-Command-enter-message-opposite-crypt-mode)
-    ("\M-\C-j" 	irchat-Command-enter-message-opposite-crypt-mode)
+    ("\M-\C-j" 	irchat-Command-enter-message-utf8-opposite-crypt-mode)
     ("\C-cF" 	irchat-Command-send-file)
     ("\C-c\C-c" irchat-Client-query-prefix)
     ("\C-c\C-d" irchat-Command-debug)
