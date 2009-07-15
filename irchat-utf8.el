@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-utf8.el,v 3.10 2009/07/15 16:45:00 tri Exp $
+;;;  $Id: irchat-utf8.el,v 3.11 2009/07/15 23:47:23 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -28,7 +28,7 @@
 		(and (fboundp 'characterp) (characterp c)))
 	    (let ((c (+ 0 c)))
 	      (if (and (>= c 2176) (<= c 2303))
-		  (% c 256)
+		  (logand c 255)
 		c))
 	  nil))
     nil))
@@ -52,8 +52,8 @@ character and the rest of the string"
 	  ((and (not (null b1)) (>= b1 192) (<= b1 223)
 		(not (null b2)) (>= b2 128) (<= b2 191))
 	   ; This is 2 byte UTF-8 character if in range 0x80-0x7ff
-	   (let ((v (+ (* 64 (- b1 192))
-		       (- b2 128))))
+	   (let ((v (logior (lsh (logand b1 (lognot 192)) 6)
+			    (logand b2 (lognot 128)))))
 	     (if (and (>= v 128) (<= v 2047))
 		 (cons v (substring str 2))
 	       (cons b1 (substring str 1)))))
@@ -61,9 +61,9 @@ character and the rest of the string"
 		(not (null b2)) (>= b2 128) (<= b2 191)
 		(not (null b3)) (>= b3 128) (<= b3 191))
 	   ; This is 3 byte UTF-8 character if in range 0x800-0xffff
-	   (let ((v (+ (* 64 64 (- b1 224))
-		       (* 64 (- b2 128))
-		       (- b3 128))))
+	   (let ((v (logior (lsh (logand b1 (lognot 224)) 12)
+			    (lsh (logand b2 (lognot 128)) 6)
+			    (logand b3 (lognot 128)))))
 	     (if (and (>= v 2048) (<= v 65565))
 		 (cons v (substring str 3))
 	       (cons b1 (substring str 1)))))
@@ -72,10 +72,10 @@ character and the rest of the string"
 		(not (null b3)) (>= b3 128) (<= b3 191)
 		(not (null b4)) (>= b4 128) (<= b4 191))
 	   ; This is 4 byte UTF-8 character if in range 0x10000-0x10ffff
-	   (let ((v (+ (* 64 64 64 (- b1 240))
-		       (* 64 64 (- b2 128))
-		       (* 64 (- b3 128))
-		       (- b4 128))))
+	   (let ((v (logior (lsh (logand b1 (lognot 240)) 18)
+			    (lsh (logand b2 (lognot 128)) 12)
+			    (lsh (logand b3 (lognot 128)) 6)
+			    (logand b4 (lognot 128)))))
 	     (if (and (>= v 65566) (<= v 1114111))
 		 (cons v (substring str 4))
 	       (cons b1 (substring str 1)))))
@@ -111,17 +111,17 @@ character and the rest of the string"
   (cond ((and (>= c 0) (<= c 127))
 	 (string c))
 	((and (>= c 128) (<= c 2047))
-	 (string (+ 192 (% (/ c 64) 32))
-		 (+ 128 (% c 64))))
+	 (string (logior 192 (logand (lsh c -6) 31))
+		 (logior 128 (logand c 63))))
 	((and (>= c 2048) (<= c 65565))
-	 (string (+ 224 (% (/ c (* 64 64)) 16))
-		 (+ 128 (% (/ c 64) 64))
-		 (+ 128 (% c 64))))
+	 (string (logior 224 (logand (lsh c -12) 15))
+		 (logior 128 (logand (lsh c -6) 63))
+		 (logior 128 (logand c 63))))
 	((and (>= c 65566) (<= c 1114111))
-	 (string (+ 240 (% (/ c (* 64 64 64)) 8))
-		 (+ 128 (% (/ c (* 64 64)) 64))
-		 (+ 128 (% (/ c 64) 64))
-		 (+ 128 (% c 64))))
+	 (string (logior 240 (logand (lsh c -18) 7))
+		 (logior 128 (logand (lsh c -12) 63))
+		 (logior 128 (logand (lsh c -6) 63))
+		 (logior 128 (logand c 63))))
 	(t nil)))
 
 (defun irchat-utf8-kludge-encode (str)
