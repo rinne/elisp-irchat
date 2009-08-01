@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-utf8.el,v 3.12 2009/08/01 00:42:18 tri Exp $
+;;;  $Id: irchat-utf8.el,v 3.13 2009/08/01 13:08:44 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -174,11 +174,12 @@ character and the rest of the string"
 	(if (and (null x)
 		 (stringp str)
 		 (string-match
-		  "^\\[\\([^\]][^\]]*\\)\\]"
+		  "^\\(\\[\\([^\]][^\]]*\\)\\]\\)"
 		  str))
-	    (let ((s1 (matching-substring str 1)))
+	    (let ((s1 (matching-substring str 1))
+		  (s2 (matching-substring str 2)))
 	      (setq len (length s1))
-	      (setq c (irchat-utf8-kludge-get-char-with-symbolic-name s1))
+	      (setq c (irchat-utf8-kludge-get-char-with-symbolic-name s2))
 	      (if (not (null c))
 		  (setq x (irchat-utf8-kludge-encode-char c)))))
 	(if (null x)
