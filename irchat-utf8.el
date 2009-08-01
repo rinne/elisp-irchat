@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-utf8.el,v 3.11 2009/07/15 23:47:23 tri Exp $
+;;;  $Id: irchat-utf8.el,v 3.12 2009/08/01 00:42:18 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -10,6 +10,18 @@
 
 (eval-and-compile
   (require 'irchat-utf8-table))
+
+(defconst irchat-utf8-kludge-max-unicode-val 1114111)
+
+(defun irchat-utf8-kludge-get-char-with-symbolic-name (str)
+  (let ((lst irchat-utf8-kludge-table)
+	(r nil))
+    (while lst
+      (if (string= str (car (cdr (car lst))))
+	  (setq r (car (car lst))
+		lst nil)
+	(setq lst (cdr lst))))
+    r))
 
 (defun irchat-utf8-kludge-nth-char (str n)
   "Get Nth character from STR as integer or nil if not in range."
@@ -76,7 +88,7 @@ character and the rest of the string"
 			    (lsh (logand b2 (lognot 128)) 12)
 			    (lsh (logand b3 (lognot 128)) 6)
 			    (logand b4 (lognot 128)))))
-	     (if (and (>= v 65566) (<= v 1114111))
+	     (if (and (>= v 65566) (<= v irchat-utf8-kludge-max-unicode-val))
 		 (cons v (substring str 4))
 	       (cons b1 (substring str 1)))))
 	  (t
@@ -85,15 +97,15 @@ character and the rest of the string"
 
 (defun irchat-utf8-kludge-visible-char (ch)
   "Convert a character code into a visible string."
-  (let ((x))
-    (cond ((< ch 128)
-	   (char-to-string ch))
-	  ((setq x (assq ch irchat-utf8-kludge-assoc-list))
-	   (cdr x))
-	  ((< ch 256)
-	   (char-to-string ch))
-	  ((setq x (irchat-utf8-kludge-code-range ch))
-	   (format "[U+%04x %s]" ch x))
+  (let ((c (assq (string-to-int (format "%d" ch)) irchat-utf8-kludge-table))
+	(r (irchat-utf8-kludge-code-range ch))
+	(v))
+    (cond ((setq v (nth 2 c))
+	   v)
+	  ((setq v (nth 1 c))
+	   (format "[%s]" v))
+	  ((not (null r))
+	   (format "[U+%04x %s]" ch r))
 	  (t
 	   (format "[U+%04x]" ch)))))
 
@@ -117,7 +129,7 @@ character and the rest of the string"
 	 (string (logior 224 (logand (lsh c -12) 15))
 		 (logior 128 (logand (lsh c -6) 63))
 		 (logior 128 (logand c 63))))
-	((and (>= c 65566) (<= c 1114111))
+	((and (>= c 65566) (<= c irchat-utf8-kludge-max-unicode-val))
 	 (string (logior 240 (logand (lsh c -18) 7))
 		 (logior 128 (logand (lsh c -12) 63))
 		 (logior 128 (logand (lsh c -6) 63))
@@ -146,26 +158,41 @@ character and the rest of the string"
   "Encode a STR which can be either a string or vector of numbers to UTF-8. Extended characters presented as [U+#] where # is a hexadecimal number are also converted to their corresponding UTF-8 encoding."
   (let ((r ""))
     (while (> (length str) 0)
-      (let ((c) (len))
+      (let ((c nil)
+	    (len 0)
+	    (x nil))
 	(if (and (stringp str)
 		 (string-match
 		  "^\\(\\[U\\+\\([0-9a-fA-F][0-9a-fA-F]*\\)\\]\\)"
 		  str))
 	    (let ((s1 (matching-substring str 1))
 		  (s2 (matching-substring str 2)))
-	      (setq c (hex-to-int s2)
-		    len (length s1)))
-	  (setq c (irchat-utf8-kludge-nth-char str 0)
-		len 1))
-	(if (not (null c))
-	    (let ((x (irchat-utf8-kludge-encode-char c)))
-	      (if (not (null x))
-		  (setq str (substring str len)
-			r (concat r x))
-		(setq str ""
-		      r nil)))
-	  (setq str ""
-		r nil))))
+	      (progn
+		(setq len (length s1))
+		(setq c (hex-to-int s2))
+		(setq x (irchat-utf8-kludge-encode-char c)))))
+	(if (and (null x)
+		 (stringp str)
+		 (string-match
+		  "^\\[\\([^\]][^\]]*\\)\\]"
+		  str))
+	    (let ((s1 (matching-substring str 1)))
+	      (setq len (length s1))
+	      (setq c (irchat-utf8-kludge-get-char-with-symbolic-name s1))
+	      (if (not (null c))
+		  (setq x (irchat-utf8-kludge-encode-char c)))))
+	(if (null x)
+	    (progn
+	      (setq len 1)
+	      (setq c (irchat-utf8-kludge-nth-char str 0))
+	      (setq x (irchat-utf8-kludge-encode-char c))))
+	(if (not (null x))
+	    (progn
+	      (setq str (substring str len))
+	      (setq r (concat r x)))
+	  (progn
+	    (setq str "")
+	    (setq nil)))))
     r))
 
 (defun irchat-utf8-kludge-code-range (n)
