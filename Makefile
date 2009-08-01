@@ -2,7 +2,7 @@
 #
 # Makefile for irchat
 #
-# $Id: Makefile,v 3.24 2009/07/14 14:56:11 tri Exp $
+# $Id: Makefile,v 3.25 2009/08/01 16:50:17 tri Exp $
 #
 
 #
@@ -36,9 +36,6 @@ CRYPTO_OBJS =			\
 
 UTF8_TABLE_OBJS =		\
 	irchat-utf8-table.elc
-
-#UTF8_TABLE_OBJS =		\
-#	irchat-utf8-table-small.elc
 
 XOBJS 	=                       \
 	irchat-globals.elc	\
@@ -94,23 +91,11 @@ gnuemacs:
 xemacs:
 	$(MAKE) EMACS=$(XEMACS) irchat-build
 
-gnuemacs-smallutf:
-	$(MAKE) "UTF8_TABLE_OBJS=irchat-utf8-table-small.elc" gnuemacs
-
-xemacs-smallutf:
-	$(MAKE) "UTF8_TABLE_OBJS=irchat-utf8-table-small.elc" xemacs
-
 gnuemacs-nocrypto:
 	$(MAKE) "CRYPTO_OBJS=irchat-no-crypt.elc" gnuemacs
 
 xemacs-nocrypto:
 	$(MAKE) "CRYPTO_OBJS=irchat-no-crypt.elc" xemacs
-
-gnuemacs-nocrypto-smallutf:
-	$(MAKE) "CRYPTO_OBJS=irchat-no-crypt.elc" "UTF8_TABLE_OBJS=irchat-utf8-table-small.elc" gnuemacs
-
-xemacs-nocrypto-smallutf:
-	$(MAKE) "CRYPTO_OBJS=irchat-no-crypt.elc" "UTF8_TABLE_OBJS=irchat-utf8-table-small.elc" xemacs
 
 .SUFFIXES: .el .elc
 
