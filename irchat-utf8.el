@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-utf8.el,v 3.13 2009/08/01 13:08:44 tri Exp $
+;;;  $Id: irchat-utf8.el,v 3.14 2009/08/01 16:47:10 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -14,7 +14,7 @@
 (defconst irchat-utf8-kludge-max-unicode-val 1114111)
 
 (defun irchat-utf8-kludge-get-char-with-symbolic-name (str)
-  (let ((lst irchat-utf8-kludge-table)
+  (let ((lst irchat-utf8-kludge-unicode-table)
 	(r nil))
     (while lst
       (if (string= str (car (cdr (car lst))))
@@ -97,7 +97,8 @@ character and the rest of the string"
 
 (defun irchat-utf8-kludge-visible-char (ch)
   "Convert a character code into a visible string."
-  (let ((c (assq (string-to-int (format "%d" ch)) irchat-utf8-kludge-table))
+  (let ((c (assq (string-to-int (format "%d" ch))
+		 irchat-utf8-kludge-unicode-table))
 	(r (irchat-utf8-kludge-code-range ch))
 	(v))
     (cond ((setq v (nth 2 c))
