@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-main.el,v 3.50 2009/07/15 23:48:15 tri Exp $
+;;;  $Id: irchat-main.el,v 3.51 2009/08/01 22:37:25 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -171,6 +171,7 @@ carried out.")))))
     ("\C-c\C-t" irchat-Command-find-timestamp)
     ("\C-cP"	irchat-Command-toggle-private)
     ("\C-cu" 	irchat-Command-lusers)
+    ("\C-cU" 	irchat-Command-insert-unicode-character)
     ("\C-c\C-v"	irchat-Command-scroll-up)
     ("\C-cw" 	irchat-Command-who)
     ("\C-cW" 	irchat-Command-wait)

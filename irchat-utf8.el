@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-utf8.el,v 3.14 2009/08/01 16:47:10 tri Exp $
+;;;  $Id: irchat-utf8.el,v 3.15 2009/08/01 22:37:25 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -196,6 +196,24 @@ character and the rest of the string"
 	    (setq str "")
 	    (setq nil)))))
     r))
+
+(defun irchat-Command-insert-unicode-character ()
+  (interactive)
+  (let ((buf (current-buffer))
+	(names nil)
+	(lst irchat-utf8-kludge-unicode-table))
+    (while (not (null lst))
+      (setq names (cons (list (nth 1 (car lst))) names)
+	    lst (cdr lst)))
+    (let ((cn (completing-read "Insert UNICODE char name: "
+			       names
+			       nil
+			       t)))
+      (if (not (or (null cn) (string= "" cn)))
+	  (progn
+	    (insert (format "[%s]" cn))
+	    cn)
+	nil))))
 
 (defun irchat-utf8-kludge-code-range (n)
   (cond ((and (>= n 0) (<= n 127))
