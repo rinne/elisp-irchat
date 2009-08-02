@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-utf8.el,v 3.15 2009/08/01 22:37:25 tri Exp $
+;;;  $Id: irchat-utf8.el,v 3.16 2009/08/02 14:08:49 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -214,6 +214,47 @@ character and the rest of the string"
 	    (insert (format "[%s]" cn))
 	    cn)
 	nil))))
+
+(defun irchat-utf8-kludge-crazy-encode-first (str)
+  "Encode the beginning of the STR with some unicode character and return pair (name . rest)."
+  (let ((candidates nil)
+	(lst irchat-utf8-kludge-unicode-table))
+    (while (not (null lst))
+      (let ((n (nth 1 (car lst)))
+	    (v (nth 2 (car lst))))
+	(if (and (not (null v))
+		 (not (string= v ""))
+		 (not (string-match "^TAG " n))
+		 (not (string-match "^MATHEMATICAL " n))
+		 (not (string-match "^SCRIPT " n))
+		 (not (string-match " SCRIPT " n))
+		 (<= (length v) (length str))
+		 (string= v (substring str 0 (length v))))
+	    (setq candidates (cons (car lst) candidates))))
+      (setq lst (cdr lst)))
+    (if (not (null candidates))
+	(let ((x (nth (random (length candidates)) candidates)))
+	  (cons (concat "[" (nth 1 x) "]") (substring str (length (nth 2 x)))))
+      (cons (substring str 0 1) (substring str 1)))))
+
+(defun irchat-utf8-kludge-crazy-encode (str)
+  "Make weird unicode representation of STR."
+  (let ((r ""))
+    (while (> (length str) 0)
+      (let ((x (irchat-utf8-kludge-crazy-encode-first str)))
+	(setq r (concat r (car x))
+	      str (cdr x))))
+    r))
+
+(defun irchat-utf8-kludge-crazy-encode-region ()
+  (interactive)
+  (let* ((from (region-beginning))
+         (to (region-end))
+         (str (buffer-substring from to)))
+    (setq str (irchat-utf8-kludge-crazy-encode str))
+    (goto-char from)
+    (delete-region from to)
+    (insert str)))
 
 (defun irchat-utf8-kludge-code-range (n)
   (cond ((and (>= n 0) (<= n 127))

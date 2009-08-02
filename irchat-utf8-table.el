@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-utf8-table.el,v 3.8 2009/08/01 21:50:26 tri Exp $
+;;;  $Id: irchat-utf8-table.el,v 3.9 2009/08/02 14:08:47 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -6747,7 +6747,7 @@
     (8495 "SCRIPT SMALL E" "e")
     (8496 "SCRIPT CAPITAL E" "E")
     (8497 "SCRIPT CAPITAL F" "F")
-    (8498 "TURNED CAPITAL F" "F")
+    (8498 "TURNED CAPITAL F")
     (8499 "SCRIPT CAPITAL M" "M")
     (8500 "SCRIPT SMALL O" "o")
     (8501 "ALEF SYMBOL")
