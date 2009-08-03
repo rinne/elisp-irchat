@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-vars.el,v 3.42 2009/07/13 20:29:32 tri Exp $
+;;;  $Id: irchat-vars.el,v 3.43 2009/08/03 18:45:47 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -39,6 +39,9 @@ way is to put irchat variables on .emacs or file loaded from there.")
 
 (defvar irchat-utf8-kludge-disable nil
   "*If non-nil, IRCHAT will not try to make sense of UTF-8 input.")
+
+(defvar irchat-utf8-kludge-send-utf8-as-default nil
+  "*If non-nil, IRCHAT send UTF-8 encode sent messages as default.")
 
 (defvar irchat-backup-irchat-vars nil
   "*Do we want to backup irchat-vars file when updating it.  Nil inhibits.")

@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-commands.el,v 3.42 2009/07/15 23:48:15 tri Exp $
+;;;  $Id: irchat-commands.el,v 3.43 2009/08/03 18:45:47 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -224,7 +224,7 @@
 	nil))))
 
 
-(defun irchat-enter-message (crypt-type &optional key utf8-encode)
+(defun irchat-enter-message (crypt-type &optional key opposite-utf8-mode)
   "Enter the current line as an entry in the IRC dialogue on the
 current channel."
   (interactive)
@@ -233,7 +233,11 @@ current channel."
     (setq start (point))
     (end-of-line)
     (setq message (buffer-substring start (point)))
-    (if (not (null utf8-encode))
+    (if (and (null irchat-utf8-kludge-disable)
+	     (or (and irchat-utf8-kludge-send-utf8-as-default
+		      (null opposite-utf8-mode))
+		 (and (null irchat-utf8-kludge-send-utf8-as-default)
+		      opposite-utf8-mode)))
 	(setq message (irchat-utf8-kludge-encode-extended message)))
     (if (and irchat-confirm-bell-on-channel-message
 	     (stringp irchat-current-channel)
@@ -252,7 +256,7 @@ current channel."
   (interactive)
   (irchat-enter-message nil nil nil))
 
-(defun irchat-Command-enter-message-utf8 ()
+(defun irchat-Command-enter-message-opposite-utf8-mode ()
   (interactive)
   (irchat-enter-message nil nil t))
 
@@ -270,7 +274,7 @@ current channel."
   (let ((irchat-crypt-mode-active (not irchat-crypt-mode-active)))
     (irchat-enter-message nil nil nil)))
 
-(defun irchat-Command-enter-message-utf8-opposite-crypt-mode ()
+(defun irchat-Command-enter-message-opposite-utf8-and-crypt-modes ()
   (interactive)
   (let ((irchat-crypt-mode-active (not irchat-crypt-mode-active)))
     (irchat-enter-message nil nil t)))
@@ -703,7 +707,8 @@ With - as argument, list all channels."
 			       message
 			       &optional crypt-type-var
 			                 own-message-var
-					 do-not-split)
+					 do-not-split
+					 opposite-utf8-mode)
   "Send a private message to another user.  If you send a message that
 is already encrypted use 'cleartext flag and put message as a cleartext
 into own-message-var"
@@ -720,7 +725,14 @@ into own-message-var"
 		       (read-string 
 			(format "Private message to %s: " message-nick-var))
 		       crypt-type-var
+		       nil
 		       nil)))
+  (if (and (null irchat-utf8-kludge-disable)
+	   (or (and irchat-utf8-kludge-send-utf8-as-default
+		    (null opposite-utf8-mode))
+	       (and (null irchat-utf8-kludge-send-utf8-as-default)
+		    opposite-utf8-mode)))
+      (setq message (irchat-utf8-kludge-encode-extended message)))
   (if (and (not do-not-split)
 	   (stringp irchat-message-split-separator)
 	   (> (length message) irchat-message-length-limit)
@@ -965,6 +977,15 @@ be a string to send NICK upon entering."
 	(switch-to-buffer (current-buffer)))
     (error "Crypto not supported in this version of Irchat.")))
 
+(defun irchat-Command-toggle-utf8 ()
+  (interactive)
+  (if (null irchat-utf8-kludge-disable)
+      (setq irchat-utf8-kludge-send-utf8-as-default
+	    (if irchat-utf8-kludge-send-utf8-as-default
+		nil
+	      t))
+    (error "UTF8 support has been explicitly disabled."))
+  (irchat-set-utf8-indicator))
 
 (defun irchat-Command-freeze ()
   "Toggle the automatic scrolling of the Dialogue window."

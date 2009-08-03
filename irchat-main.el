@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-main.el,v 3.51 2009/08/01 22:37:25 tri Exp $
+;;;  $Id: irchat-main.el,v 3.52 2009/08/03 18:45:47 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -129,9 +129,9 @@ carried out.")))))
     ("\C-cs" 	irchat-Command-dcc-send)
     ("\C-cG" 	irchat-Command-dcc-list)
     ("\C-m"  	irchat-Command-enter-message)
-    ("\C-j"  	irchat-Command-enter-message-utf8)
+    ("\C-j"  	irchat-Command-enter-message-opposite-utf8-mode)
     ("\M-\C-m" 	irchat-Command-enter-message-opposite-crypt-mode)
-    ("\M-\C-j" 	irchat-Command-enter-message-utf8-opposite-crypt-mode)
+    ("\M-\C-j" 	irchat-Command-enter-message-opposite-utf8-and-crypt-modes)
     ("\C-cF" 	irchat-Command-send-file)
     ("\C-c\C-c" irchat-Client-query-prefix)
     ("\C-c\C-d" irchat-Command-debug)
@@ -396,6 +396,7 @@ If already connected, just pop up the windows."
 	      (setq irchat-freeze-indicator "-")
 	      (irchat-freeze-toggle (car irchat-D-buffer))))
 	(irchat-set-crypt-indicator)
+	(irchat-set-utf8-indicator)
 	(irchat-Dialogue-setup-buffer)
 	(irchat-Private-setup-buffer)
 	(irchat-KILLS-setup-buffer)
@@ -456,6 +457,7 @@ For a list of the generic commands type \\[irchat-Command-generic] ? RET.
   (kill-all-local-variables)
 
   (irchat-set-crypt-indicator)
+  (irchat-set-utf8-indicator)
   (setq irchat-nick-alist (list (list irchat-nickname))
 	mode-line-modified "--- "
 	major-mode 'irchat-Command-mode
@@ -472,6 +474,7 @@ For a list of the generic commands type \\[irchat-Command-generic] ? RET.
 	  "{" irchat-channel-indicator "} "
 	  irchat-away-indicator 
 	  irchat-crypt-indicator
+	  irchat-utf8-indicator
 	  irchat-freeze-indicator
 	  irchat-ownfreeze-indicator 
 	  "- " 
@@ -577,6 +580,13 @@ One is for entering commands and text, the other displays the IRC dialogue."
 		  (irchat-crypt-mode-active "c")
 		  (t "-")))))
 
+(defun irchat-set-utf8-indicator ()
+  "Set utf8 mode indicator"
+  (setq irchat-utf8-indicator
+	(if (and (null irchat-utf8-kludge-disable)
+		 irchat-utf8-kludge-send-utf8-as-default)
+	    "U"
+	  "-")))
 
 (defun irchat-Dialogue-setup-buffer ()
   "Initialize Dialogue mode buffer."
