@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-vars.el,v 3.43 2009/08/03 18:45:47 tri Exp $
+;;;  $Id: irchat-vars.el,v 3.44 2009/08/11 20:32:50 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -92,7 +92,10 @@ killed again if automagic reconnect is too fast.")
 (defvar irchat-message-length-limit 256
   "*Messages longer than this are split to pieces")
 
-(defvar irchat-message-split-separator "÷»"
+(defvar irchat-message-split-separator "..."
+  "String to used as separator in splitted messages.")
+
+(defvar irchat-message-alt-split-separator "÷»"
   "String to used as separator in splitted messages.")
 
 (defvar irchat-message-split-^C-compat t

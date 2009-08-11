@@ -1,3 +1,11 @@
+Tue Aug 11 20:30:31  Timo J. Rinne  <tri@iki.fi>
+
+	* Tried to fix line splitting.  Achieved to make totally
+	  broken piece of shit to somewhat working one.  Could
+	  still break down if messages to be sent contain much
+	  characters that are converted to multibyte utf-8
+	  sequences.
+
 Tue Aug 04 08:33:33 2009  IRCHAT Distribution Generator <irchat@rinne.iki.fi>
 
 	* Generated release irchat-5.01.

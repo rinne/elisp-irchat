@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-misc.el,v 3.54 2009/07/13 20:29:32 tri Exp $
+;;;  $Id: irchat-misc.el,v 3.55 2009/08/11 20:32:50 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -92,34 +92,40 @@
 	  killit)))))
 
 
-(defun irchat-split-string-with-separator (string separator size)
+(defun irchat-split-string-with-separator (msg separator &optional maxlen)
   "Split STRING to list of SIZE sized pieces with SEPARATORs."
-  (if (not (stringp string))
-      nil
-    (if (or (not (stringp separator))
-	    (<= size (* 2 (length separator))))
-	(list string)
-      (let ((s string)
-	    (first 1)
-	    (r '()))
-	(while s
-	  (if (<= (+ (length s)
-		     (if first 0 (length separator)))
-		  size)
-	      (progn
-		(setq r (cons (concat (if first "" separator) s)
-			      r))
-		(setq s nil))
-	    (let ((l (- size (+ (if first 0 (length separator))
-				(length separator)))))
-	      (setq r (cons (concat (if first "" separator) 
-				    (substring s 0 l)
-				    separator)
-			    r))
-	      (setq s (substring s l (length s)))))
-	  (setq first nil))
-	(reverse r)))))
-
+  (if (null maxlen)
+      (setq maxlen 256))
+  (if (< maxlen 16)
+      (setq maxlen 16))
+  (let ((r nil))
+    (if (<= (length msg) maxlen)
+	(setq r (list msg)))
+    (if (null r)
+	(let ((i (- maxlen 1)))
+	  (while (> i 1)
+	    (let ((x (substring msg i (+ i 1))))
+	      (if (string= x " ")
+		  (setq r (cons (concat
+				 (substring msg 0 (+ i 1))
+				 separator)
+				(irchat-split-string-with-separator
+				 (concat separator
+					 (substring msg
+						    (+ i 1)))
+				 separator
+				 maxlen))
+			i 0))
+	      (setq i (- i 1))))))
+    (if (null r)
+	(setq r (cons
+		 (concat (substring msg 0 maxlen) separator)
+		 (irchat-split-string-with-separator (concat
+						      separator
+						      (substring msg maxlen))
+						     separator
+						     maxlen))))
+    r))
 
 (defun irchat-parse-^G-channel-name (chnl)
   "Parse CHNL to pair e.g. #42 -> (#42 . nil) and #42^Gov -> (#42 . +o +v)"
@@ -185,59 +191,81 @@
 
 
 (defun irchat-Dialogue-insert-message (buffer 
-				       absolute-prefix 
+				       absolute-prefix
 				       format-string
 				       sender
-				       message 
+				       message
 				       &optional channel
 				       force)
   "Insert incoming message into dialog buffer(s)."
   (if (and (> (length message) 0)
-	   (string-match (concat "^" 
-				 "\\("
-				 (if irchat-message-split-^C-compat
-				     (concat (regexp-quote
-					      irchat-message-split-separator)
-					     "\\|"
-					     (regexp-quote ""))
-				   (regexp-quote
-				    irchat-message-split-separator))
-				 "\\)"
-				 "\\(.*\\)")
-			 message)
+	   (string-match
+	    (concat "^" 
+		    "\\("
+		    (regexp-quote
+		     irchat-message-split-separator)
+		    (if irchat-message-split-^C-compat
+			(concat "\\|"
+				(regexp-quote ""))
+		      "")
+		    (if (and (stringp irchat-message-alt-split-separator)
+			     (> 0 (length irchat-message-alt-split-separator)))
+			(concat "\\|"
+				(regexp-quote
+				 irchat-message-alt-split-separator))
+		      "")
+		    "\\)"
+		    "\\(.*\\)")
+	    message)
 	   (null force))
       (let* ((n (matching-substring message 2))
-	     (m (concat "^"
-			absolute-prefix
-			(regexp-quote (format format-string
-					      sender
-					      channel))
-			" .*\\("
-			(if irchat-message-split-^C-compat
-			    (concat (regexp-quote
-				     irchat-message-split-separator)
-				    "\\|"
-				    (regexp-quote ""))
-			  (regexp-quote
-			   irchat-message-split-separator))
-		       "\\)$"))
+	     (n (if (null irchat-utf8-kludge-disable)
+		    (irchat-utf8-kludge-decode n)
+		  n))
+	     (m (concat
+		 "^"
+		 absolute-prefix
+		 (regexp-quote (format format-string
+				       sender
+				       channel))
+		 " .*\\("
+		 (regexp-quote
+		  irchat-message-split-separator)
+		 (if irchat-message-split-^C-compat
+		     (concat "\\|"
+			     (regexp-quote ""))
+		   "")
+		 (if (and (stringp irchat-message-alt-split-separator)
+			  (> 0 (length irchat-message-alt-split-separator)))
+		     (concat "\\|"
+			     (regexp-quote
+			      irchat-message-alt-split-separator))
+		   "")
+		 "\\)$"))
 	     (d (concat absolute-prefix
 			(format format-string 
 				sender 
 				channel)
-			" ... "
+			" "
+			irchat-message-split-separator
 			n
 			"\n"))
-	     (o (concat "\\("
-			(if irchat-message-split-^C-compat
-			    (concat (regexp-quote
-				     irchat-message-split-separator)
-				    "\\|"
-				    (regexp-quote ""))
-			  (regexp-quote
-			   irchat-message-split-separator))
-			"\\)"
-			"$")))
+	     (o (concat
+		 "\\("
+		 (regexp-quote
+		  irchat-message-split-separator)
+		 (if irchat-message-split-^C-compat
+		     (concat "\\|"
+			     (regexp-quote ""))
+		   "")
+		 (if (and (stringp irchat-message-alt-split-separator)
+			  (> 0 (length irchat-message-alt-split-separator)))
+		     (concat "\\|"
+			     (regexp-quote
+			      irchat-message-alt-split-separator))
+		   "")
+		 "\\)"
+		 "$")))
 	(irchat-w-replace buffer m d o n 24))
     (irchat-w-insert buffer (concat absolute-prefix
 				    (format format-string sender channel)

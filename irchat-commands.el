@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-commands.el,v 3.43 2009/08/03 18:45:47 tri Exp $
+;;;  $Id: irchat-commands.el,v 3.44 2009/08/11 20:32:50 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -727,12 +727,6 @@ into own-message-var"
 		       crypt-type-var
 		       nil
 		       nil)))
-  (if (and (null irchat-utf8-kludge-disable)
-	   (or (and irchat-utf8-kludge-send-utf8-as-default
-		    (null opposite-utf8-mode))
-	       (and (null irchat-utf8-kludge-send-utf8-as-default)
-		    opposite-utf8-mode)))
-      (setq message (irchat-utf8-kludge-encode-extended message)))
   (if (and (not do-not-split)
 	   (stringp irchat-message-split-separator)
 	   (> (length message) irchat-message-length-limit)
@@ -754,9 +748,18 @@ into own-message-var"
 					      (if own-message-var
 						  own-message-var
 						message))
-					    t))))
+					    t
+					    opposite-utf8-mode))))
 	r)
-    (let* ((msg-encrypted-p nil)
+    (let* ((message
+	    (if (and (null irchat-utf8-kludge-disable)
+		     (or (and irchat-utf8-kludge-send-utf8-as-default
+			      (null opposite-utf8-mode))
+			 (and (null irchat-utf8-kludge-send-utf8-as-default)
+			      opposite-utf8-mode)))
+		(irchat-utf8-kludge-encode-extended message)
+	      message))
+	   (msg-encrypted-p nil)
 	   (msg (cond ((equal crypt-type-var 'cleartext)
 		       message)
 		      ((and (equal crypt-type-var 'encrypted)
