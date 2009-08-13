@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-misc.el,v 3.55 2009/08/11 20:32:50 tri Exp $
+;;;  $Id: irchat-misc.el,v 3.56 2009/08/13 21:54:34 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -209,7 +209,7 @@
 				(regexp-quote ""))
 		      "")
 		    (if (and (stringp irchat-message-alt-split-separator)
-			     (> 0 (length irchat-message-alt-split-separator)))
+			     (> (length irchat-message-alt-split-separator) 0))
 			(concat "\\|"
 				(regexp-quote
 				 irchat-message-alt-split-separator))
@@ -236,7 +236,7 @@
 			     (regexp-quote ""))
 		   "")
 		 (if (and (stringp irchat-message-alt-split-separator)
-			  (> 0 (length irchat-message-alt-split-separator)))
+			  (> (length irchat-message-alt-split-separator) 0))
 		     (concat "\\|"
 			     (regexp-quote
 			      irchat-message-alt-split-separator))
@@ -259,7 +259,7 @@
 			     (regexp-quote ""))
 		   "")
 		 (if (and (stringp irchat-message-alt-split-separator)
-			  (> 0 (length irchat-message-alt-split-separator)))
+			  (> (length irchat-message-alt-split-separator) 0))
 		     (concat "\\|"
 			     (regexp-quote
 			      irchat-message-alt-split-separator))
