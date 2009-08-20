@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-version.el,v 3.266 2009/08/19 17:49:10 tri Exp $
+;;;  $Id: irchat-version.el,v 3.267 2009/08/20 08:57:56 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -13,7 +13,7 @@
 (defconst irchat-client-version-major "5"
   "*Major version number. Major functional changes change this number.")
 
-(defconst irchat-client-version-minor "02"
+(defconst irchat-client-version-minor "03"
   "*Minor version number. Server Protocol changes and bug fixes change this number.")
 
 (defconst irchat-client-version-beta-p t
@@ -25,7 +25,7 @@
 (defconst irchat-client-version-rcs-snap t
   "*Is this just a snapshot from rcs?")
 
-(defconst irchat-client-version-release "$Date: 2009/08/19 17:49:10 $"
+(defconst irchat-client-version-release "$Date: 2009/08/20 08:57:56 $"
   "*Version release date")
 
 (defconst irchat-client-name "Irchat"
