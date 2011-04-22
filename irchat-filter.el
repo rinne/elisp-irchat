@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-filter.el,v 3.13 2009/07/13 20:29:32 tri Exp $
+;;;  $Id: irchat-filter.el,v 3.14 2011/04/22 23:14:16 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -25,7 +25,10 @@
 		 (fboundp hook))
 	    (and (listp hook)
 		 (eq (car hook) 'lambda))
-	    (compiled-function-p hook))
+	    (and (fboundp 'byte-code-function-p)
+		 (byte-code-function-p hook))
+	    (and (fboundp 'compiled-function-p)
+		 (compiled-function-p hook)))
 	(eval (list hook prefix rest-of-line))
       (if (listp hook)
 	  (let ((hooks hook)

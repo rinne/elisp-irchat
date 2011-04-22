@@ -1,6 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-utf8.el,v 3.16 2009/08/02 14:08:49 tri Exp $
+;;;  $Id: irchat-utf8.el,v 3.17 2011/04/22 23:14:16 tri Exp $
 ;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
@@ -91,6 +91,11 @@ character and the rest of the string"
 	     (if (and (>= v 65566) (<= v irchat-utf8-kludge-max-unicode-val))
 		 (cons v (substring str 4))
 	       (cons b1 (substring str 1)))))
+	  ((and (not (null b1)) (= b1 129)
+		(not (null b2)) (>= b2 160) (<= b2 255))
+	   ;; This is NOT UTF-8 encoding, but gnu emacs seems to do
+	   ;; something like this from iso-8859-1 stuff.
+	   (cons b2 (substring str 2)))
 	  (t
 	   ; This is NOT UTF-8 encoding at all and is returned as is
 	   (cons b1 (substring str 1))))))
