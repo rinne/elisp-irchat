@@ -4,12 +4,10 @@
 ;;;  b64 - almost base64
 ;;;  ----------------------------------------------------------------------
 ;;;  Created      : Thu Feb 20 16:21:28 1997 tri
-;;;  Last modified: Mon Feb 24 15:43:23 1997 tri
+;;;  Last modified: Sat Feb  4 19:58:46 2017 tri
 ;;;  ----------------------------------------------------------------------
-;;;  Copyright © 1997
+;;;  Copyright Â© 1997, 2017
 ;;;  Timo J. Rinne <tri@iki.fi>
-;;; 
-;;;  Address: Cirion oy, PO-BOX 250, 00121 Helsinki, Finland
 ;;;  ----------------------------------------------------------------------
 ;;;  Any express or implied warranties are disclaimed.  In no event
 ;;;  shall the author be liable for any damages caused (directly or

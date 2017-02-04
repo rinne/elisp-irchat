@@ -4,12 +4,10 @@
 ;;;  Cipher Saber encryption in elisp.  Cool, ha?
 ;;;  ----------------------------------------------------------------------
 ;;;  Created      : Tue Jul  7 18:55:02 1998 tri
-;;;  Last modified: Thu Jun  6 17:35:00 2002 tri
+;;;  Last modified: Sat Feb  4 19:55:30 2017 tri
 ;;;  ----------------------------------------------------------------------
-;;;  Copyright © 1998-1999, 2002
+;;;  Copyright (C) 1998-1999, 2002, 2017
 ;;;  Timo J. Rinne <tri@iki.fi>
-;;; 
-;;;  Address: Cirion oy, PO-BOX 250, 00121 Helsinki, Finland
 ;;;  ----------------------------------------------------------------------
 ;;;  Any express or implied warranties are disclaimed.  In no event
 ;;;  shall the author be liable for any damages caused (directly or

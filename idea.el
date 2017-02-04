@@ -4,12 +4,10 @@
 ;;;  IDEA encryption in elisp.  Cool, ha?
 ;;;  ----------------------------------------------------------------------
 ;;;  Created      : Thu Jun 29 08:11:25 1995 tri
-;;;  Last modified: Sat Jun 28 17:24:37 2003 tri
+;;;  Last modified: Sat Feb  4 19:55:26 2017 tri
 ;;;  ----------------------------------------------------------------------
-;;;  Copyright © 1995-1999, 2003
+;;;  Copyright (C) 1995-1999, 2003, 2017
 ;;;  Timo J. Rinne <tri@iki.fi>
-;;; 
-;;;  Address: Cirion oy, PO-BOX 250, 00121 Helsinki, Finland
 ;;;  ----------------------------------------------------------------------
 ;;;  Any express or implied warranties are disclaimed.  In no event
 ;;;  shall the author be liable for any damages caused (directly or

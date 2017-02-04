@@ -6,9 +6,9 @@
     $Id: irchat-copyright.el,v 3.7 2009/07/14 16:25:26 tri Exp $
     Internet Relay CHAT interface for GNU Emacs
 
-    Copyright © 1989 Tor Lillqvist <tml@iki.fi>
+    Copyright Â© 1989 Tor Lillqvist <tml@iki.fi>
 
-    Copyright © 1990-2003, 2005, 2009 Irchat Developer Team (see below)
+    Copyright Â© 1990-2003, 2005, 2009, 2017 Irchat Developer Team (see below)
  
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -29,8 +29,8 @@
     improvements. If you think your name should be included here,
     give us a note...
 
-	   Markku Järvinen	<mta@iki.fi>
-	   Kai Keinänen		<kmk@iki.fi>
+	   Markku JÃ¤rvinen	<mta@iki.fi>
+	   Kai KeinÃ¤nen		<kmk@iki.fi>
 	   Janne Liimatainen	<jsl@iki.fi>
 	   Tero T. Mononen     	<tmo@iki.fi>
 	   Kim Nyberg          	<kny@iki.fi>

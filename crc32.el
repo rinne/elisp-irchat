@@ -4,12 +4,10 @@
 ;;;  CRC32 compatible crc in elisp.  Cool, ha?
 ;;;  ----------------------------------------------------------------------
 ;;;  Created      : Fri Dec 16 13:47:25 1995 tri
-;;;  Last modified: Sat Jun 28 17:26:24 2003 tri
+;;;  Last modified: Sat Feb  4 19:58:43 2017 tri
 ;;;  ----------------------------------------------------------------------
-;;;  Copyright © 1995-1997, 2003
+;;;  Copyright Â© 1995-1997, 2003, 2017
 ;;;  Timo J. Rinne <tri@iki.fi>
-;;; 
-;;;  Address: Cirion oy, PO-BOX 250, 00121 Helsinki, Finland
 ;;;  ----------------------------------------------------------------------
 ;;;  Any express or implied warranties are disclaimed.  In no event
 ;;;  shall the author be liable for any damages caused (directly or

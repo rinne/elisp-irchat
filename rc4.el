@@ -4,12 +4,10 @@
 ;;;  RC4 encryption in elisp.  Cool, ha?
 ;;;  ----------------------------------------------------------------------
 ;;;  Created      : Tue Jun 23 15:02:41 1998 tri
-;;;  Last modified: Mon Aug 10 17:58:50 1998 tri
+;;;  Last modified: Sat Feb  4 19:57:21 2017 tri
 ;;;  ----------------------------------------------------------------------
-;;;  Copyright © 1998
+;;;  Copyright Â© 1998, 2017
 ;;;  Timo J. Rinne <tri@iki.fi>
-;;; 
-;;;  Address: Cirion oy, PO-BOX 250, 00121 Helsinki, Finland
 ;;;  ----------------------------------------------------------------------
 ;;;  Any express or implied warranties are disclaimed.  In no event
 ;;;  shall the author be liable for any damages caused (directly or
