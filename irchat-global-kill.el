@@ -1,7 +1,5 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-global-kill.el,v 1.6 2009/07/13 20:29:32 tri Exp $
-;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 ;;;
 ;;; Handle global kill ctcp messages by jsl and tri.

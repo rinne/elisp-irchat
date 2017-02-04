@@ -4,7 +4,7 @@
 ;;;  Cipher Saber encryption in elisp.  Cool, ha?
 ;;;  ----------------------------------------------------------------------
 ;;;  Created      : Tue Jul  7 18:55:02 1998 tri
-;;;  Last modified: Sat Feb  4 19:55:30 2017 tri
+;;;  Last modified: Sat Feb  4 20:22:52 2017 tri
 ;;;  ----------------------------------------------------------------------
 ;;;  Copyright (C) 1998-1999, 2002, 2017
 ;;;  Timo J. Rinne <tri@iki.fi>
@@ -15,8 +15,6 @@
 ;;;  
 ;;;  irchat-copyright.el applies only if used with irchat IRC client.
 ;;;  Contact the author for additional copyright info.
-;;;
-;;;  $Id: cipher-saber.el,v 1.9 2002/06/06 14:36:23 tri Exp $
 ;;;
 
 (eval-and-compile  

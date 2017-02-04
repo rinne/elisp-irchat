@@ -1,7 +1,5 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-vars.el,v 3.44 2009/08/11 20:32:50 tri Exp $
-;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
 ;;;

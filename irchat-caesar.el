@@ -1,7 +1,5 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-caesar.el,v 3.4 2009/07/13 20:29:32 tri Exp $
-;;;
 ;;; caesar-region written by phr@prep.ai.mit.edu  Nov 86
 ;;; Modified by tower@prep Nov 86
 ;;; Modified by umerin@flab.flab.Fujitsu.JUNET for ROT47.

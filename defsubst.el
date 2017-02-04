@@ -1,7 +1,5 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: defsubst.el,v 3.1 1997/02/24 16:00:02 tri Exp $
-;;;
 ;;; This file is obsolete; the Emacs 19 byte compiler will do this and more.
 ;;; If you want a prerelease of the byte-compiler, send me mail.
 ;;;

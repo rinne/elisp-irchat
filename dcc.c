@@ -1,6 +1,4 @@
 /*
-** $Id: dcc.c,v 1.1 1997/02/27 11:21:04 tri Exp $
-**
 ** see file irchat-copyright.el for change log and copyright info
 */
 

@@ -1,7 +1,5 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-utf8-table.el,v 3.10 2009/08/02 15:09:57 tri Exp $
-;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
 ;;;

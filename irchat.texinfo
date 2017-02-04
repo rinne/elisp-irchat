@@ -1,7 +1,5 @@
 \input texinfo @c -*-texinfo-*-
 
-@comment % $Id: irchat.texinfo,v 1.1 1996/12/19 15:09:12 tri Exp $
-
 @comment %**start of header
 @setfilename irchat.info
 @settitle irchat, an IRC interface for GNU Emacs

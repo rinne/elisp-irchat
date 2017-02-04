@@ -4,7 +4,7 @@
 ;;;  b64 - almost base64
 ;;;  ----------------------------------------------------------------------
 ;;;  Created      : Thu Feb 20 16:21:28 1997 tri
-;;;  Last modified: Sat Feb  4 19:58:46 2017 tri
+;;;  Last modified: Sat Feb  4 20:21:48 2017 tri
 ;;;  ----------------------------------------------------------------------
 ;;;  Copyright © 1997, 2017
 ;;;  Timo J. Rinne <tri@iki.fi>
@@ -15,8 +15,6 @@
 ;;;  
 ;;;  irchat-copyright.el applies only if used with irchat IRC client.
 ;;;  Contact the author for additional copyright info.
-;;;
-;;;  $Id: b64.el,v 3.1 1997/02/24 16:00:02 tri Exp $
 ;;;
 
 (eval-and-compile  

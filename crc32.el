@@ -4,7 +4,7 @@
 ;;;  CRC32 compatible crc in elisp.  Cool, ha?
 ;;;  ----------------------------------------------------------------------
 ;;;  Created      : Fri Dec 16 13:47:25 1995 tri
-;;;  Last modified: Sat Feb  4 19:58:43 2017 tri
+;;;  Last modified: Sat Feb  4 20:21:44 2017 tri
 ;;;  ----------------------------------------------------------------------
 ;;;  Copyright © 1995-1997, 2003, 2017
 ;;;  Timo J. Rinne <tri@iki.fi>
@@ -15,8 +15,6 @@
 ;;;  
 ;;;  irchat-copyright.el applies only if used with irchat IRC client.
 ;;;  Contact the author for additional copyright info.
-;;;
-;;;  $Id: crc32.el,v 3.4 2003/06/28 14:28:57 tri Exp $
 ;;;
 
 (eval-and-compile  

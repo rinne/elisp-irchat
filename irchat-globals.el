@@ -1,7 +1,5 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-globals.el,v 3.12 2009/08/03 18:45:47 tri Exp $
-;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
 (eval-and-compile

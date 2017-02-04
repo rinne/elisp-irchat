@@ -2,8 +2,6 @@
 #
 # Makefile for irchat
 #
-# $Id: Makefile,v 3.25 2009/08/01 16:50:17 tri Exp $
-#
 
 #
 # If you don't have jwz's optimizing byte-compiler, uncomment the following

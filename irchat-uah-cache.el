@@ -1,7 +1,5 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-uah-cache.el,v 1.9 2009/07/13 20:29:32 tri Exp $
-;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 ;;;
 ;;; Nick to user-at-host cache by jsl.

@@ -1,7 +1,5 @@
 #! /bin/sh
 #
-# $Id: irchat-mkdist,v 1.19 2002/06/06 13:04:03 tri Exp $
-#
 # This file is part of irchat.  Command irchat-mkdist creates 
 # a snapshot of irchat current.  This file itself does not go 
 # into the snapshot archive.

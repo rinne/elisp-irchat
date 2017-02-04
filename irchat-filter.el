@@ -1,7 +1,5 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-filter.el,v 3.14 2011/04/22 23:14:16 tri Exp $
-;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
 (eval-when-compile

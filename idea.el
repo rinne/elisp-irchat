@@ -4,7 +4,7 @@
 ;;;  IDEA encryption in elisp.  Cool, ha?
 ;;;  ----------------------------------------------------------------------
 ;;;  Created      : Thu Jun 29 08:11:25 1995 tri
-;;;  Last modified: Sat Feb  4 19:55:26 2017 tri
+;;;  Last modified: Sat Feb  4 20:21:34 2017 tri
 ;;;  ----------------------------------------------------------------------
 ;;;  Copyright (C) 1995-1999, 2003, 2017
 ;;;  Timo J. Rinne <tri@iki.fi>
@@ -15,8 +15,6 @@
 ;;;  
 ;;;  irchat-copyright.el applies only if used with irchat IRC client.
 ;;;  Contact the author for additional copyright info.
-;;;
-;;;  $Id: idea.el,v 3.24 2003/06/28 14:28:57 tri Exp $
 ;;;
 
 (eval-and-compile  

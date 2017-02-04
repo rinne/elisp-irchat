@@ -1,7 +1,5 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-version.el,v 3.270 2009/08/20 09:29:48 tri Exp $
-;;;
 ;;; see file irchat-copyright.el for change log and copyright info
 
 ;;; DO NOT TOUCH THIS LINE: ZZZXXX>>>1250760566<<<XXXZZZ

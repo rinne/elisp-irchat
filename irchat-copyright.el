@@ -1,9 +1,6 @@
 ;;;  -*- emacs-lisp -*-
 ;;;
-;;;  $Id: irchat-copyright.el,v 3.7 2009/07/14 16:25:26 tri Exp $
-;;;
 (defvar irchat-copyright "
-    $Id: irchat-copyright.el,v 3.7 2009/07/14 16:25:26 tri Exp $
     Internet Relay CHAT interface for GNU Emacs
 
     Copyright © 1989 Tor Lillqvist <tml@iki.fi>

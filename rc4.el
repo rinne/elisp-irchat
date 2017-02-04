@@ -4,7 +4,7 @@
 ;;;  RC4 encryption in elisp.  Cool, ha?
 ;;;  ----------------------------------------------------------------------
 ;;;  Created      : Tue Jun 23 15:02:41 1998 tri
-;;;  Last modified: Sat Feb  4 19:57:21 2017 tri
+;;;  Last modified: Sat Feb  4 20:20:34 2017 tri
 ;;;  ----------------------------------------------------------------------
 ;;;  Copyright © 1998, 2017
 ;;;  Timo J. Rinne <tri@iki.fi>
@@ -15,8 +15,6 @@
 ;;;  
 ;;;  irchat-copyright.el applies only if used with irchat IRC client.
 ;;;  Contact the author for additional copyright info.
-;;;
-;;;  $Id: rc4.el,v 1.2 1998/08/10 15:04:17 tri Exp $
 ;;;
 
 (eval-and-compile  
